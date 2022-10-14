@@ -1,0 +1,172 @@
+<script lang="ts">
+	import { front9HoleNumbers, front9HoleDetails, front9Par, type Front9Hole } from '../courseSetup';
+	import { back9HoleNumbers, back9HoleDetails, back9Par, type Back9Hole } from '../courseSetup';
+
+	function range(size: number, startAt = 0) {
+		return [...Array(size).keys()].map((i) => i + startAt);
+	}
+
+	const front9Score: Record<Front9Hole, number | null> = {
+		1: null,
+		2: null,
+		3: null,
+		4: null,
+		5: null,
+		6: null,
+		7: null,
+		8: null,
+		9: null
+	};
+	const back9Score: Record<Back9Hole, number | null> = {
+		10: null,
+		11: null,
+		12: null,
+		13: null,
+		14: null,
+		15: null,
+		16: null,
+		17: null,
+		18: null
+	};
+
+	$: front9Total = Object.values(front9Score).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
+	$: back9Total = Object.values(back9Score).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
+</script>
+
+<h2>this is a scorecard</h2>
+<div class="scorecard">
+	<table id="front9">
+		<thead>
+			<th>Hole</th>
+			{#each front9HoleNumbers as hole}
+				<th>{hole}</th>
+			{/each}
+			<th>Out</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Par</td>
+				{#each front9HoleDetails as hole}
+					<th>{hole.par}</th>
+				{/each}
+				<td>{front9Par}</td>
+			</tr>
+			<tr>
+				<td>Score</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[1]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[2]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[3]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[4]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[5]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[6]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[7]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[8]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[9]} />
+				</td>
+				<td>{front9Total}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table id="back9">
+		<thead>
+			<th>Hole</th>
+			{#each back9HoleNumbers as hole}
+				<th>{hole}</th>
+			{/each}
+			<th>In</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Par</td>
+				{#each back9HoleDetails as hole}
+					<th>{hole.par}</th>
+				{/each}
+				<td>{back9Par}</td>
+			</tr>
+			<tr>
+				<td>Score</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[10]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[11]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[12]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[13]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[14]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[15]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[16]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[17]} />
+				</td>
+				<td>
+					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[18]} />
+				</td>
+				<td>{back9Total}</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+<style>
+	.scorecard {
+		width: 500px;
+		margin: 0 auto;
+	}
+
+	table {
+		table-layout: fixed;
+	}
+
+	table,
+	th,
+	td {
+		border: thin solid;
+		padding: 5px;
+	}
+
+	td {
+		text-align: center;
+	}
+
+	td input[type='number'] {
+		width: 100%;
+		border: none;
+		outline: none;
+		text-align: center;
+	}
+
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+</style>
