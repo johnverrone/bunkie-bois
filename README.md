@@ -4,7 +4,7 @@ This app is built using [SvelteKit](https://kit.svelte.dev/) and [TypeScript](ht
 
 ## Developing
 
-First install dependencies with `npm install` and then start the developement server:
+First install dependencies with `npm install` and then start the development server:
 
 ```bash
 npm run dev
