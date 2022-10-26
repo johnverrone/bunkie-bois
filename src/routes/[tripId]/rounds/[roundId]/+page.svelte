@@ -21,8 +21,8 @@
 	$: leaderboard = $scores
 		.filter((player) => player.roundId === data.round.id)
 		.map((score) => ({
-			id: playersById[score.playerId]!.id,
-			name: playersById[score.playerId]!.name,
+			id: $playersById[score.playerId]!.id,
+			name: $playersById[score.playerId]!.name,
 			score: score.score
 		}))
 		.sort((a, b) => a.score - b.score);
