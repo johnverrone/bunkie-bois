@@ -6,7 +6,7 @@
 	import { crossfade } from 'svelte/transition';
 	import { clickOutside } from '../../../../utils/click_outside';
 	import { getPar, getYardage } from '../../../../data/course';
-	import { playersById } from '../../../../data/players';
+	import { players, playersById } from '../../../../data/players';
 	import { scores } from '../../../../data/scores';
 	import type { PageData } from './$types';
 
@@ -18,11 +18,15 @@
 	$: par = getPar(data.scorecard);
 	$: yardage = getYardage(data.scorecard);
 
+	$: tripPlayers = $players
+		.filter((player) => player.tripIds.includes(data.id))
+		.sort((a, b) => a.handicap - b.handicap);
+
 	$: leaderboard = $scores
 		.filter((player) => player.roundId === data.round.id)
 		.map((score) => ({
-			id: $playersById[score.playerId]!.id,
-			name: $playersById[score.playerId]!.name,
+			id: $playersById[score.playerId]?.id,
+			name: $playersById[score.playerId]?.name,
 			score: score.score
 		}))
 		.sort((a, b) => a.score - b.score);
@@ -107,7 +111,7 @@
 		<label for="new-score-player">Player</label>
 		<select name="new-score-player" id="new-score-player" bind:value={newPlayer}>
 			<option value={undefined}>Select a player</option>
-			{#each data.players as player}
+			{#each tripPlayers as player}
 				<option value={player.id}>{player.name}</option>
 			{/each}
 		</select>
