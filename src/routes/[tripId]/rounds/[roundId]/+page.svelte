@@ -4,6 +4,8 @@
 	import { flip } from 'svelte/animate';
 	import { quintOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
+	import Input from '../../../../components/Input.svelte';
+	import Button from '../../../../components/Button.svelte';
 	import { clickOutside } from '../../../../utils/click_outside';
 	import { getPar, getYardage } from '../../../../data/course';
 	import { players, playersById } from '../../../../data/players';
@@ -106,10 +108,15 @@
 	{/await}
 {/if}
 
-<div class="log-score-form">
+<form class="log-score-form" on:submit|preventDefault={logScore}>
 	<div>
 		<label for="new-score-player">Player</label>
-		<select name="new-score-player" id="new-score-player" bind:value={newPlayer}>
+		<select
+			class="player-select"
+			name="new-score-player"
+			id="new-score-player"
+			bind:value={newPlayer}
+		>
 			<option value={undefined}>Select a player</option>
 			{#each tripPlayers as player}
 				<option value={player.id}>{player.name}</option>
@@ -118,7 +125,7 @@
 	</div>
 	<div>
 		<label for="new-score-score">Score</label>
-		<input
+		<Input
 			id="new-score-score"
 			type="number"
 			min="65"
@@ -127,8 +134,8 @@
 			bind:value={newScore}
 		/>
 	</div>
-	<button on:click={logScore}>Log Score</button>
-</div>
+	<Button type="submit">Log Score</Button>
+</form>
 
 <style>
 	.breadcrumbs a {
@@ -215,7 +222,7 @@
 		flex-direction: column;
 	}
 
-	.log-score-form input {
-		padding: 0;
+	.player-select {
+		height: 36px;
 	}
 </style>

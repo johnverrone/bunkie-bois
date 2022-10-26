@@ -36,16 +36,31 @@ export const initialPlayers: Player[] = [
 ];
 
 function createPlayersStore() {
-	const { subscribe, update } = writable<Player[]>(initialPlayers);
+	const { subscribe, update: storeUpdate } = writable<Player[]>(initialPlayers);
 
 	const add = (name: string, handicap: number) => {
-		console.log('updating players store');
-		update((players) => [...players, { id: uuidv4(), name, tripIds: ['mb2022'], handicap }]);
+		storeUpdate((players) => [...players, { id: uuidv4(), name, tripIds: ['mb2022'], handicap }]);
 	};
 
+	const update = (playerId: string, name: string, handicap: number) =>
+		storeUpdate((players) => {
+			const existingPlayerIndex = players.findIndex((p) => p.id === playerId);
+			const existingPlayer = players[existingPlayerIndex];
+			if (existingPlayer) {
+				const newPlayers = [...players];
+				newPlayers.splice(existingPlayerIndex, 1, {
+					...existingPlayer,
+					name,
+					handicap
+				});
+				return newPlayers;
+			}
+			return players;
+		});
 	return {
 		subscribe,
-		add
+		add,
+		update
 	};
 }
 
