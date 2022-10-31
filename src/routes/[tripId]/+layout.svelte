@@ -56,7 +56,7 @@
 	}
 
 	nav {
-		--bg-base: 210deg 14%;
+		--bg-base: 210deg 9%;
 		--bg-normal: hsl(var(--bg-base) 25%);
 
 		--fg-normal: white;

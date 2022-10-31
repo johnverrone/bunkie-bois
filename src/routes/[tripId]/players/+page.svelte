@@ -1,16 +1,119 @@
 <script lang="ts">
+	import { clickOutside } from '../../../utils/click_outside';
+	import Button from '../../../components/Button.svelte';
+	import Input from '../../../components/Input.svelte';
+	import { players, type Player } from '../../../data/players';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	$: tripPlayers = $players
+		.filter((player) => player.tripIds.includes(data.id))
+		.sort((a, b) => a.handicap - b.handicap);
+
+	let addPlayerMode = false;
+	let newName: string | undefined;
+	let newHandicap: number | undefined;
+	let editingPlayer: Player | null;
+
+	function addPlayer() {
+		if (newName && newHandicap) {
+			addPlayerMode = false;
+			players.add(newName, newHandicap);
+			newName = undefined;
+			newHandicap = undefined;
+		}
+	}
+
+	function updatePlayer(player: Player) {
+		if (editingPlayer) {
+			players.update(player.id, editingPlayer.name, editingPlayer.handicap);
+			editingPlayer = null;
+		}
+	}
+
+	function focus(el: HTMLInputElement) {
+		el.focus();
+	}
 </script>
 
-<ul>
-	{#each data.players as player}
+<div class="player header">
+	<span>Name</span>
+	<span>Handicap</span>
+</div>
+<ul class="players">
+	{#each tripPlayers as player}
 		<li>
-			<div class="player">
-				<span>{player.name}</span>
-				<span>{player.handicap}</span>
-			</div>
+			{#if editingPlayer?.id === player.id}
+				<form class="player" on:submit|preventDefault={() => updatePlayer(player)}>
+					<div class="name">
+						<Input bind:value={editingPlayer.name}>{player.name}</Input>
+					</div>
+					<div class="handicap">
+						<Input bind:value={editingPlayer.handicap}>{player.handicap}</Input>
+					</div>
+					<Button type="submit">done</Button>
+				</form>
+			{:else}
+				<div class="player">
+					<span>{player.name}</span>
+					<div>
+						<span>{player.handicap}</span>
+						<Button on:click={() => (editingPlayer = Object.assign({}, player))}>edit</Button>
+					</div>
+				</div>
+			{/if}
 		</li>
 	{/each}
 </ul>
+
+{#if addPlayerMode}
+	<form
+		class="new-player-form"
+		on:submit|preventDefault={addPlayer}
+		use:clickOutside
+		on:outclick={() => (addPlayerMode = false)}
+	>
+		<div class="name">
+			<Input type="text" placeholder="Joe Shmoe" bind:value={newName} {focus} />
+		</div>
+		<div class="handicap">
+			<Input type="number" placeholder="20" inputmode="numeric" bind:value={newHandicap} />
+		</div>
+		<Button type="submit">Add</Button>
+	</form>
+{:else}
+	<Button on:click={() => (addPlayerMode = true)}>+ Add player</Button>
+{/if}
+
+<style>
+	.players {
+		list-style: none;
+		padding-left: 0;
+	}
+
+	.player {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 10px 0;
+	}
+
+	.header {
+		font-weight: bold;
+	}
+
+	.new-player-form {
+		display: flex;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	.name {
+		flex: 3;
+	}
+
+	.handicap {
+		flex: 1;
+	}
+</style>
