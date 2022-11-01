@@ -5,13 +5,15 @@
 </script>
 
 <ul class="rounds">
-	{#each data.rounds as round}
-		<li class="round">
-			<a href={`/${data.id}/rounds/${round.id}`}>
-				{round.courseName}
-			</a>
-		</li>
-	{/each}
+	{#if data.rounds}
+		{#each data.rounds as round}
+			<li class="round">
+				<a href={`/${data.id}/rounds/${round.id}`}>
+					{round.courseName}
+				</a>
+			</li>
+		{/each}
+	{/if}
 </ul>
 
 <style>

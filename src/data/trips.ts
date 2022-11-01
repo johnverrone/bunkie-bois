@@ -9,6 +9,11 @@ export const trips: Trip[] = [
 		id: 'mb2022',
 		name: 'Myrtle Beach 2022',
 		roundIds: ['crown-park', 'meadowlands', 'rivers-edge']
+	},
+	{
+		id: 'mb2023',
+		name: 'Myrtle Beach 2023',
+		roundIds: ['2023-1', '2023-2', '20023-3']
 	}
 ];
 
