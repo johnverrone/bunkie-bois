@@ -13,8 +13,8 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-vercel": "next",
-		"@sveltejs/kit": "next",
+		"@sveltejs/adapter-vercel": "^1.0.0-next.84",
+		"@sveltejs/kit": "^1.0.0-next.563",
 		"@types/d3-interpolate": "^3.0.1",
 		"@types/d3-scale": "^4.0.2",
 		"@types/uuid": "^8.3.4",
