@@ -86,7 +86,7 @@
 			<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
 				<span class="player-name">{player.name}</span>
 				{#if selectedScore?.id !== player.id}
-					<span
+					<button
 						class="player-score"
 						style={`--score-color: ${scoreColor(player.score)}`}
 						on:click={() => (selectedScore = player)}
@@ -102,7 +102,7 @@
 									par
 							  )
 							: player.score}
-					</span>
+					</button>
 				{/if}
 			</li>
 		{/each}
@@ -206,6 +206,7 @@
 	.player-score {
 		background-color: var(--score-color);
 		border-radius: inherit;
+		border: none;
 
 		min-width: 5ch;
 		padding: 16px 16px;
