@@ -1,36 +1,34 @@
 <script lang="ts">
-	import { front9HoleNumbers, front9HoleDetails, front9Par, type Front9Hole } from '../courseSetup';
-	import { back9HoleNumbers, back9HoleDetails, back9Par, type Back9Hole } from '../courseSetup';
+	import { scorecardsById } from '../data/course';
+
+	const scorecard = scorecardsById['crown-park']!;
+
+	const front9Score = scorecard.front9;
+	const back9Score = scorecard.back9;
+
+	const front9HoleNumbers = Object.keys(front9Score);
+	const front9HoleDetails = Object.values(front9Score);
+	const back9HoleNumbers = Object.keys(back9Score);
+	const back9HoleDetails = Object.values(back9Score);
 
 	function range(size: number, startAt = 0) {
 		return [...Array(size).keys()].map((i) => i + startAt);
 	}
 
-	const front9Score: Record<Front9Hole, number | null> = {
-		1: null,
-		2: null,
-		3: null,
-		4: null,
-		5: null,
-		6: null,
-		7: null,
-		8: null,
-		9: null
-	};
-	const back9Score: Record<Back9Hole, number | null> = {
-		10: null,
-		11: null,
-		12: null,
-		13: null,
-		14: null,
-		15: null,
-		16: null,
-		17: null,
-		18: null
-	};
+	$: front9Total = Object.values(front9Score).reduce<number>(
+		(acc, curr) => (acc += curr.score ?? 0),
+		0
+	);
+	$: back9Total = Object.values(back9Score).reduce<number>(
+		(acc, curr) => (acc += curr.score ?? 0),
+		0
+	);
 
-	$: front9Total = Object.values(front9Score).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
-	$: back9Total = Object.values(back9Score).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
+	$: front9Par = Object.values(front9Score).reduce<number>(
+		(acc, curr) => (acc += curr.par ?? 0),
+		0
+	);
+	$: back9Par = Object.values(back9Score).reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0);
 </script>
 
 <h2>this is a scorecard</h2>

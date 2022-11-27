@@ -11,10 +11,10 @@
 
 <nav>
 	<ul class="tabs">
-		<li class="tab-item" class:active={$page.routeId?.startsWith('[tripId]/rounds')}>
+		<li class="tab-item" class:active={$page.route.id?.startsWith('[tripId]/rounds')}>
 			<a href={`/${data.id}/rounds`}>Rounds</a>
 		</li>
-		<li class="tab-item" class:active={$page.routeId?.startsWith('[tripId]/players')}>
+		<li class="tab-item" class:active={$page.route.id?.startsWith('[tripId]/players')}>
 			<a href={`/${data.id}/players`}>Players</a>
 		</li>
 	</ul>

@@ -2,6 +2,8 @@ import { objectValues } from '../utils/arrays';
 
 export interface Scorecard {
 	id: string;
+	rating: number;
+	slope: number;
 	front9: Front9Scorecard;
 	back9: Back9Scorecard;
 }
@@ -33,6 +35,7 @@ interface Back9Scorecard {
 interface HoleInfo {
 	par: 3 | 4 | 5;
 	yardage: number;
+	score?: number;
 }
 
 export const allHoles = (scorecard: Scorecard) => {
@@ -50,6 +53,8 @@ export const getYardage = (scorecard: Scorecard) => {
 const scorecards: Scorecard[] = [
 	{
 		id: 'crown-park',
+		rating: 69.5,
+		slope: 121,
 		front9: {
 			1: { par: 4, yardage: 350 },
 			2: { par: 4, yardage: 350 },
@@ -75,6 +80,8 @@ const scorecards: Scorecard[] = [
 	},
 	{
 		id: 'meadowlands',
+		rating: 69.5,
+		slope: 121,
 		front9: {
 			1: { par: 4, yardage: 350 },
 			2: { par: 4, yardage: 350 },
@@ -100,6 +107,8 @@ const scorecards: Scorecard[] = [
 	},
 	{
 		id: 'rivers-edge',
+		rating: 69.5,
+		slope: 121,
 		front9: {
 			1: { par: 4, yardage: 350 },
 			2: { par: 4, yardage: 350 },

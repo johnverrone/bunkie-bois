@@ -11,6 +11,7 @@
 	import { players, playersById } from '../../../../data/players';
 	import { scores } from '../../../../data/scores';
 	import type { PageData } from './$types';
+	import { calculateCourseHandicap } from '../../../../utils/handicap';
 
 	export let data: PageData;
 
@@ -20,6 +21,8 @@
 	$: par = getPar(data.scorecard);
 	$: yardage = getYardage(data.scorecard);
 
+	let netScoreToggled: boolean = false;
+
 	$: tripPlayers = $players
 		.filter((player) => player.tripIds.includes(data.id))
 		.sort((a, b) => a.handicap - b.handicap);
@@ -27,8 +30,7 @@
 	$: leaderboard = $scores
 		.filter((player) => player.roundId === data.round.id)
 		.map((score) => ({
-			id: $playersById[score.playerId]?.id,
-			name: $playersById[score.playerId]?.name,
+			...$playersById[score.playerId]!,
 			score: score.score
 		}))
 		.sort((a, b) => a.score - b.score);
@@ -72,7 +74,13 @@
 </nav>
 
 <div class="leaderboard">
-	<h2>Leaderboard</h2>
+	<div class="leaderboard-heading">
+		<h2>Leaderboard</h2>
+		<label>
+			<input type="checkbox" bind:checked={netScoreToggled} />
+			Net Scores
+		</label>
+	</div>
 	<ol class="leaderboard-list">
 		{#each leaderboard as player (player.id)}
 			<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
@@ -85,7 +93,15 @@
 						in:receive={{ key: player.id }}
 						out:send|local={{ key: player.id }}
 					>
-						{player.score}
+						{netScoreToggled
+							? player.score -
+							  calculateCourseHandicap(
+									player.handicap,
+									data.scorecard.slope,
+									data.scorecard.rating,
+									par
+							  )
+							: player.score}
 					</span>
 				{/if}
 			</li>
@@ -154,6 +170,12 @@
 
 	.leaderboard {
 		padding-block: 1rem;
+	}
+
+	.leaderboard-heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 
 	.leaderboard-list {
