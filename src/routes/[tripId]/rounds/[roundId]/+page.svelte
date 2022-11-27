@@ -163,7 +163,6 @@
 		border: none;
 
 		min-width: 5ch;
-		padding: 16px 16px;
 
 		font-size: 1.5rem;
 		text-align: center;
