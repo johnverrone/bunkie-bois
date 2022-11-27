@@ -2,11 +2,8 @@
 	import { scaleLinear } from 'd3-scale';
 	import { interpolateHsl } from 'd3-interpolate';
 	import { flip } from 'svelte/animate';
-	import { quintOut } from 'svelte/easing';
-	import { crossfade } from 'svelte/transition';
 	import Input from '../../../../components/Input.svelte';
 	import Button from '../../../../components/Button.svelte';
-	import { clickOutside } from '../../../../utils/click_outside';
 	import { getPar, getYardage } from '../../../../data/course';
 	import { players, playersById } from '../../../../data/players';
 	import { scores } from '../../../../data/scores';
@@ -43,29 +40,9 @@
 		}
 	}
 
-	let selectedScore: typeof leaderboard[number] | null;
-
 	const scoreScale = scaleLinear().domain([70, 150]);
 	const scoreColor = (t: number) =>
 		interpolateHsl('hsl(118, 80%, 50%)', 'hsl(0, 80%, 50%)')(scoreScale(t));
-
-	const [send, receive] = crossfade({
-		duration: (d) => Math.sqrt(d * 200),
-		easing: quintOut,
-		fallback(node) {
-			const style = getComputedStyle(node);
-			const transform = style.transform === 'none' ? '' : style.transform;
-
-			return {
-				duration: 600,
-				easing: quintOut,
-				css: (t) => `
-					transform: ${transform} scale(${t});
-					opacity: ${t}
-				`
-			};
-		}
-	});
 </script>
 
 <nav class="breadcrumbs">
@@ -85,44 +62,21 @@
 		{#each leaderboard as player (player.id)}
 			<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
 				<span class="player-name">{player.name}</span>
-				{#if selectedScore?.id !== player.id}
-					<button
-						class="player-score"
-						style={`--score-color: ${scoreColor(player.score)}`}
-						on:click={() => (selectedScore = player)}
-						in:receive={{ key: player.id }}
-						out:send|local={{ key: player.id }}
-					>
-						{netScoreToggled
-							? player.score -
-							  calculateCourseHandicap(
-									player.handicap,
-									data.scorecard.slope,
-									data.scorecard.rating,
-									par
-							  )
-							: player.score}
-					</button>
-				{/if}
+				<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
+					{netScoreToggled
+						? player.score -
+						  calculateCourseHandicap(
+								player.handicap,
+								data.scorecard.slope,
+								data.scorecard.rating,
+								par
+						  )
+						: player.score}
+				</span>
 			</li>
 		{/each}
 	</ol>
 </div>
-
-{#if selectedScore}
-	{#await selectedScore then d}
-		<div
-			class="edit-score"
-			in:receive={{ key: d.id }}
-			out:send={{ key: d.id }}
-			use:clickOutside
-			on:outclick={() => (selectedScore = null)}
-		>
-			<span class="edit-name">{selectedScore.name}</span>
-			<span class="edit-score-score">{selectedScore.score}</span>
-		</div>
-	{/await}
-{/if}
 
 <form class="log-score-form" on:submit|preventDefault={logScore}>
 	<div>
@@ -215,24 +169,6 @@
 		text-align: center;
 	}
 
-	.edit-score {
-		position: absolute;
-		background-color: hsl(200deg 60% 87%);
-		border-radius: 8px;
-		width: 50%;
-		max-width: 400px;
-		aspect-ratio: 1 / 1;
-
-		font-size: 2rem;
-
-		left: 0;
-		right: 0;
-		top: 25%;
-		margin: 0 auto;
-
-		display: grid;
-		place-items: center;
-	}
 	.log-score-form {
 		display: flex;
 		gap: 20px;
