@@ -8,7 +8,8 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		trailingSlash: 'ignore' // vercel build failing without this (@sveltejs/adapter-vercel v1.0.0-next.84)
 	}
 };
 
