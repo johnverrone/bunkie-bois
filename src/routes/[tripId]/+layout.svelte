@@ -26,7 +26,7 @@
 
 <style>
 	:root {
-		--header-height: 80px;
+		--header-height: 56px;
 		--nav-height: 60px;
 	}
 
@@ -52,7 +52,7 @@
 	}
 
 	header h1 {
-		font-weight: 300;
+		font-size: 1rem;
 	}
 
 	nav {
