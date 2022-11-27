@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { scorecardsById, type Scorecard } from '../data/course';
+	import { scorecardsById } from '../data/course';
 
 	const scorecard = scorecardsById['crown-park']!;
 
