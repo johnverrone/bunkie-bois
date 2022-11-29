@@ -6,7 +6,7 @@
 </script>
 
 <header>
-	<h1>{data.name}</h1>
+	<span>{data.name}</span>
 </header>
 
 <nav>
@@ -26,7 +26,7 @@
 
 <style>
 	:root {
-		--header-height: 56px;
+		--header-height: 59px;
 		--nav-height: 60px;
 	}
 
@@ -52,7 +52,7 @@
 	}
 
 	header h1 {
-		font-size: 1rem;
+		font-size: 1.125rem;
 	}
 
 	nav {

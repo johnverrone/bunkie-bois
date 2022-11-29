@@ -1,5 +1,5 @@
 import type { PageLoad } from './$types';
 
-export function load({ params }: PageLoad) {
+export const load: PageLoad = ({ params }) => {
 	return { id: params.id };
-}
+};

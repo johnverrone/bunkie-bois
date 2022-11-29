@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { trips, rounds, type Round } from '../../data/trips';
 import type { LayoutLoad } from './$types';
 
-export function load({ params }: LayoutLoad) {
+export const load: LayoutLoad = ({ params }) => {
 	const trip = trips.find((t) => t.id === params.tripId);
 
 	if (trip) {
@@ -18,4 +18,4 @@ export function load({ params }: LayoutLoad) {
 	}
 
 	throw error(404, 'Trip not found');
-}
+};

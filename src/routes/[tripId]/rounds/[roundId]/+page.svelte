@@ -129,7 +129,8 @@
 	.leaderboard-heading {
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
+		align-items: baseline;
+		margin-bottom: 8px;
 	}
 
 	.leaderboard-list {
@@ -145,7 +146,6 @@
 		background-color: hsl(50deg 80% 85%);
 		border-radius: 8px;
 
-		padding: 8px;
 		padding-left: 16px;
 
 		display: flex;
@@ -154,17 +154,19 @@
 	}
 
 	.player-name {
-		font-size: 1.5rem;
+		font-size: 1rem;
 	}
 
 	.player-score {
 		background-color: var(--score-color);
 		border-radius: inherit;
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
 		border: none;
 
 		min-width: 5ch;
+		padding: 8px 0;
 
-		font-size: 1.5rem;
 		text-align: center;
 	}
 

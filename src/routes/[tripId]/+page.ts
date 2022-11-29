@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
 
-export function load({ params }: PageLoad) {
+export const load: PageLoad = ({ params }) => {
 	throw redirect(307, `/${params.tripId}/rounds`);
-}
+};

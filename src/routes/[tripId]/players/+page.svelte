@@ -37,10 +37,7 @@
 	}
 </script>
 
-<div class="player header">
-	<span>Name</span>
-	<span>Handicap</span>
-</div>
+<div class="player header">Handicaps</div>
 <ul class="players">
 	{#each tripPlayers as player}
 		<li>

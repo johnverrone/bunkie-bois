@@ -3,7 +3,7 @@ import { rounds } from '../../../../data/trips';
 import { scorecardsById } from '../../../../data/course';
 import type { PageLoad } from './$types';
 
-export function load({ params }: PageLoad) {
+export const load: PageLoad = ({ params }) => {
 	const round = rounds.find((round) => round.id === params.roundId);
 	if (!round) throw error(404, 'Round not found');
 
@@ -14,4 +14,4 @@ export function load({ params }: PageLoad) {
 		round,
 		scorecard
 	};
-}
+};

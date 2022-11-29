@@ -31,10 +31,7 @@
 		border-radius: 8px;
 
 		background-color: hsl(156deg 47% 65%);
-		color: hsl(0deg 0% 10%);
-
-		font-size: 1.25rem;
-		font-weight: 700;
+		color: hsl(0deg 0% 0%);
 	}
 
 	.round a {
