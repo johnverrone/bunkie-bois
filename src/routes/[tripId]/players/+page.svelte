@@ -10,7 +10,7 @@
 	let addPlayerMode = false;
 	let newName: string | undefined;
 	let newHandicap: number | undefined;
-	let editingPlayer: typeof data.players[number] | null;
+	let editingPlayer: Player | null;
 
 	function addPlayer() {
 		if (newName && newHandicap) {
@@ -23,7 +23,7 @@
 
 	function updatePlayer(player: Player) {
 		if (editingPlayer) {
-			players.update(player.id, editingPlayer.name, editingPlayer.tripData);
+			players.update(player.id, editingPlayer.name, editingPlayer.handicap);
 			editingPlayer = null;
 		}
 	}
@@ -35,7 +35,7 @@
 
 <div class="player header">Handicaps</div>
 <ul class="players">
-	{#each data.players as player}
+	{#each data.tripPlayers as player}
 		<li>
 			{#if editingPlayer?.id === player.id}
 				<form class="player" on:submit|preventDefault={() => updatePlayer(player)}>

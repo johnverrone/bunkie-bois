@@ -31,16 +31,19 @@ export interface Database {
           trip_id: number
           player_id: number
           handicap: number
+          name: string
         }
         Insert: {
           trip_id: number
-          player_id: number
+          player_id?: number
           handicap: number
+          name: string
         }
         Update: {
           trip_id?: number
           player_id?: number
           handicap?: number
+          name?: string
         }
       }
       trips: {

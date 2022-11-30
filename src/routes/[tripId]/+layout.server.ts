@@ -1,5 +1,6 @@
 import { supabase } from '$lib/supabaseClient';
 import { error } from '@sveltejs/kit';
+import type { Player } from 'src/data/players';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ params }) => {
@@ -16,24 +17,29 @@ export const load: LayoutServerLoad = async ({ params }) => {
 		});
 	}
 
-	const { data: players, error: playersError } = await supabase
-		.from('players')
+	const { data: tripPlayersData, error: tripPlayersError } = await supabase
+		.from('trip_players')
 		.select(
 			`
-			id,
-			name,
-			trips ( id )
+			trip_id,
+			player_id,
+			handicap,
+			name
 		`
 		)
-		.eq('trips.id', params.tripId);
+		.eq('trip_id', params.tripId);
 
-	console.log(players);
-
-	if (playersError) {
+	if (tripPlayersError) {
 		throw error(500, {
-			message: playersError.message
+			message: tripPlayersError.message
 		});
 	}
+
+	const tripPlayers = tripPlayersData.map<Player>((player) => ({
+		id: player.player_id.toString(),
+		name: player.name,
+		handicap: player.handicap
+	}));
 
 	if (trip) {
 		// const tripRounds = trip.roundIds
@@ -43,7 +49,7 @@ export const load: LayoutServerLoad = async ({ params }) => {
 		return {
 			id: trip.id,
 			name: trip.name,
-			players,
+			tripPlayers,
 			rounds: [] // tripRounds
 		};
 	}
