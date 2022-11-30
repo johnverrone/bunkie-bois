@@ -10,7 +10,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"gen-types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/lib/supabaseTypes.ts"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-vercel": "^1.0.0-next.84",
@@ -35,5 +36,8 @@
 		"typescript": "^4.7.4",
 		"uuid": "^9.0.0",
 		"vite": "^3.0.4"
+	},
+	"dependencies": {
+		"@supabase/supabase-js": "^2.1.1"
 	}
 }

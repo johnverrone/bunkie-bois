@@ -7,14 +7,10 @@
 
 	export let data: PageData;
 
-	$: tripPlayers = $players
-		.filter((player) => player.tripIds.includes(data.id))
-		.sort((a, b) => a.handicap - b.handicap);
-
 	let addPlayerMode = false;
 	let newName: string | undefined;
 	let newHandicap: number | undefined;
-	let editingPlayer: Player | null;
+	let editingPlayer: typeof data.players[number] | null;
 
 	function addPlayer() {
 		if (newName && newHandicap) {
@@ -27,7 +23,7 @@
 
 	function updatePlayer(player: Player) {
 		if (editingPlayer) {
-			players.update(player.id, editingPlayer.name, editingPlayer.handicap);
+			players.update(player.id, editingPlayer.name, editingPlayer.tripData);
 			editingPlayer = null;
 		}
 	}
@@ -39,7 +35,7 @@
 
 <div class="player header">Handicaps</div>
 <ul class="players">
-	{#each tripPlayers as player}
+	{#each data.players as player}
 		<li>
 			{#if editingPlayer?.id === player.id}
 				<form class="player" on:submit|preventDefault={() => updatePlayer(player)}>

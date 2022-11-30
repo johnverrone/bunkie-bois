@@ -5,7 +5,7 @@
 </script>
 
 <ul class="rounds">
-	{#if data.rounds}
+	{#if data.rounds.length}
 		{#each data.rounds as round}
 			<li class="round">
 				<a href={`/${data.id}/rounds/${round.id}`}>
@@ -13,6 +13,8 @@
 				</a>
 			</li>
 		{/each}
+	{:else}
+		<p>no rounds yet</p>
 	{/if}
 </ul>
 

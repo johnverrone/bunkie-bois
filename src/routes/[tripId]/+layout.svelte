@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { LayoutData } from './$types';
+	import type { LayoutServerData } from './$types';
 	import { page } from '$app/stores';
 
-	export let data: LayoutData;
+	export let data: LayoutServerData;
 </script>
 
 <header>
@@ -11,10 +11,10 @@
 
 <nav>
 	<ul class="tabs">
-		<li class="tab-item" class:active={$page.route.id?.startsWith('[tripId]/rounds')}>
+		<li class="tab-item" class:active={$page.route.id?.startsWith('/[tripId]/rounds')}>
 			<a href={`/${data.id}/rounds`}>Rounds</a>
 		</li>
-		<li class="tab-item" class:active={$page.route.id?.startsWith('[tripId]/players')}>
+		<li class="tab-item" class:active={$page.route.id?.startsWith('/[tripId]/players')}>
 			<a href={`/${data.id}/players`}>Players</a>
 		</li>
 	</ul>
@@ -49,10 +49,6 @@
 		display: grid;
 		place-items: center;
 		padding-block: 1rem;
-	}
-
-	header h1 {
-		font-size: 1.125rem;
 	}
 
 	nav {
