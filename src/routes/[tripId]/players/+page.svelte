@@ -2,7 +2,7 @@
 	import { clickOutside } from '../../../utils/click_outside';
 	import Button from '../../../components/Button.svelte';
 	import Input from '../../../components/Input.svelte';
-	import { players, type Player } from '../../../data/players';
+	import type { Player } from '../../../data/players';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -11,22 +11,6 @@
 	let newName: string | undefined;
 	let newHandicap: number | undefined;
 	let editingPlayer: Player | null;
-
-	function addPlayer() {
-		if (newName && newHandicap) {
-			addPlayerMode = false;
-			players.add(newName, newHandicap);
-			newName = undefined;
-			newHandicap = undefined;
-		}
-	}
-
-	function updatePlayer(player: Player) {
-		if (editingPlayer) {
-			players.update(player.id, editingPlayer.name, editingPlayer.handicap);
-			editingPlayer = null;
-		}
-	}
 
 	function focus(el: HTMLInputElement) {
 		el.focus();
@@ -38,12 +22,14 @@
 	{#each data.tripPlayers as player}
 		<li>
 			{#if editingPlayer?.id === player.id}
-				<form class="player" on:submit|preventDefault={() => updatePlayer(player)}>
+				<form class="player" method="post" action="?/updatePlayer">
+					<input type="hidden" name="tripId" value={data.id} />
+					<input type="hidden" name="playerId" value={player.id} />
 					<div class="name">
-						<Input bind:value={editingPlayer.name}>{player.name}</Input>
+						<Input name="name" bind:value={editingPlayer.name}>{player.name}</Input>
 					</div>
 					<div class="handicap">
-						<Input bind:value={editingPlayer.handicap}>{player.handicap}</Input>
+						<Input name="handicap" bind:value={editingPlayer.handicap}>{player.handicap}</Input>
 					</div>
 					<Button type="submit">done</Button>
 				</form>
@@ -63,15 +49,23 @@
 {#if addPlayerMode}
 	<form
 		class="new-player-form"
-		on:submit|preventDefault={addPlayer}
+		method="post"
+		action="?/addPlayer"
 		use:clickOutside
 		on:outclick={() => (addPlayerMode = false)}
 	>
+		<input type="hidden" name="tripId" value={data.id} />
 		<div class="name">
-			<Input type="text" placeholder="Joe Shmoe" bind:value={newName} {focus} />
+			<Input type="text" placeholder="Joe Shmoe" name="name" bind:value={newName} {focus} />
 		</div>
 		<div class="handicap">
-			<Input type="number" placeholder="20" inputmode="numeric" bind:value={newHandicap} />
+			<Input
+				type="number"
+				placeholder="20"
+				inputmode="numeric"
+				name="handicap"
+				bind:value={newHandicap}
+			/>
 		</div>
 		<Button type="submit">Add</Button>
 	</form>

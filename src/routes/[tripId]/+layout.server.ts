@@ -1,4 +1,4 @@
-import { supabase } from '$lib/supabaseClient';
+import { supabase } from '$lib/server/supabaseClient';
 import { error } from '@sveltejs/kit';
 import type { Player } from 'src/data/players';
 import type { LayoutServerLoad } from './$types';
