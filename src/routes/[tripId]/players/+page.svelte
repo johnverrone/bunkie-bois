@@ -2,6 +2,7 @@
 	import { clickOutside } from '../../../utils/click_outside';
 	import Button from '../../../components/Button.svelte';
 	import Input from '../../../components/Input.svelte';
+	import Icon from '../../../components/Icon.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -38,14 +39,25 @@
 					<div class="handicap">
 						<Input name="handicap" bind:value={editingPlayer.handicap}>{player.handicap}</Input>
 					</div>
-					<Button type="submit">done</Button>
+					<Button type="submit">
+						<Icon name="check" />
+					</Button>
 				</form>
 			{:else}
 				<div class="player">
 					<span>{player.name}</span>
-					<div>
+					<div class="edit-controls">
 						<span>{player.handicap}</span>
-						<Button on:click={() => (editingPlayer = Object.assign({}, player))}>edit</Button>
+						<Button on:click={() => (editingPlayer = Object.assign({}, player))}>
+							<Icon name="edit" />
+						</Button>
+						<form method="post" action="?/deletePlayer" style="display: inline-block">
+							<input type="hidden" name="tripId" value={data.id} />
+							<input type="hidden" name="playerId" value={player.id} />
+							<Button type="submit">
+								<Icon name="trash" />
+							</Button>
+						</form>
 					</div>
 				</div>
 			{/if}
@@ -80,7 +92,7 @@
 	<Button on:click={() => (addPlayerMode = true)}>+ Add player</Button>
 {/if}
 
-<style>
+<style lang="scss">
 	.players {
 		list-style: none;
 		padding-left: 0;
@@ -91,6 +103,12 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 10px 0;
+
+		.edit-controls {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+		}
 	}
 
 	.header {

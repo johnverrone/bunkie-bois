@@ -1,3 +1,11 @@
+<script lang="ts">
+	import { page } from '$app/stores';
+</script>
+
+<svelte:head>
+	<title>{$page.data.title || 'Bunkie Bois'}</title>
+</svelte:head>
+
 <slot />
 
 <style global>

@@ -37,6 +37,7 @@ export const load: LayoutServerLoad = async ({ params }) => {
 		return {
 			id: trip.id,
 			name: trip.name,
+			title: trip.name,
 			tripPlayers,
 			rounds: [] as { id: string; courseName: string }[] // tripRounds
 		};

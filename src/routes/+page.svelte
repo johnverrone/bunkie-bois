@@ -20,7 +20,7 @@
 
 <style lang="scss">
 	.title {
-		margin: 24px 0;
+		padding: 24px 0;
 	}
 
 	ul {

@@ -46,5 +46,26 @@ export const actions: Actions = {
 		} catch (error) {
 			return invalid(400, { message: `failed to parse player, ${error}` });
 		}
+	},
+	deletePlayer: async ({ request }) => {
+		const data = Object.fromEntries(await request.formData());
+		const deleteSchema = z.object({
+			tripId: z.preprocess((id) => parseInt(z.string().parse(id)), z.number()),
+			playerId: z.preprocess((id) => parseInt(z.string().parse(id)), z.number())
+		});
+
+		try {
+			const { tripId, playerId } = deleteSchema.parse(data);
+
+			const { error: pgError } = await supabase
+				.from('trip_players')
+				.delete()
+				.eq('trip_id', tripId)
+				.eq('player_id', playerId);
+
+			if (pgError) return error(500, pgError.message);
+		} catch (error) {
+			return invalid(400, { message: 'failed to parse ids' });
+		}
 	}
 };
