@@ -4,12 +4,12 @@
 	export let data: PageData;
 </script>
 
-<ul class="rounds">
+<ul>
 	{#if data.rounds.length}
 		{#each data.rounds as round}
-			<li class="round">
+			<li>
 				<a href={`/${data.id}/rounds/${round.id}`}>
-					{round.courseName}
+					<h5>{round.courseName}</h5>
 				</a>
 			</li>
 		{/each}
@@ -18,31 +18,32 @@
 	{/if}
 </ul>
 
-<style>
-	.rounds {
-		padding-left: 0;
+<style lang="scss">
+	ul {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		padding: 0 24px;
 		list-style: none;
 
-		display: grid;
-		grid-gap: 1rem;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-	}
+		li {
+			height: 150px;
+			a {
+				color: inherit;
+				text-decoration: none;
+				width: 100%;
+				height: 100%;
 
-	.round {
-		height: 80px;
-		border-radius: 8px;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: flex-end;
 
-		background-color: hsl(156deg 47% 65%);
-		color: hsl(0deg 0% 0%);
-	}
+				padding: 10px;
+				border-radius: 8px;
 
-	.round a {
-		color: inherit;
-		text-decoration: none;
-		width: 100%;
-		height: 100%;
-
-		display: grid;
-		place-items: center;
+				background-color: var(--green);
+			}
+		}
 	}
 </style>

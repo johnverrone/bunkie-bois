@@ -2,15 +2,16 @@
 	import { clickOutside } from '../../../utils/click_outside';
 	import Button from '../../../components/Button.svelte';
 	import Input from '../../../components/Input.svelte';
-	import type { Player } from '../../../data/players';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
 
+	$: players = data.tripPlayers.sort((a, b) => a.handicap - b.handicap);
+
 	let addPlayerMode = false;
 	let newName: string | undefined;
 	let newHandicap: number | undefined;
-	let editingPlayer: Player | null;
+	let editingPlayer: typeof data.tripPlayers[number] | null;
 
 	function focus(el: HTMLInputElement) {
 		el.focus();
@@ -19,10 +20,16 @@
 
 <div class="player header">Handicaps</div>
 <ul class="players">
-	{#each data.tripPlayers as player}
+	{#each players as player}
 		<li>
 			{#if editingPlayer?.id === player.id}
-				<form class="player" method="post" action="?/updatePlayer">
+				<form
+					class="player"
+					method="post"
+					action="?/updatePlayer"
+					use:clickOutside
+					on:outclick={() => (editingPlayer = null)}
+				>
 					<input type="hidden" name="tripId" value={data.id} />
 					<input type="hidden" name="playerId" value={player.id} />
 					<div class="name">

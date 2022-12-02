@@ -5,7 +5,6 @@
 	import Input from '../../../../components/Input.svelte';
 	import Button from '../../../../components/Button.svelte';
 	import { getPar, getYardage } from '../../../../data/course';
-	import { players, playersById } from '../../../../data/players';
 	import { scores } from '../../../../data/scores';
 	import type { PageData } from './$types';
 	import { calculateCourseHandicap } from '../../../../utils/handicap';
@@ -18,16 +17,18 @@
 	$: par = getPar(data.scorecard);
 	$: yardage = getYardage(data.scorecard);
 
-	let netScoreToggled: boolean = false;
+	type PlayersById = { [key: string]: typeof data.tripPlayers[number] };
+	$: playersById = data.tripPlayers.reduce<PlayersById>(
+		(acc, curr) => ({ ...acc, [curr.id]: curr }),
+		{}
+	);
 
-	$: tripPlayers = $players
-		.filter((player) => player.tripIds.includes(data.id))
-		.sort((a, b) => a.handicap - b.handicap);
+	let netScoreToggled: boolean = false;
 
 	$: leaderboard = $scores
 		.filter((player) => player.roundId === data.round.id)
 		.map((score) => ({
-			...$playersById[score.playerId]!,
+			...playersById[score.playerId]!,
 			score: score.score
 		}))
 		.sort((a, b) => a.score - b.score);
@@ -88,7 +89,7 @@
 			bind:value={newPlayer}
 		>
 			<option value={undefined}>Select a player</option>
-			{#each tripPlayers as player}
+			{#each data.tripPlayers as player}
 				<option value={player.id}>{player.name}</option>
 			{/each}
 		</select>
