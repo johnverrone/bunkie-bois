@@ -1,10 +1,11 @@
 <script lang="ts">
+	import PageTitle from '../components/PageTitle.svelte';
 	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
 </script>
 
-<h3 class="title">Golf Trips</h3>
+<PageTitle>Golf Trips</PageTitle>
 
 <ul>
 	{#if data.trips.length}
@@ -19,15 +20,11 @@
 </ul>
 
 <style lang="scss">
-	.title {
-		padding: 24px 0;
-	}
-
 	ul {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-		padding: 0 24px;
+		padding: 0 2rem;
 		list-style: none;
 
 		li {

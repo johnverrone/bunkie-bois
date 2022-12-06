@@ -4,7 +4,6 @@
 	import { flip } from 'svelte/animate';
 	import Input from '../../../../components/Input.svelte';
 	import Button from '../../../../components/Button.svelte';
-	import { getPar, getYardage } from '../../../../data/course';
 	import { scores } from '../../../../data/scores';
 	import type { PageData } from './$types';
 	import { calculateCourseHandicap } from '../../../../utils/handicap';
@@ -14,8 +13,10 @@
 	let newPlayer: string | undefined;
 	let newScore: number | undefined;
 
-	$: par = getPar(data.scorecard);
-	$: yardage = getYardage(data.scorecard);
+	// $: par = getPar(data.scorecard);
+	// $: yardage = getYardage(data.scorecard);
+
+	$: round = data.rounds.find((r) => r.id === data.roundId)!;
 
 	type PlayersById = { [key: string]: typeof data.tripPlayers[number] };
 	$: playersById = data.tripPlayers.reduce<PlayersById>(
@@ -26,7 +27,7 @@
 	let netScoreToggled: boolean = false;
 
 	$: leaderboard = $scores
-		.filter((player) => player.roundId === data.round.id)
+		.filter((player) => player.roundId === data.roundId.toString())
 		.map((score) => ({
 			...playersById[score.playerId]!,
 			score: score.score
@@ -34,11 +35,7 @@
 		.sort((a, b) => a.score - b.score);
 
 	function logScore() {
-		if (newPlayer && newScore) {
-			scores.set(newPlayer, data.round.id, newScore);
-			newPlayer = undefined;
-			newScore = undefined;
-		}
+		throw new Error('not implemented');
 	}
 
 	const scoreScale = scaleLinear().domain([70, 150]);
@@ -46,37 +43,31 @@
 		interpolateHsl('hsl(118, 80%, 50%)', 'hsl(0, 80%, 50%)')(scoreScale(t));
 </script>
 
-<nav class="breadcrumbs">
-	<a href={`/${data.id}/rounds`}>Rounds</a>
-	<span>{data.round.courseName}</span>
-</nav>
+<div>
+	<nav class="breadcrumbs">
+		<a href={`/${data.id}/rounds`}>Rounds</a>
+		<span>{round.name}</span>
+	</nav>
 
-<div class="leaderboard">
-	<div class="leaderboard-heading">
-		<h2>Leaderboard</h2>
-		<label>
-			<input type="checkbox" bind:checked={netScoreToggled} />
-			Net Scores
-		</label>
+	<div class="leaderboard">
+		<div class="leaderboard-heading">
+			<h2>Leaderboard</h2>
+			<label>
+				<input type="checkbox" bind:checked={netScoreToggled} />
+				Net Scores
+			</label>
+		</div>
+		<ol class="leaderboard-list">
+			{#each leaderboard as player (player.id)}
+				<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
+					<span class="player-name">{player.name}</span>
+					<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
+						{netScoreToggled ? player.score : player.score}
+					</span>
+				</li>
+			{/each}
+		</ol>
 	</div>
-	<ol class="leaderboard-list">
-		{#each leaderboard as player (player.id)}
-			<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
-				<span class="player-name">{player.name}</span>
-				<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
-					{netScoreToggled
-						? player.score -
-						  calculateCourseHandicap(
-								player.handicap,
-								data.scorecard.slope,
-								data.scorecard.rating,
-								par
-						  )
-						: player.score}
-				</span>
-			</li>
-		{/each}
-	</ol>
 </div>
 
 <form class="log-score-form" on:submit|preventDefault={logScore}>

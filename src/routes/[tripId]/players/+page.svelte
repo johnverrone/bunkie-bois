@@ -19,32 +19,39 @@
 	}
 </script>
 
-<div class="player header">Handicaps</div>
-<ul class="players">
-	{#each players as player}
-		<li>
-			{#if editingPlayer?.id === player.id}
-				<form
-					class="player"
-					method="post"
-					action="?/updatePlayer"
-					use:clickOutside
-					on:outclick={() => (editingPlayer = null)}
-				>
-					<input type="hidden" name="tripId" value={data.id} />
-					<input type="hidden" name="playerId" value={player.id} />
-					<div class="name">
-						<Input name="name" bind:value={editingPlayer.name}>{player.name}</Input>
-					</div>
-					<div class="handicap">
-						<Input name="handicap" bind:value={editingPlayer.handicap}>{player.handicap}</Input>
-					</div>
-					<Button type="submit">
-						<Icon name="check" />
-					</Button>
-				</form>
-			{:else}
-				<div class="player">
+<div>
+	<h5 class="header">Handicaps</h5>
+	<ul>
+		{#each players as player}
+			<li>
+				{#if editingPlayer?.id === player.id}
+					<form
+						class="edit-player-form"
+						method="post"
+						action="?/updatePlayer"
+						use:clickOutside
+						on:outclick={() => (editingPlayer = null)}
+					>
+						<input type="hidden" name="tripId" value={data.id} />
+						<input type="hidden" name="playerId" value={player.id} />
+						<div class="name">
+							<Input name="name" bind:value={editingPlayer.name}>{player.name}</Input>
+						</div>
+						<div class="handicap">
+							<Input
+								type="number"
+								inputmode="numeric"
+								name="handicap"
+								bind:value={editingPlayer.handicap}
+							>
+								{player.handicap}
+							</Input>
+						</div>
+						<Button type="submit">
+							<Icon name="check" />
+						</Button>
+					</form>
+				{:else}
 					<span>{player.name}</span>
 					<div class="edit-controls">
 						<span>{player.handicap}</span>
@@ -59,11 +66,11 @@
 							</Button>
 						</form>
 					</div>
-				</div>
-			{/if}
-		</li>
-	{/each}
-</ul>
+				{/if}
+			</li>
+		{/each}
+	</ul>
+</div>
 
 {#if addPlayerMode}
 	<form
@@ -89,25 +96,40 @@
 		<Button type="submit">Add</Button>
 	</form>
 {:else}
-	<Button on:click={() => (addPlayerMode = true)}>+ Add player</Button>
+	<Button on:click={() => (addPlayerMode = true)}>
+		<div class="button-contents">
+			<Icon name="plus" />
+			Add player
+		</div>
+	</Button>
 {/if}
 
 <style lang="scss">
-	.players {
+	ul {
 		list-style: none;
 		padding-left: 0;
-	}
 
-	.player {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding: 10px 0;
-
-		.edit-controls {
+		li,
+		.edit-player-form {
 			display: flex;
+			justify-content: space-between;
 			align-items: center;
-			gap: 1rem;
+			padding: 10px 0;
+			gap: 8px;
+
+			.name {
+				flex: 3;
+			}
+
+			.handicap {
+				flex: 1;
+			}
+
+			.edit-controls {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+			}
 		}
 	}
 
@@ -115,17 +137,24 @@
 		font-weight: bold;
 	}
 
+	.button-contents {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+	}
+
 	.new-player-form {
 		display: flex;
 		justify-content: space-between;
 		gap: 8px;
-	}
 
-	.name {
-		flex: 3;
-	}
+		.name {
+			flex: 3;
+		}
 
-	.handicap {
-		flex: 1;
+		.handicap {
+			flex: 1;
+		}
 	}
 </style>

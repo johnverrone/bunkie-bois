@@ -1,13 +1,12 @@
 <script lang="ts">
 	import type { LayoutServerData } from './$types';
 	import { page } from '$app/stores';
+	import PageTitle from '../../components/PageTitle.svelte';
 
 	export let data: LayoutServerData;
 </script>
 
-<header>
-	<span>{data.name}</span>
-</header>
+<PageTitle>{data.name}</PageTitle>
 
 <nav>
 	<ul class="tabs">
@@ -26,29 +25,19 @@
 
 <style>
 	:root {
-		--header-height: 59px;
+		--header-height: 84px;
 		--nav-height: 60px;
 	}
 
 	main {
-		height: calc(100% - var(--nav-height));
-		padding-inline: 1rem 1rem;
-		padding-top: var(--header-height);
-		padding-bottom: 1rem;
+		height: calc(100% - var(--nav-height) - var(--header-height));
+		padding: 0 2rem 1rem 2rem;
 
 		display: grid;
-		grid-template-rows: auto 1fr auto;
-	}
-
-	header {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-
-		display: grid;
-		place-items: center;
-		padding-block: 1rem;
+		grid-template-rows: 1fr auto;
+		grid-template-areas:
+			'content'
+			'bottom';
 	}
 
 	nav {

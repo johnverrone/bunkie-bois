@@ -26,6 +26,26 @@ export interface Database {
           created_at?: string
         }
       }
+      rounds: {
+        Row: {
+          id: number
+          created_at: string
+          name: string
+          trip_id: number
+        }
+        Insert: {
+          id?: number
+          created_at?: string
+          name: string
+          trip_id: number
+        }
+        Update: {
+          id?: number
+          created_at?: string
+          name?: string
+          trip_id?: number
+        }
+      }
       trip_players: {
         Row: {
           trip_id: number

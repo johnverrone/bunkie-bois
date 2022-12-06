@@ -33,13 +33,29 @@ export const load: LayoutServerLoad = async ({ params }) => {
 		handicap: player.handicap
 	}));
 
+	const { data: roundsData, error: roundsError } = await supabase
+		.from('rounds')
+		.select()
+		.eq('trip_id', params.tripId);
+
+	if (roundsError) {
+		throw error(500, {
+			message: roundsError.message
+		});
+	}
+
+	const rounds = roundsData.map(({ id, name }) => ({
+		id,
+		name
+	}));
+
 	if (trip) {
 		return {
 			id: trip.id,
 			name: trip.name,
 			title: trip.name,
 			tripPlayers,
-			rounds: [] as { id: string; courseName: string }[] // tripRounds
+			rounds
 		};
 	}
 
