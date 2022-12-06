@@ -18,6 +18,11 @@
 			<li>
 				<a href={`/${data.id}/rounds/${round.id}`}>
 					<h5>{round.name}</h5>
+					{#if round.date}
+						<p>
+							{round.date.toLocaleDateString(undefined, { dateStyle: 'medium' })}
+						</p>
+					{/if}
 				</a>
 			</li>
 		{/each}

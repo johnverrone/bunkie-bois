@@ -9,41 +9,27 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      players: {
-        Row: {
-          id: number
-          name: string
-          created_at: string
-        }
-        Insert: {
-          id?: number
-          name: string
-          created_at?: string
-        }
-        Update: {
-          id?: number
-          name?: string
-          created_at?: string
-        }
-      }
       rounds: {
         Row: {
           id: number
           created_at: string
           name: string
           trip_id: number
+          date: string | null
         }
         Insert: {
           id?: number
           created_at?: string
           name: string
           trip_id: number
+          date?: string | null
         }
         Update: {
           id?: number
           created_at?: string
           name?: string
           trip_id?: number
+          date?: string | null
         }
       }
       trip_players: {

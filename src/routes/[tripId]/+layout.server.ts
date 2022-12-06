@@ -44,9 +44,10 @@ export const load: LayoutServerLoad = async ({ params }) => {
 		});
 	}
 
-	const rounds = roundsData.map(({ id, name }) => ({
+	const rounds = roundsData.map(({ id, name, date }) => ({
 		id,
-		name
+		name,
+		date: date ? new Date(date) : null
 	}));
 
 	if (trip) {
