@@ -1,28 +1,17 @@
 import { writable } from 'svelte/store';
 
 export interface Score {
-	playerId: string;
-	roundId: string;
+	playerId: number;
+	roundId: number;
 	score: number;
 }
 
-const initialScores: Score[] = [
-	{
-		playerId: 'john-verrone',
-		roundId: 'crown-park',
-		score: 90
-	},
-	{
-		playerId: 'eric-matlock',
-		roundId: 'crown-park',
-		score: 88
-	}
-];
+const initialScores: Score[] = [];
 
 function createScoresStore() {
 	const { subscribe, update } = writable<Score[]>(initialScores);
 
-	const set = (playerId: string, roundId: string, score: number) =>
+	const set = (playerId: number, roundId: number, score: number) =>
 		update((scores) => {
 			const existingScoreIndex = scores.findIndex(
 				(s) => s.playerId === playerId && s.roundId === roundId

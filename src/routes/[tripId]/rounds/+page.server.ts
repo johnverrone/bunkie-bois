@@ -1,7 +1,14 @@
 import { supabase } from '$lib/server/supabaseClient';
 import { error, invalid } from '@sveltejs/kit';
 import { z } from 'zod';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async ({ parent }) => {
+	const { title } = await parent();
+	return {
+		title: `${title} | Rounds`
+	};
+};
 
 export const actions: Actions = {
 	addRound: async ({ request }) => {

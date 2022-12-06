@@ -1,7 +1,14 @@
 import { error, invalid } from '@sveltejs/kit';
 import { supabase } from '$lib/server/supabaseClient';
-import type { Actions } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 import { z } from 'zod';
+
+export const load: PageServerLoad = async ({ parent }) => {
+	const { title } = await parent();
+	return {
+		title: `${title} | Players`
+	};
+};
 
 export const actions: Actions = {
 	addPlayer: async ({ request }) => {

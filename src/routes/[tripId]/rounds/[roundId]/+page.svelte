@@ -10,13 +10,11 @@
 
 	export let data: PageData;
 
-	let newPlayer: string | undefined;
+	let newPlayer: number | undefined;
 	let newScore: number | undefined;
 
 	// $: par = getPar(data.scorecard);
 	// $: yardage = getYardage(data.scorecard);
-
-	$: round = data.rounds.find((r) => r.id === data.roundId)!;
 
 	type PlayersById = { [key: string]: typeof data.tripPlayers[number] };
 	$: playersById = data.tripPlayers.reduce<PlayersById>(
@@ -27,7 +25,7 @@
 	let netScoreToggled: boolean = false;
 
 	$: leaderboard = $scores
-		.filter((player) => player.roundId === data.roundId.toString())
+		.filter((player) => player.roundId === data.round.id)
 		.map((score) => ({
 			...playersById[score.playerId]!,
 			score: score.score
@@ -35,7 +33,11 @@
 		.sort((a, b) => a.score - b.score);
 
 	function logScore() {
-		throw new Error('not implemented');
+		if (newPlayer && newScore) {
+			scores.set(newPlayer, data.round.id, newScore);
+			newPlayer = undefined;
+			newScore = undefined;
+		}
 	}
 
 	const scoreScale = scaleLinear().domain([70, 150]);
@@ -46,7 +48,7 @@
 <div>
 	<nav class="breadcrumbs">
 		<a href={`/${data.id}/rounds`}>Rounds</a>
-		<span>{round.name}</span>
+		<span>{data.round.name}</span>
 	</nav>
 
 	<div class="leaderboard">
@@ -71,7 +73,7 @@
 </div>
 
 <form class="log-score-form" on:submit|preventDefault={logScore}>
-	<div>
+	<div class="player-column">
 		<label for="new-score-player">Player</label>
 		<select
 			class="player-select"
@@ -90,7 +92,7 @@
 		<Input
 			id="new-score-score"
 			type="number"
-			min="65"
+			min="60"
 			max="130"
 			inputmode="numeric"
 			bind:value={newScore}
@@ -99,7 +101,7 @@
 	<Button type="submit">Log Score</Button>
 </form>
 
-<style>
+<style lang="scss">
 	.breadcrumbs a {
 		text-decoration: none;
 		color: grey;
@@ -166,6 +168,10 @@
 		display: flex;
 		gap: 20px;
 		align-items: flex-end;
+
+		.player-column {
+			flex: 3;
+		}
 	}
 
 	.log-score-form > div {
