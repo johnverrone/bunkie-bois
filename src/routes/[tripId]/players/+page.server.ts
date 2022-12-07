@@ -1,5 +1,5 @@
 import { error, invalid } from '@sveltejs/kit';
-import { supabase } from '$lib/server/supabaseClient';
+import { supabase } from '$lib/supabaseClient';
 import type { Actions, PageServerLoad } from './$types';
 import { z } from 'zod';
 
