@@ -2,11 +2,11 @@
 	import { scaleLinear } from 'd3-scale';
 	import { interpolateHsl } from 'd3-interpolate';
 	import { flip } from 'svelte/animate';
-	import Input from '../../../../components/Input.svelte';
-	import Button from '../../../../components/Button.svelte';
-	import { scores } from '../../../../data/scores';
+	import Input from '@components/Input.svelte';
+	import Button from '@components/Button.svelte';
+	import { scores } from '@data/scores';
 	import type { PageData } from './$types';
-	import { calculateCourseHandicap } from '../../../../utils/handicap';
+	import { calculateCourseHandicap } from '@utils/handicap';
 
 	export let data: PageData;
 

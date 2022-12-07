@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { clickOutside } from '../../../utils/click_outside';
-	import Button from '../../../components/Button.svelte';
-	import Input from '../../../components/Input.svelte';
-	import Icon from '../../../components/Icon.svelte';
+	import { clickOutside } from '@utils/click_outside';
+	import Button from '@components/Button.svelte';
+	import Input from '@components/Input.svelte';
+	import Icon from '@components/Icon.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;

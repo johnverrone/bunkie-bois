@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { LayoutServerData } from './$types';
 	import { page } from '$app/stores';
-	import PageTitle from '../../components/PageTitle.svelte';
+	import PageTitle from '@components/PageTitle.svelte';
 
 	export let data: LayoutServerData;
 </script>
