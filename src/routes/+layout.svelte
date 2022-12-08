@@ -3,6 +3,7 @@
 	import { supabase } from '$lib/supabaseClient';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import Button from '@components/Button.svelte';
 
 	onMount(() => {
 		const {
@@ -15,13 +16,33 @@
 			subscription.unsubscribe();
 		};
 	});
+
+	async function signInWithGoogle() {
+		const { data, error } = await supabase.auth.signInWithOAuth({
+			provider: 'google'
+		});
+	}
+
+	async function signout() {
+		const { error } = await supabase.auth.signOut();
+		if (!error) window.location.reload();
+	}
 </script>
 
 <svelte:head>
 	<title>{$page.data.title || 'Bunkie Bois'}</title>
 </svelte:head>
 
-<slot />
+{#if $page.data.session}
+	<div class="auth-button">
+		<Button on:click={signout}>Logout</Button>
+	</div>
+	<slot />
+{:else}
+	<div class="auth-button">
+		<Button on:click={signInWithGoogle}>Login</Button>
+	</div>
+{/if}
 
 <style global>
 	@import '../reset.css';
@@ -64,5 +85,11 @@
 	h2,
 	h3 {
 		text-align: center;
+	}
+
+	.auth-button {
+		position: absolute;
+		top: 10px;
+		right: 10px;
 	}
 </style>

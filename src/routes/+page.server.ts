@@ -1,9 +1,11 @@
 import { error } from '@sveltejs/kit';
-import { supabase } from '$lib/supabaseClient';
+import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async () => {
-	const { data, error: dbError } = await supabase.from('trips').select();
+export const load: PageServerLoad = async (event) => {
+	const { supabaseClient } = await getSupabase(event);
+
+	const { data, error: dbError } = await supabaseClient.from('trips').select();
 
 	if (dbError) {
 		throw error(500, {

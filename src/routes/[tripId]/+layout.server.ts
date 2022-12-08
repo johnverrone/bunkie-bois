@@ -1,9 +1,14 @@
-import { supabase } from '$lib/supabaseClient';
-import { error } from '@sveltejs/kit';
+import { getSupabase } from '@supabase/auth-helpers-sveltekit';
+import { error, redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ params }) => {
-	const { data: trip, error: tripError } = await supabase
+export const load: LayoutServerLoad = async (event) => {
+	const { session, supabaseClient } = await getSupabase(event);
+	if (!session) throw redirect(303, '/');
+
+	const { params } = event;
+
+	const { data: trip, error: tripError } = await supabaseClient
 		.from('trips')
 		.select()
 		.eq('id', params.tripId)
@@ -16,7 +21,7 @@ export const load: LayoutServerLoad = async ({ params }) => {
 		});
 	}
 
-	const { data: tripPlayersData, error: tripPlayersError } = await supabase
+	const { data: tripPlayersData, error: tripPlayersError } = await supabaseClient
 		.from('trip_players')
 		.select()
 		.eq('trip_id', params.tripId);
@@ -33,7 +38,7 @@ export const load: LayoutServerLoad = async ({ params }) => {
 		handicap: player.handicap
 	}));
 
-	const { data: roundsData, error: roundsError } = await supabase
+	const { data: roundsData, error: roundsError } = await supabaseClient
 		.from('rounds')
 		.select()
 		.eq('trip_id', params.tripId);
