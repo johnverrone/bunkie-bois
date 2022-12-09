@@ -1,15 +1,12 @@
 <script lang="ts">
-	import { clickOutside } from '@utils/click_outside';
 	import Button from '@components/Button.svelte';
-	import Input from '@components/Input.svelte';
 	import Icon from '@components/Icon.svelte';
 	import type { PageData } from './$types';
-	import { randomGolfCourse } from '@utils/golf';
+	import RoundConfig from '@components/RoundConfig.svelte';
 
 	export let data: PageData;
 
 	let addRoundMode = false;
-	let newName: string | undefined;
 </script>
 
 {#if data.rounds.length}
@@ -32,25 +29,7 @@
 {/if}
 
 {#if addRoundMode}
-	<form
-		class="new-round-form"
-		method="post"
-		action="?/addRound"
-		use:clickOutside
-		on:outclick={() => (addRoundMode = false)}
-	>
-		<input type="hidden" name="tripId" value={data.id} />
-		<div class="name">
-			<Input
-				type="text"
-				placeholder={randomGolfCourse()}
-				name="name"
-				bind:value={newName}
-				{focus}
-			/>
-		</div>
-		<Button type="submit">Add</Button>
-	</form>
+	<RoundConfig onClose={() => (addRoundMode = false)} id={data.id} />
 {:else}
 	<Button on:click={() => (addRoundMode = true)}>
 		<div class="button-contents">
@@ -94,15 +73,5 @@
 		align-items: center;
 		justify-content: center;
 		gap: 8px;
-	}
-
-	.new-round-form {
-		display: flex;
-		justify-content: space-between;
-		gap: 8px;
-
-		.name {
-			flex: 1;
-		}
 	}
 </style>
