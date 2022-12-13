@@ -41,6 +41,7 @@
 							<Input
 								type="number"
 								inputmode="numeric"
+								step="0.01"
 								name="handicap"
 								bind:value={editingPlayer.handicap}
 							>
