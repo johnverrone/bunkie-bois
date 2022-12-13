@@ -1,46 +1,77 @@
 <script lang="ts">
+	import Button from '@components/Button.svelte';
+	import Icon from '@components/Icon.svelte';
 	import type { PageData } from './$types';
+	import RoundConfig from '@components/RoundConfig.svelte';
 
 	export let data: PageData;
+
+	let addRoundMode = false;
 </script>
 
-<ul class="rounds">
-	{#if data.rounds}
+{#if data.rounds.length}
+	<ul>
 		{#each data.rounds as round}
-			<li class="round">
+			<li>
 				<a href={`/${data.id}/rounds/${round.id}`}>
-					{round.courseName}
+					<h5>{round.name}</h5>
+					{#if round.date}
+						<p>
+							{round.date.toLocaleDateString(undefined, { dateStyle: 'medium' })}
+						</p>
+					{/if}
 				</a>
 			</li>
 		{/each}
-	{/if}
-</ul>
+	</ul>
+{:else}
+	<p>no rounds yet</p>
+{/if}
 
-<style>
-	.rounds {
-		padding-left: 0;
+{#if addRoundMode}
+	<RoundConfig onClose={() => (addRoundMode = false)} id={data.id} />
+{:else}
+	<Button on:click={() => (addRoundMode = true)}>
+		<div class="button-contents">
+			<Icon name="plus" />
+			Add round
+		</div>
+	</Button>
+{/if}
+
+<style lang="scss">
+	ul {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		padding: 0;
 		list-style: none;
 
-		display: grid;
-		grid-gap: 1rem;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		li {
+			height: 150px;
+			a {
+				color: inherit;
+				text-decoration: none;
+				width: 100%;
+				height: 100%;
+
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: flex-end;
+
+				padding: 10px;
+				border-radius: 8px;
+
+				background-color: var(--green);
+			}
+		}
 	}
 
-	.round {
-		height: 80px;
-		border-radius: 8px;
-
-		background-color: hsl(156deg 47% 65%);
-		color: hsl(0deg 0% 0%);
-	}
-
-	.round a {
-		color: inherit;
-		text-decoration: none;
-		width: 100%;
-		height: 100%;
-
-		display: grid;
-		place-items: center;
+	.button-contents {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
 	}
 </style>

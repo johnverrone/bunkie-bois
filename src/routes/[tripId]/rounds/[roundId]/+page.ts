@@ -1,17 +1,13 @@
 import { error } from '@sveltejs/kit';
-import { rounds } from '../../../../data/trips';
-import { scorecardsById } from '../../../../data/course';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = ({ params }) => {
-	const round = rounds.find((round) => round.id === params.roundId);
+export const load: PageLoad = async ({ params, parent }) => {
+	const { title, rounds } = await parent();
+	const round = rounds.find((r) => r.id === parseInt(params.roundId));
 	if (!round) throw error(404, 'Round not found');
 
-	const scorecard = scorecardsById[round.scorecardId];
-	if (!scorecard) throw error(404, 'Scorecard not found');
-
 	return {
-		round,
-		scorecard
+		title: `${round.name} | ${title}`,
+		round
 	};
 };

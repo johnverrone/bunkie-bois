@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Scorecard from '../../../components/Scorecard.svelte';
+	import Scorecard from '@components/Scorecard.svelte';
 
 	export let data: PageData;
 </script>

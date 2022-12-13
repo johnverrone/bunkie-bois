@@ -2,32 +2,32 @@
 	import { scaleLinear } from 'd3-scale';
 	import { interpolateHsl } from 'd3-interpolate';
 	import { flip } from 'svelte/animate';
-	import Input from '../../../../components/Input.svelte';
-	import Button from '../../../../components/Button.svelte';
-	import { getPar, getYardage } from '../../../../data/course';
-	import { players, playersById } from '../../../../data/players';
-	import { scores } from '../../../../data/scores';
+	import Input from '@components/Input.svelte';
+	import Button from '@components/Button.svelte';
+	import { scores } from '@data/scores';
 	import type { PageData } from './$types';
-	import { calculateCourseHandicap } from '../../../../utils/handicap';
+	import { calculateCourseHandicap } from '@utils/handicap';
 
 	export let data: PageData;
 
-	let newPlayer: string | undefined;
+	let newPlayer: number | undefined;
 	let newScore: number | undefined;
 
-	$: par = getPar(data.scorecard);
-	$: yardage = getYardage(data.scorecard);
+	// $: par = getPar(data.scorecard);
+	// $: yardage = getYardage(data.scorecard);
+
+	type PlayersById = { [key: string]: typeof data.tripPlayers[number] };
+	$: playersById = data.tripPlayers.reduce<PlayersById>(
+		(acc, curr) => ({ ...acc, [curr.id]: curr }),
+		{}
+	);
 
 	let netScoreToggled: boolean = false;
-
-	$: tripPlayers = $players
-		.filter((player) => player.tripIds.includes(data.id))
-		.sort((a, b) => a.handicap - b.handicap);
 
 	$: leaderboard = $scores
 		.filter((player) => player.roundId === data.round.id)
 		.map((score) => ({
-			...$playersById[score.playerId]!,
+			...playersById[score.playerId]!,
 			score: score.score
 		}))
 		.sort((a, b) => a.score - b.score);
@@ -45,41 +45,35 @@
 		interpolateHsl('hsl(118, 80%, 50%)', 'hsl(0, 80%, 50%)')(scoreScale(t));
 </script>
 
-<nav class="breadcrumbs">
-	<a href={`/${data.id}/rounds`}>Rounds</a>
-	<span>{data.round.courseName}</span>
-</nav>
+<div>
+	<nav class="breadcrumbs">
+		<a href={`/${data.id}/rounds`}>Rounds</a>
+		<span>{data.round.name}</span>
+	</nav>
 
-<div class="leaderboard">
-	<div class="leaderboard-heading">
-		<h2>Leaderboard</h2>
-		<label>
-			<input type="checkbox" bind:checked={netScoreToggled} />
-			Net Scores
-		</label>
+	<div class="leaderboard">
+		<div class="leaderboard-heading">
+			<h2>Leaderboard</h2>
+			<label>
+				<input type="checkbox" bind:checked={netScoreToggled} />
+				Net Scores
+			</label>
+		</div>
+		<ol class="leaderboard-list">
+			{#each leaderboard as player (player.id)}
+				<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
+					<span class="player-name">{player.name}</span>
+					<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
+						{netScoreToggled ? player.score : player.score}
+					</span>
+				</li>
+			{/each}
+		</ol>
 	</div>
-	<ol class="leaderboard-list">
-		{#each leaderboard as player (player.id)}
-			<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
-				<span class="player-name">{player.name}</span>
-				<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
-					{netScoreToggled
-						? player.score -
-						  calculateCourseHandicap(
-								player.handicap,
-								data.scorecard.slope,
-								data.scorecard.rating,
-								par
-						  )
-						: player.score}
-				</span>
-			</li>
-		{/each}
-	</ol>
 </div>
 
 <form class="log-score-form" on:submit|preventDefault={logScore}>
-	<div>
+	<div class="player-column">
 		<label for="new-score-player">Player</label>
 		<select
 			class="player-select"
@@ -88,7 +82,7 @@
 			bind:value={newPlayer}
 		>
 			<option value={undefined}>Select a player</option>
-			{#each tripPlayers as player}
+			{#each data.tripPlayers as player}
 				<option value={player.id}>{player.name}</option>
 			{/each}
 		</select>
@@ -98,7 +92,7 @@
 		<Input
 			id="new-score-score"
 			type="number"
-			min="65"
+			min="60"
 			max="130"
 			inputmode="numeric"
 			bind:value={newScore}
@@ -107,7 +101,7 @@
 	<Button type="submit">Log Score</Button>
 </form>
 
-<style>
+<style lang="scss">
 	.breadcrumbs a {
 		text-decoration: none;
 		color: grey;
@@ -174,6 +168,10 @@
 		display: flex;
 		gap: 20px;
 		align-items: flex-end;
+
+		.player-column {
+			flex: 3;
+		}
 	}
 
 	.log-score-form > div {
