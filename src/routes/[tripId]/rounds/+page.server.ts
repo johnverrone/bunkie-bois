@@ -1,5 +1,5 @@
 import { supabase } from '$lib/supabaseClient';
-import { error, invalid } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -23,7 +23,7 @@ export const actions: Actions = {
 			const { error: pgError } = await supabase.from('rounds').insert({ trip_id, name });
 			if (pgError) throw error(500, pgError.message);
 		} catch (error) {
-			return invalid(400, { message: `failed to parse round, ${error}` });
+			return fail(400, { message: `failed to parse round, ${error}` });
 		}
 	}
 };

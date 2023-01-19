@@ -1,4 +1,4 @@
-import { error, invalid } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { z } from 'zod';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
@@ -32,7 +32,7 @@ export const actions: Actions = {
 
 			if (pgError) return error(500, pgError.message);
 		} catch (error) {
-			return invalid(400, { message: `failed to parse player, ${error}` });
+			return fail(400, { message: `failed to parse player, ${error}` });
 		}
 	},
 	updatePlayer: async (event) => {
@@ -59,7 +59,7 @@ export const actions: Actions = {
 
 			if (pgError) return error(500, pgError.message);
 		} catch (error) {
-			return invalid(400, { message: `failed to parse player, ${error}` });
+			return fail(400, { message: `failed to parse player, ${error}` });
 		}
 	},
 	deletePlayer: async (event) => {
@@ -84,7 +84,7 @@ export const actions: Actions = {
 
 			if (pgError) return error(500, pgError.message);
 		} catch (error) {
-			return invalid(400, { message: 'failed to parse ids' });
+			return fail(400, { message: 'failed to parse ids' });
 		}
 	}
 };
