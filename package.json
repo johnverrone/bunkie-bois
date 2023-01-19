@@ -1,5 +1,5 @@
 {
-	"name": "golf-app",
+	"name": "bunkie-bois",
 	"version": "0.0.1",
 	"private": true,
 	"type": "module",
@@ -10,13 +10,17 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"gen-types": "npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/lib/supabaseTypes.ts"
 	},
 	"devDependencies": {
+		"@supabase/auth-helpers-sveltekit": "^0.8.6",
+		"@supabase/supabase-js": "^2.1.1",
 		"@sveltejs/adapter-vercel": "^1.0.0-next.84",
 		"@sveltejs/kit": "^1.0.0-next.563",
 		"@types/d3-interpolate": "^3.0.1",
 		"@types/d3-scale": "^4.0.2",
+		"@types/feather-icons": "^4.29.0",
 		"@types/uuid": "^8.3.4",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
@@ -25,6 +29,7 @@
 		"eslint": "^8.16.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-svelte3": "^4.0.0",
+		"feather-icons": "^4.29.0",
 		"prettier": "^2.6.2",
 		"prettier-plugin-svelte": "^2.7.0",
 		"sass": "^1.56.1",
@@ -34,6 +39,7 @@
 		"tslib": "^2.3.1",
 		"typescript": "^4.7.4",
 		"uuid": "^9.0.0",
-		"vite": "^3.0.4"
+		"vite": "^3.0.4",
+		"zod": "^3.20.2"
 	}
 }

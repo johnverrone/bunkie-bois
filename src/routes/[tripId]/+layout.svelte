@@ -1,20 +1,19 @@
 <script lang="ts">
-	import type { LayoutData } from './$types';
+	import type { LayoutServerData } from './$types';
 	import { page } from '$app/stores';
+	import PageTitle from '@components/PageTitle.svelte';
 
-	export let data: LayoutData;
+	export let data: LayoutServerData;
 </script>
 
-<header>
-	<span>{data.name}</span>
-</header>
+<PageTitle>{data.name}</PageTitle>
 
 <nav>
 	<ul class="tabs">
-		<li class="tab-item" class:active={$page.route.id?.startsWith('[tripId]/rounds')}>
+		<li class="tab-item" class:active={$page.route.id?.startsWith('/[tripId]/rounds')}>
 			<a href={`/${data.id}/rounds`}>Rounds</a>
 		</li>
-		<li class="tab-item" class:active={$page.route.id?.startsWith('[tripId]/players')}>
+		<li class="tab-item" class:active={$page.route.id?.startsWith('/[tripId]/players')}>
 			<a href={`/${data.id}/players`}>Players</a>
 		</li>
 	</ul>
@@ -26,33 +25,19 @@
 
 <style>
 	:root {
-		--header-height: 59px;
+		--header-height: 84px;
 		--nav-height: 60px;
 	}
 
 	main {
-		height: calc(100% - var(--nav-height));
-		padding-inline: 1rem 1rem;
-		padding-top: var(--header-height);
-		padding-bottom: 1rem;
+		height: calc(100% - var(--nav-height) - var(--header-height));
+		padding: 0 2rem 1rem 2rem;
 
 		display: grid;
-		grid-template-rows: auto 1fr auto;
-	}
-
-	header {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-
-		display: grid;
-		place-items: center;
-		padding-block: 1rem;
-	}
-
-	header h1 {
-		font-size: 1.125rem;
+		grid-template-rows: 1fr auto;
+		grid-template-areas:
+			'content'
+			'bottom';
 	}
 
 	nav {

@@ -6,4 +6,12 @@ declare namespace App {
 	// interface Platform {}
 	// interface PrivateEnv {}
 	// interface PublicEnv {}
+	interface Supabase {
+		Database: import('./lib/supabaseTypes').Database;
+		SchemaName: 'public';
+	}
+
+	interface PageData {
+		session: import('@supabase/supabase-js').Session | null;
+	}
 }

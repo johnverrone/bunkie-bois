@@ -1,7 +1,8 @@
 <script lang="ts">
+	export let type: 'button' | 'submit' | 'reset' = 'button';
 </script>
 
-<button on:click {...$$restProps}>
+<button on:click {type} {...$$restProps}>
 	<slot />
 </button>
 

@@ -8,7 +8,12 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: vercel()
+		adapter: vercel(),
+		alias: {
+			'@components': 'src/components',
+			'@data': 'src/data',
+			'@utils': 'src/utils'
+		}
 	}
 };
 
