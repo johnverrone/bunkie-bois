@@ -11,68 +11,68 @@ export interface Database {
     Tables: {
       rounds: {
         Row: {
-          id: number
           created_at: string
+          date: string | null
+          id: number
           name: string
           trip_id: number
-          date: string | null
         }
         Insert: {
-          id?: number
           created_at?: string
+          date?: string | null
+          id?: number
           name: string
           trip_id: number
-          date?: string | null
         }
         Update: {
-          id?: number
           created_at?: string
+          date?: string | null
+          id?: number
           name?: string
           trip_id?: number
-          date?: string | null
         }
       }
       trip_players: {
         Row: {
-          trip_id: number
-          player_id: number
           handicap: number
           name: string
+          player_id: number
+          trip_id: number
         }
         Insert: {
-          trip_id: number
-          player_id?: number
           handicap: number
           name: string
+          player_id?: number
+          trip_id: number
         }
         Update: {
-          trip_id?: number
-          player_id?: number
           handicap?: number
           name?: string
+          player_id?: number
+          trip_id?: number
         }
       }
       trips: {
         Row: {
+          created_at: string
+          end_date: string | null
           id: number
           name: string
           start_date: string | null
-          end_date: string | null
-          created_at: string
         }
         Insert: {
+          created_at?: string
+          end_date?: string | null
           id?: number
           name: string
           start_date?: string | null
-          end_date?: string | null
-          created_at?: string
         }
         Update: {
+          created_at?: string
+          end_date?: string | null
           id?: number
           name?: string
           start_date?: string | null
-          end_date?: string | null
-          created_at?: string
         }
       }
     }
