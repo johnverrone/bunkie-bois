@@ -3,12 +3,12 @@ import type { Actions, PageServerLoad } from './$types';
 import { z } from 'zod';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 
-export const load: PageServerLoad = async ({ parent }) => {
+export const load = (async ({ parent }) => {
 	const { title } = await parent();
 	return {
 		title: `${title} | Players`
 	};
-};
+}) satisfies PageServerLoad;
 
 export const actions: Actions = {
 	addPlayer: async (event) => {

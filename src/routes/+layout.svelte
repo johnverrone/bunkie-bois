@@ -56,6 +56,10 @@
 		--green: hsl(108deg 13% 83%);
 	}
 
+	body {
+		overflow-y: hidden;
+	}
+
 	h1 {
 		font-size: 2.5rem;
 		font-weight: 800;

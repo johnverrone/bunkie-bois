@@ -3,12 +3,12 @@ import { error, fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ parent }) => {
+export const load = (async ({ parent }) => {
 	const { title } = await parent();
 	return {
 		title: `${title} | Rounds`
 	};
-};
+}) satisfies PageServerLoad;
 
 export const actions: Actions = {
 	addRound: async ({ request }) => {

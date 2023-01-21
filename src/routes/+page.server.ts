@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async (event) => {
+export const load = (async (event) => {
 	const { supabaseClient } = await getSupabase(event);
 
 	const { data, error: dbError } = await supabaseClient.from('trips').select();
@@ -16,4 +16,4 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		trips: data
 	};
-};
+}) satisfies PageServerLoad;
