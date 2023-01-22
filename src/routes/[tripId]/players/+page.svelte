@@ -56,13 +56,16 @@
 					<span>{player.name}</span>
 					<div class="edit-controls">
 						<span>{player.handicap}</span>
-						<Button on:click={() => (editingPlayer = Object.assign({}, player))}>
+						<Button
+							on:click={() => (editingPlayer = Object.assign({}, player))}
+							variant="secondary"
+						>
 							<Icon name="edit" />
 						</Button>
 						<form method="post" action="?/deletePlayer" style="display: inline-block">
 							<input type="hidden" name="tripId" value={data.id} />
 							<input type="hidden" name="playerId" value={player.id} />
-							<Button type="submit">
+							<Button type="submit" variant="secondary">
 								<Icon name="trash" />
 							</Button>
 						</form>

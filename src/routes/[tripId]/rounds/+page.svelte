@@ -63,7 +63,7 @@
 				padding: 10px;
 				border-radius: 8px;
 
-				background-color: var(--green);
+				background-color: var(--dp-01);
 			}
 		}
 	}

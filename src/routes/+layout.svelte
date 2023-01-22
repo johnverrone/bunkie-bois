@@ -38,7 +38,7 @@
 
 {#if $page.data.session}
 	<div class="auth-button">
-		<Button on:click={signout}>Logout</Button>
+		<Button on:click={signout} variant="secondary">Logout</Button>
 	</div>
 	<slot />
 {:else}
@@ -57,6 +57,19 @@
 			Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 
 		--green: hsl(108deg 13% 83%);
+
+		--dp-01: hsla(0deg 100% 100% / 0.05);
+		--dp-02: hsla(0deg 100% 100% / 0.07);
+		--dp-12: hsla(0deg 100% 100% / 0.14);
+		--dp-24: hsla(0deg 100% 100% / 0.16);
+
+		--background: hsl(185deg 33% 16%);
+		--foreground: #fefefe;
+		--primary: hsl(55deg 93% 72%);
+		--secondary: hsl(106deg 19% 55%);
+
+		background-color: var(--background);
+		color: var(--foreground);
 	}
 
 	body {
@@ -88,15 +101,9 @@
 		font-weight: 700;
 	}
 
-	h1,
-	h2,
-	h3 {
-		text-align: center;
-	}
-
 	.auth-button {
 		position: absolute;
 		top: 10px;
-		right: 10px;
+		right: 1rem;
 	}
 </style>
