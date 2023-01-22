@@ -65,7 +65,7 @@
 
 		--background: hsl(185deg 33% 16%);
 		--foreground: #fefefe;
-		--primary: hsl(106deg 19% 55%); /* hsl(55deg 93% 72%); */
+		--primary: hsl(106deg 19% 55%);
 		--secondary: hsl(105deg 90% 80%);
 
 		background-color: var(--background);
