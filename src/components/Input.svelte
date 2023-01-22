@@ -10,7 +10,7 @@
 		width: 100%;
 		font: inherit;
 		height: 36px;
-		background-color: var(--dp-24);
+		background-color: var(--dp-12);
 		color: var(--foreground);
 		border: none;
 		border-radius: 4px;

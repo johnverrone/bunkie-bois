@@ -137,7 +137,8 @@
 	}
 
 	.leaderboard-list-item {
-		background-color: hsl(50deg 80% 85%);
+		background-color: var(--secondary);
+		color: #121212;
 		border-radius: 8px;
 
 		padding-left: 16px;
@@ -182,5 +183,13 @@
 
 	.player-select {
 		height: 36px;
+		background-color: var(--dp-12);
+		color: #fefefe;
+		border: none;
+		border-radius: 4px;
+		padding: 2px 4px;
+		outline-color: var(--primary);
+		outline-style: solid;
+		outline-width: 1px;
 	}
 </style>
