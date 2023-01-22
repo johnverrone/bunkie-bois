@@ -24,9 +24,9 @@
 	}
 
 	.primary {
-		$bg-color: hsl(55deg 93% 72%);
+		$bg-color: hsl(106deg 19% 55%);
 		background-color: $bg-color;
-		color: #121212;
+		color: #fefefe;
 
 		&:hover {
 			background-color: scale-color($bg-color, $lightness: -10%);
@@ -38,16 +38,16 @@
 	}
 
 	.secondary {
-		$bg-color: hsl(106deg 19% 55%);
-		background-color: $bg-color;
-		color: #fefefe;
+		$bg-color: hsl(185deg 33% 16%);
+		background-color: inherit;
+		color: var(--primary);
 
 		&:hover {
-			background-color: scale-color($bg-color, $lightness: -10%);
+			background-color: scale-color($bg-color, $lightness: -20%);
 		}
 
 		&:active {
-			background-color: scale-color($bg-color, $lightness: -20%);
+			background-color: scale-color($bg-color, $lightness: -40%);
 		}
 	}
 </style>

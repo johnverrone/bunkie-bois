@@ -42,12 +42,12 @@
 	</div>
 	<slot />
 {:else}
-	<div class="auth-button">
+	<div class="auth-button login">
 		<Button on:click={signInWithGoogle}>Login</Button>
 	</div>
 {/if}
 
-<style global>
+<style lang="scss" global>
 	@import '../reset.css';
 
 	:root {
@@ -65,8 +65,8 @@
 
 		--background: hsl(185deg 33% 16%);
 		--foreground: #fefefe;
-		--primary: hsl(55deg 93% 72%);
-		--secondary: hsl(106deg 19% 55%);
+		--primary: hsl(106deg 19% 55%);
+		--secondary: hsl(105deg 90% 80%);
 
 		background-color: var(--background);
 		color: var(--foreground);
@@ -105,5 +105,10 @@
 		position: absolute;
 		top: 10px;
 		right: 1rem;
+
+		&.login {
+			top: calc(50% - 18px);
+			right: calc(50% - 27px);
+		}
 	}
 </style>
