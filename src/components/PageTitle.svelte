@@ -7,8 +7,6 @@
 
 <style lang="scss">
 	header {
-		h3 {
-			padding: 24px 0;
-		}
+		padding: 10px 1rem;
 	}
 </style>

@@ -117,7 +117,7 @@
 	}
 
 	.leaderboard {
-		padding-block: 1rem;
+		padding-block: 10px;
 	}
 
 	.leaderboard-heading {

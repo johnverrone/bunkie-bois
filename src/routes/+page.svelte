@@ -24,7 +24,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-		padding: 0 2rem;
+		padding: 0 1rem;
 		list-style: none;
 
 		li {
@@ -43,7 +43,7 @@
 				padding: 10px;
 				border-radius: 8px;
 
-				background-color: var(--green);
+				background-color: var(--dp-01);
 			}
 		}
 	}

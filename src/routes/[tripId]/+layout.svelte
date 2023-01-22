@@ -25,13 +25,13 @@
 
 <style>
 	:root {
-		--header-height: 84px;
+		--header-height: 56px;
 		--nav-height: 60px;
 	}
 
 	main {
 		height: calc(100% - var(--nav-height) - var(--header-height));
-		padding: 0 2rem 1rem 2rem;
+		padding: 0 1rem 1rem 1rem;
 
 		display: grid;
 		grid-template-rows: 1fr auto;
@@ -41,11 +41,13 @@
 	}
 
 	nav {
-		--bg-base: 210deg 9%;
-		--bg-normal: hsl(var(--bg-base) 25%);
+		/* --bg-base: 210deg 9%; */
+		--bg-base: 205deg 20%;
+		--bg-normal: hsl(var(--bg-base) 13%);
+		--bg-active: hsl(var(--bg-base) 10%);
 
-		--fg-normal: white;
-		--fg-active: hsl(105 85% 63%);
+		--fg-normal: #fefefe;
+		--fg-active: var(--primary);
 
 		position: fixed;
 		height: 60px;
@@ -74,8 +76,9 @@
 	}
 
 	.tab-item.active {
-		background-color: var(--bg-normal);
+		background-color: var(--bg-active);
 		color: var(--fg-active);
+		border-top: 1px solid var(--fg-active);
 	}
 
 	.tab-item a {
