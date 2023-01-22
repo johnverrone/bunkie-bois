@@ -64,9 +64,11 @@
 		--dp-24: hsla(0deg 100% 100% / 0.16);
 
 		--background: hsl(185deg 33% 16%);
+		--secondary-background: hsl(185deg 33% 40%);
 		--foreground: #fefefe;
 		--primary: hsl(106deg 19% 55%);
 		--secondary: hsl(105deg 90% 80%);
+		--destructive: hsl(60deg 90% 70%);
 
 		background-color: var(--background);
 		color: var(--foreground);
@@ -99,6 +101,16 @@
 	h5 {
 		font-size: 1rem;
 		font-weight: 700;
+	}
+
+	button {
+		border: none;
+		background: none;
+		font: inherit;
+		font-weight: bold;
+		border-radius: 4px;
+		padding: 0;
+		cursor: pointer;
 	}
 
 	.auth-button {

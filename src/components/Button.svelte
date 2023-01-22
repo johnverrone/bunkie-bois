@@ -15,12 +15,8 @@
 
 <style lang="scss">
 	button {
-		border: none;
-		font: inherit;
-		font-weight: bold;
-		border-radius: 4px;
 		height: 36px;
-		cursor: pointer;
+		padding: 0 6px;
 	}
 
 	.primary {
