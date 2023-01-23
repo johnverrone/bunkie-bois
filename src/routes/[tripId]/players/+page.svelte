@@ -120,6 +120,7 @@
 			align-items: center;
 			padding: 10px 0;
 			gap: 8px;
+			width: 100%;
 
 			.name {
 				flex: 3;
