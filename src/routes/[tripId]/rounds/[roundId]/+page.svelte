@@ -47,7 +47,9 @@
 
 <div>
 	<nav class="breadcrumbs">
-		<a href={`/${data.id}/rounds`}>Rounds</a>
+		<span class="crumb">
+			<a href={`/${data.id}/rounds`}>Rounds</a>
+		</span>
 		<span>{data.round.name}</span>
 	</nav>
 
@@ -102,18 +104,22 @@
 </form>
 
 <style lang="scss">
-	.breadcrumbs a {
-		text-decoration: none;
+	.breadcrumbs .crumb {
 		color: grey;
-	}
 
-	.breadcrumbs a:hover {
-		text-decoration: underline;
-	}
+		a {
+			text-decoration: none;
+			color: inherit;
 
-	.breadcrumbs a::after {
-		content: '/';
-		margin-left: 4px;
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+		&::after {
+			content: '/';
+			margin-left: 4px;
+		}
 	}
 
 	.leaderboard {
