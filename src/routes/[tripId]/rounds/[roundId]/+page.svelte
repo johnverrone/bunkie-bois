@@ -7,14 +7,23 @@
 	import { scores } from '@data/scores';
 	import type { PageData } from './$types';
 	import { calculateCourseHandicap } from '@utils/handicap';
+	import Icon from '@components/Icon.svelte';
+	import { slide } from 'svelte/transition';
 
 	export let data: PageData;
 
 	let newPlayer: number | undefined;
 	let newScore: number | undefined;
 
-	// $: par = getPar(data.scorecard);
-	// $: yardage = getYardage(data.scorecard);
+	const par = 72; // getPar(data.scorecard);
+	const yardage = 6000; // getYardage(data.scorecard);
+	const rating = 70.8;
+	const slope = 130;
+
+	let showDetails = false;
+	function toggleDetails() {
+		showDetails = !showDetails;
+	}
 
 	type PlayersById = { [key: string]: typeof data.tripPlayers[number] };
 	$: playersById = data.tripPlayers.reduce<PlayersById>(
@@ -52,6 +61,21 @@
 		</span>
 		<span>{data.round.name}</span>
 	</nav>
+
+	<div class="round-details">
+		<button class="toggle" on:click={toggleDetails}>
+			{#if showDetails}<Icon name="arrow-up" />{:else}<Icon name="arrow-down" />{/if}
+		</button>
+		<h5>Round Details</h5>
+		{#if showDetails}
+			<div transition:slide={{ duration: 300 }}>
+				<p>Par: {par}</p>
+				<p>Yardage: {yardage}</p>
+				<p>Rating: {rating}</p>
+				<p>Slope: {slope}</p>
+			</div>
+		{/if}
+	</div>
 
 	<div class="leaderboard">
 		<div class="leaderboard-heading">
@@ -119,6 +143,21 @@
 		&::after {
 			content: '/';
 			margin-left: 4px;
+		}
+	}
+
+	.round-details {
+		position: relative;
+		margin-top: 10px;
+		padding: 10px 16px;
+		background-color: var(--dp-01);
+		border-radius: 8px;
+
+		.toggle {
+			color: inherit;
+			position: absolute;
+			top: 15px;
+			right: 16px;
 		}
 	}
 
