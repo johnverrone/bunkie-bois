@@ -3,6 +3,8 @@
 	import Icon from '@components/Icon.svelte';
 	import type { PageData } from './$types';
 	import RoundConfig from '@components/RoundConfig.svelte';
+	import RoundMenu from './RoundMenu.svelte';
+	import { popover } from '@utils/popover';
 
 	export let data: PageData;
 
@@ -14,6 +16,13 @@
 		{#each data.rounds as round}
 			<li>
 				<a href={`/${data.id}/rounds/${round.id}`}>
+					<div class="action-menu-container">
+						<button
+							use:popover={{ component: RoundMenu, props: { tripId: data.id, roundId: round.id } }}
+						>
+							<Icon name="more-vertical" />
+						</button>
+					</div>
 					<h5>{round.name}</h5>
 					{#if round.date}
 						<p>
@@ -54,6 +63,7 @@
 				text-decoration: none;
 				width: 100%;
 				height: 100%;
+				position: relative;
 
 				display: flex;
 				flex-direction: column;
@@ -73,5 +83,20 @@
 		align-items: center;
 		justify-content: center;
 		gap: 8px;
+	}
+
+	.action-menu-container {
+		position: absolute;
+		top: 0;
+		right: 0;
+
+		button {
+			color: var(--primary);
+			background: none;
+			border: none;
+			padding: 10px;
+
+			cursor: pointer;
+		}
 	}
 </style>
