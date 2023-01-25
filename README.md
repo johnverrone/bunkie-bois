@@ -33,6 +33,8 @@ anon key: some-jwt
 service_role key: some-jwt
 ```
 
+_Note: `supabase start` will spin up a docker container for your database. Make sure to run `supabase stop` when you are done._
+
 You can use the `Inbucket URL` to manage your local development email auth management.
 
 In a `.env.development` file, add the following:
@@ -53,3 +55,5 @@ npm run dev -- --open
 ```
 
 To login locally, utilize the `Inbucket URL` link to manage your one time passcode (OTP) emails.
+
+To shut down your local supabase instance, run `supabase stop`.
