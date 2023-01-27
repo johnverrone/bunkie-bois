@@ -24,6 +24,7 @@
 						</button>
 					</div>
 					<h5>{round.name}</h5>
+					<h6>{round.courseName}</h6>
 					{#if round.date}
 						<p>
 							{round.date.toLocaleDateString(undefined, { dateStyle: 'medium' })}

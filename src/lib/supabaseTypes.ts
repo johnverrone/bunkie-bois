@@ -9,8 +9,86 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      courses: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+        }
+      }
+      hole_info: {
+        Row: {
+          created_at: string | null
+          handicap: number
+          hole_number: number
+          par: number
+          tee_box_id: number
+          yardage: number
+        }
+        Insert: {
+          created_at?: string | null
+          handicap: number
+          hole_number: number
+          par: number
+          tee_box_id: number
+          yardage: number
+        }
+        Update: {
+          created_at?: string | null
+          handicap?: number
+          hole_number?: number
+          par?: number
+          tee_box_id?: number
+          yardage?: number
+        }
+      }
+      hole_scores: {
+        Row: {
+          hole_number: number
+          score: number | null
+          scorecard_id: number
+        }
+        Insert: {
+          hole_number: number
+          score?: number | null
+          scorecard_id: number
+        }
+        Update: {
+          hole_number?: number
+          score?: number | null
+          scorecard_id?: number
+        }
+      }
+      players: {
+        Row: {
+          handicap: number | null
+          id: number
+          name: string
+        }
+        Insert: {
+          handicap?: number | null
+          id?: number
+          name: string
+        }
+        Update: {
+          handicap?: number | null
+          id?: number
+          name?: string
+        }
+      }
       rounds: {
         Row: {
+          course_id: number
           created_at: string
           date: string | null
           id: number
@@ -18,6 +96,7 @@ export interface Database {
           trip_id: number
         }
         Insert: {
+          course_id: number
           created_at?: string
           date?: string | null
           id?: number
@@ -25,6 +104,7 @@ export interface Database {
           trip_id: number
         }
         Update: {
+          course_id?: number
           created_at?: string
           date?: string | null
           id?: number
@@ -32,46 +112,89 @@ export interface Database {
           trip_id?: number
         }
       }
+      scorecards: {
+        Row: {
+          created_at: string | null
+          id: number
+          player_handicap: number | null
+          player_id: number
+          round_id: number
+          tee_box_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          player_handicap?: number | null
+          player_id: number
+          round_id: number
+          tee_box_id: number
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          player_handicap?: number | null
+          player_id?: number
+          round_id?: number
+          tee_box_id?: number
+        }
+      }
+      tee_boxes: {
+        Row: {
+          course_id: number
+          created_at: string | null
+          id: number
+          name: string
+          rating: number
+          slope: number
+        }
+        Insert: {
+          course_id: number
+          created_at?: string | null
+          id?: number
+          name: string
+          rating: number
+          slope: number
+        }
+        Update: {
+          course_id?: number
+          created_at?: string | null
+          id?: number
+          name?: string
+          rating?: number
+          slope?: number
+        }
+      }
       trip_players: {
         Row: {
-          handicap: number
-          name: string
           player_id: number
           trip_id: number
         }
         Insert: {
-          handicap: number
-          name: string
-          player_id?: number
+          player_id: number
           trip_id: number
         }
         Update: {
-          handicap?: number
-          name?: string
           player_id?: number
           trip_id?: number
         }
       }
       trips: {
         Row: {
-          created_at: string
           end_date: string | null
           id: number
-          name: string
+          name: string | null
           start_date: string | null
         }
         Insert: {
-          created_at?: string
           end_date?: string | null
           id?: number
-          name: string
+          name?: string | null
           start_date?: string | null
         }
         Update: {
-          created_at?: string
           end_date?: string | null
           id?: number
-          name?: string
+          name?: string | null
           start_date?: string | null
         }
       }
@@ -80,10 +203,7 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      install_available_extensions_and_test: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
