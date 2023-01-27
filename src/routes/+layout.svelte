@@ -26,6 +26,15 @@
 		});
 	}
 
+	async function localOtpSignIn() {
+		const { data, error } = await supabase.auth.signInWithOtp({
+			email: import.meta.env.VITE_LOCAL_TEST_EMAIL,
+			options: {
+				emailRedirectTo: window.location.origin
+			}
+		});
+	}
+
 	async function signout() {
 		const { error } = await supabase.auth.signOut();
 		if (!error) window.location.reload();
@@ -43,7 +52,11 @@
 	<slot />
 {:else}
 	<div class="auth-button login">
-		<Button on:click={signInWithGoogle}>Login</Button>
+		{#if import.meta.env.DEV}
+			<Button on:click={localOtpSignIn}>Login</Button>
+		{:else}
+			<Button on:click={signInWithGoogle}>Login</Button>
+		{/if}
 	</div>
 {/if}
 
