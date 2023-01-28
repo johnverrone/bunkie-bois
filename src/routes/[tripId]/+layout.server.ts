@@ -22,9 +22,16 @@ export const load = (async (event) => {
 	}
 
 	const { data: tripPlayersData, error: tripPlayersError } = await supabaseClient
-		.from('trip_players')
-		.select()
-		.eq('trip_id', params.tripId);
+		.from('players')
+		.select(`
+			id,
+			name,
+			handicap,
+			trips (
+				id
+			)
+		`)
+		.eq('trips.id', params.tripId);
 
 	if (tripPlayersError) {
 		throw error(500, {
@@ -33,14 +40,23 @@ export const load = (async (event) => {
 	}
 
 	const tripPlayers = tripPlayersData.map((player) => ({
-		id: player.player_id,
+		id: player.id,
 		name: player.name,
 		handicap: player.handicap
 	}));
 
 	const { data: roundsData, error: roundsError } = await supabaseClient
 		.from('rounds')
-		.select()
+		.select(`
+			id,
+			trip_id,
+			courses!inner (
+				id,
+				name
+			),
+			name,
+			date
+		`)
 		.eq('trip_id', params.tripId);
 
 	if (roundsError) {
@@ -49,9 +65,10 @@ export const load = (async (event) => {
 		});
 	}
 
-	const rounds = roundsData.map(({ id, name, date }) => ({
+	const rounds = roundsData.map(({ id, name, date, courses }) => ({
 		id,
 		name,
+		courseName: Array.isArray(courses) ? courses[0]?.name : courses?.name,
 		date: date ? new Date(date) : null
 	}));
 
