@@ -1,6 +1,6 @@
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { error, redirect } from '@sveltejs/kit';
-import type { LayoutServerLoad } from './$types';
+import type { LayoutLoad } from './$types';
 
 export const load = (async (event) => {
 	const { session, supabaseClient } = await getSupabase(event);
@@ -74,13 +74,12 @@ export const load = (async (event) => {
 
 	if (trip) {
 		return {
-			id: trip.id,
-			name: trip.name,
 			title: trip.name,
+			trip,
 			tripPlayers,
 			rounds
 		};
 	}
 
 	throw error(404, 'Trip not found');
-}) satisfies LayoutServerLoad;
+}) satisfies LayoutLoad;

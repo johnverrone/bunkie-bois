@@ -15,10 +15,13 @@
 	<ul>
 		{#each data.rounds as round}
 			<li>
-				<a href={`/${data.id}/rounds/${round.id}`}>
+				<a href={`/trips/${data.trip.id}/rounds/${round.id}`}>
 					<div class="action-menu-container">
 						<button
-							use:popover={{ component: RoundMenu, props: { tripId: data.id, roundId: round.id } }}
+							use:popover={{
+								component: RoundMenu,
+								props: { tripId: data.trip.id, roundId: round.id }
+							}}
 						>
 							<Icon name="more-vertical" />
 						</button>
@@ -39,7 +42,7 @@
 {/if}
 
 {#if addRoundMode}
-	<RoundConfig onClose={() => (addRoundMode = false)} id={data.id} />
+	<RoundConfig onClose={() => (addRoundMode = false)} id={data.trip.id} />
 {:else}
 	<Button on:click={() => (addRoundMode = true)}>
 		<div class="button-contents">

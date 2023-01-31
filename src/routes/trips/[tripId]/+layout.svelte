@@ -1,20 +1,20 @@
 <script lang="ts">
-	import type { LayoutServerData } from './$types';
+	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 	import PageTitle from '@components/PageTitle.svelte';
 
-	export let data: LayoutServerData;
+	export let data: LayoutData;
 </script>
 
-<PageTitle>{data.name}</PageTitle>
+<PageTitle>{data.trip.name}</PageTitle>
 
 <nav>
 	<ul class="tabs">
-		<li class="tab-item" class:active={$page.route.id?.startsWith('/[tripId]/rounds')}>
-			<a href={`/${data.id}/rounds`}>Rounds</a>
+		<li class="tab-item" class:active={$page.route.id?.startsWith('/trips/[tripId]/rounds')}>
+			<a href={`/trips/${data.trip.id}/rounds`}>Rounds</a>
 		</li>
-		<li class="tab-item" class:active={$page.route.id?.startsWith('/[tripId]/players')}>
-			<a href={`/${data.id}/players`}>Players</a>
+		<li class="tab-item" class:active={$page.route.id?.startsWith('/trips/[tripId]/players')}>
+			<a href={`/trips/${data.trip.id}/players`}>Players</a>
 		</li>
 	</ul>
 </nav>

@@ -57,7 +57,7 @@
 <div>
 	<nav class="breadcrumbs">
 		<span class="crumb">
-			<a href={`/${data.id}/rounds`}>Rounds</a>
+			<a href={`/trips/${data.trip.id}/rounds`}>Rounds</a>
 		</span>
 		<span>{data.round.name}</span>
 	</nav>

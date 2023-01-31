@@ -126,6 +126,16 @@
 		cursor: pointer;
 	}
 
+	a {
+		text-decoration: none;
+		color: var(--secondary);
+		font-weight: bold;
+
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+
 	.auth-button {
 		position: absolute;
 		top: 10px;

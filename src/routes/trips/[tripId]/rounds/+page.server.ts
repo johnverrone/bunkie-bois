@@ -1,14 +1,7 @@
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { error, fail } from '@sveltejs/kit';
 import { z } from 'zod';
-import type { Actions, PageServerLoad } from './$types';
-
-export const load = (async ({ parent }) => {
-	const { title } = await parent();
-	return {
-		title: `${title} | Rounds`
-	};
-}) satisfies PageServerLoad;
+import type { Actions } from './$types';
 
 export const actions: Actions = {
 	addRound: async (event) => {
@@ -24,8 +17,8 @@ export const actions: Actions = {
 
 		try {
 			const { tripId: trip_id, name } = roundSchema.parse(data);
-			const { error: pgError } = await supabaseClient.from('rounds').insert({ trip_id, name });
-			if (pgError) throw error(500, pgError.message);
+			// const { error: pgError } = await supabaseClient.from('rounds').insert({ trip_id, name });
+			// if (pgError) throw error(500, pgError.message);
 		} catch (error) {
 			return fail(400, { message: `failed to parse round, ${error}` });
 		}
