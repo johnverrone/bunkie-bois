@@ -10,7 +10,7 @@
 <ul>
 	{#if data.courses.length}
 		{#each data.courses as course}
-			<li><a href={`/courses/${course.id}`}> {course.name}</a></li>
+			<li><a href={`/courses/${course.id}`}>{course.name}</a></li>
 		{/each}
 	{:else}
 		<p>no courses yet</p>
