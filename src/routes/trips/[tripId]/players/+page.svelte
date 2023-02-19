@@ -99,7 +99,7 @@
 			<Input
 				type="number"
 				inputmode="numeric"
-				step="0.01"
+				step="0.1"
 				name="handicap"
 				placeholder="20"
 				bind:value={newHandicap}
