@@ -20,9 +20,7 @@
 
 	<div class="button-row">
 		<a href="/trips" class="cancel">Cancel</a>
-		<div class="save">
-			<Button type="submit" fullWidth>Save</Button>
-		</div>
+		<Button type="submit" flexGrow>Save</Button>
 	</div>
 </form>
 
@@ -39,9 +37,10 @@
 			align-items: center;
 			gap: 16px;
 
-			.cancel,
+			.cancel {
 				flex: 1;
 				text-align: center;
 			}
 		}
 	}
+</style>
