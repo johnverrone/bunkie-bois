@@ -19,8 +19,8 @@
 	{#if form?.message}<p class="error">{form.message}</p>{/if}
 
 	<div class="button-row">
-		<a href="/trips">Cancel</a>
-		<Button type="submit">Save</Button>
+		<a href="/trips" class="cancel">Cancel</a>
+		<Button type="submit" flexGrow>Save</Button>
 	</div>
 </form>
 
@@ -34,7 +34,13 @@
 		.button-row {
 			width: 100%;
 			display: flex;
+			align-items: center;
 			gap: 16px;
+
+			.cancel {
+				flex: 1;
+				text-align: center;
+			}
 		}
 	}
 </style>
