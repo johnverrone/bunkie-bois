@@ -1,5 +1,6 @@
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { error, redirect } from '@sveltejs/kit';
+import type { Prettify } from '@utils/typeHelpers';
 import type { LayoutLoad } from './$types';
 
 export const load = (async (event) => {
@@ -45,15 +46,26 @@ export const load = (async (event) => {
 		handicap: player.handicap
 	}));
 
+	const { data: coursesData, error: courseError } = await supabaseClient
+		.from('courses')
+		.select(`
+			id,
+			name
+		`);
+
+	if (courseError) {
+		throw error(500, { message: courseError.message });
+	}
+
+	type Course = Prettify<typeof coursesData[number]>;
+	const courses = coursesData.reduce<Record<string, Course>>((acc, curr) => ({	...acc, [curr.id]: curr }), {});
+
 	const { data: roundsData, error: roundsError } = await supabaseClient
 		.from('rounds')
 		.select(`
 			id,
 			trip_id,
-			courses!inner (
-				id,
-				name
-			),
+			course_id,
 			name,
 			date
 		`)
@@ -65,19 +77,27 @@ export const load = (async (event) => {
 		});
 	}
 
-	const rounds = roundsData.map(({ id, name, date, courses }) => ({
-		id,
-		name,
-		courseName: Array.isArray(courses) ? courses[0]?.name : courses?.name,
-		date: date ? new Date(date) : null
-	}));
+	const rounds = roundsData.map(({ id, name, date, course_id }) => {
+		const course = courses[course_id];
+		if (!course) {
+			throw error(500, { message: `error finding course ${course_id}`});
+		}
+
+		return ({
+			id,
+			name,
+			course,
+			date: date ? new Date(date) : null
+		})
+	});
 
 	if (trip) {
 		return {
 			title: trip.name,
 			trip,
 			tripPlayers,
-			rounds
+			rounds,
+			courses,
 		};
 	}
 
