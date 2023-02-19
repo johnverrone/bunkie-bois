@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let type: 'button' | 'submit' | 'reset' = 'button';
 	export let variant: 'primary' | 'secondary' = 'primary';
-	export let flexGrow: boolean = false;
+	export let fullWidth: boolean = false;
 </script>
 
 <button
@@ -9,7 +9,7 @@
 	{type}
 	class:primary={variant === 'primary'}
 	class:secondary={variant === 'secondary'}
-	class:flexGrow
+	class:fullWidth
 	{...$$restProps}
 >
 	<slot />
@@ -21,8 +21,8 @@
 		padding: 0 6px;
 	}
 
-	.flexGrow {
-		flex: 1;
+	.fullWidth {
+		width: 100%;
 	}
 
 	.primary {
