@@ -1,5 +1,6 @@
 <div class="home-container">
-	<a href="/trips">Go to trips</a>
+	<a href="/trips">Trips</a>
+	<a href="/courses">Courses</a>
 </div>
 
 <style lang="scss">
