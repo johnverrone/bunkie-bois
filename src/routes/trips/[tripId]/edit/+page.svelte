@@ -40,10 +40,8 @@
 			gap: 16px;
 
 			.cancel,
-			.save {
 				flex: 1;
 				text-align: center;
 			}
 		}
 	}
-</style>
