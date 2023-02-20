@@ -2,8 +2,6 @@
 	import { scaleLinear } from 'd3-scale';
 	import { interpolateHsl } from 'd3-interpolate';
 	import { flip } from 'svelte/animate';
-	import Input from '@components/Input.svelte';
-	import Button from '@components/Button.svelte';
 	import { scores } from '@data/scores';
 	import type { PageData } from './$types';
 	import { calculateCourseHandicap } from '@utils/handicap';
@@ -12,13 +10,7 @@
 
 	export let data: PageData;
 
-	let newPlayer: number | undefined;
-	let newScore: number | undefined;
-
-	const par = 72; // getPar(data.scorecard);
-	const yardage = 6000; // getYardage(data.scorecard);
-	const rating = 70.8;
-	const slope = 130;
+	let newPlayerId: number | undefined;
 
 	let showDetails = false;
 	function toggleDetails() {
@@ -41,14 +33,6 @@
 		}))
 		.sort((a, b) => a.score - b.score);
 
-	function logScore() {
-		if (newPlayer && newScore) {
-			scores.set(newPlayer, data.round.id, newScore);
-			newPlayer = undefined;
-			newScore = undefined;
-		}
-	}
-
 	const scoreScale = scaleLinear().domain([70, 150]);
 	const scoreColor = (t: number) =>
 		interpolateHsl('hsl(120, 80%, 50%)', 'hsl(0, 80%, 50%)')(scoreScale(t));
@@ -69,10 +53,8 @@
 		<h5>Round Details</h5>
 		{#if showDetails}
 			<div transition:slide={{ duration: 300 }}>
-				<p>Par: {par}</p>
-				<p>Yardage: {yardage}</p>
-				<p>Rating: {rating}</p>
-				<p>Slope: {slope}</p>
+				<p>Date: {data.round.date?.toLocaleDateString(undefined, { dateStyle: 'medium' })}</p>
+				<p>Course: {data.round.course.name}</p>
 			</div>
 		{/if}
 	</div>
@@ -98,14 +80,14 @@
 	</div>
 </div>
 
-<form class="log-score-form" on:submit|preventDefault={logScore}>
+<div class="log-score-form">
 	<div class="player-column">
 		<label for="new-score-player">Player</label>
 		<select
 			class="player-select"
 			name="new-score-player"
 			id="new-score-player"
-			bind:value={newPlayer}
+			bind:value={newPlayerId}
 		>
 			<option value={undefined}>Select a player</option>
 			{#each data.tripPlayers as player}
@@ -113,19 +95,14 @@
 			{/each}
 		</select>
 	</div>
-	<div>
-		<label for="new-score-score">Score</label>
-		<Input
-			id="new-score-score"
-			type="number"
-			min="60"
-			max="130"
-			inputmode="numeric"
-			bind:value={newScore}
-		/>
-	</div>
-	<Button type="submit">Log Score</Button>
-</form>
+	<a
+		href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${newPlayerId}/scorecard`}
+		class="log-score-button"
+		class:disabled={!newPlayerId}
+	>
+		Log Score
+	</a>
+</div>
 
 <style lang="scss">
 	.breadcrumbs .crumb {
@@ -218,6 +195,15 @@
 
 		.player-column {
 			flex: 3;
+		}
+
+		.log-score-button {
+			line-height: 36px;
+
+			&.disabled {
+				pointer-events: none;
+				color: var(--disabled);
+			}
 		}
 	}
 
