@@ -75,13 +75,20 @@ export const actions = {
 		try {
 			const { tripId, playerId } = deleteSchema.parse(data);
 
-			const { error: pgError } = await supabaseClient
+			const { error: tripPlayerError } = await supabaseClient
 				.from('trip_players')
 				.delete()
 				.eq('trip_id', tripId)
 				.eq('player_id', playerId);
 
-			if (pgError) return fail(500, {message: pgError.message});
+			if (tripPlayerError) return fail(500, {message: tripPlayerError.message});
+
+			const { error: playerError } = await supabaseClient
+				.from('players')
+				.delete()
+				.eq('id', playerId);
+
+			if (playerError) return fail(500, {message: playerError.message});
 		} catch (error) {
 			return fail(400, { message: 'failed to parse ids' });
 		}
