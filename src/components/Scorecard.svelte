@@ -42,6 +42,8 @@
 
 	$: score = front9Total + back9Total;
 
+	$: front9Yards = front9Holes.reduce<number>((acc, curr) => (acc += curr.yardage ?? 0), 0);
+	$: back9Yards = back9Holes.reduce<number>((acc, curr) => (acc += curr.yardage ?? 0), 0);
 	$: front9Par = front9Holes.reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0);
 	$: back9Par = back9Holes.reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0);
 </script>
@@ -55,6 +57,13 @@
 					<th>{hole.hole_number}</th>
 				{/each}
 				<th>Out</th>
+			</tr>
+			<tr>
+				<th>Yards</th>
+				{#each front9Holes as hole}
+					<th>{hole.yardage}</th>
+				{/each}
+				<th>{front9Yards}</th>
 			</tr>
 			<tr>
 				<th>Par</th>
@@ -95,6 +104,14 @@
 				{/each}
 				<th>In</th>
 				<th>Total</th>
+			</tr>
+			<tr>
+				<th>Yards</th>
+				{#each back9Holes as hole}
+					<th>{hole.yardage}</th>
+				{/each}
+				<th>{back9Yards}</th>
+				<th>{front9Yards + back9Yards}</th>
 			</tr>
 			<tr>
 				<th>Par</th>
