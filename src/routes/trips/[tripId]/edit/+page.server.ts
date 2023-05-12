@@ -1,12 +1,12 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { z } from 'zod';
-import { getSupabase } from '@supabase/auth-helpers-sveltekit';
+import { makeSupabaseAPI } from '@api';
 
 export const actions = {
 	updateTrip: async (event) => {
 		const { request } = event;
-		const { session, supabaseClient } = await getSupabase(event);
+		const { session, updateTrip } = await makeSupabaseAPI(event);
 		if (!session) return fail(403, { message: 'Unauthorized' });
 
 		const data = Object.fromEntries(await request.formData());
@@ -19,13 +19,7 @@ export const actions = {
 
 		try {
 			const { id, name, startDate, endDate } = tripSchema.parse(data);
-
-			const { error: pgError } = await supabaseClient
-				.from('trips')
-				.update({ name, start_date: startDate.toISOString(), end_date: endDate.toISOString() })
-				.eq('id', id);
-
-			if (pgError) return fail(500, { message: pgError.message });
+			return updateTrip({ id, name, startDate, endDate });
 		} catch (error) {
 			return fail(400, { message: `failed to parse player, ${error}` });
 		}

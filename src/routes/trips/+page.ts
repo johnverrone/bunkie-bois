@@ -1,11 +1,10 @@
-import * as api from '@api';
-import { getSupabase } from '@supabase/auth-helpers-sveltekit';
+import { makeSupabaseAPI}  from '@api';
 import type { PageLoad } from './$types';
 
 export const load = (async (event) => {
-	const { supabaseClient } = await getSupabase(event);
+	const { getTrips } = await makeSupabaseAPI(event);
 	
-	const trips = await api.getTrips(supabaseClient);
+	const trips = await getTrips();
 
 	return {
 		trips

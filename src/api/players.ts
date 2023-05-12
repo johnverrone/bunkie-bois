@@ -1,11 +1,13 @@
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error, fail } from '@sveltejs/kit';
 
-export async function getPlayers(supabaseClient: TypedSupabaseClient, tripId?: string) {
-	const { data, error: dbError } = await supabaseClient
-		.from('players')
-		.select(
-			`
+export function playersAPI(supabaseClient: TypedSupabaseClient) {
+	return {
+		getPlayers: async function (tripId?: string) {
+			const { data, error: dbError } = await supabaseClient
+				.from('players')
+				.select(
+					`
       id, 
       name,
       handicap,
@@ -13,38 +15,31 @@ export async function getPlayers(supabaseClient: TypedSupabaseClient, tripId?: s
         id
       )
     `
-		)
-		.eq('trips.id', tripId);
+				)
+				.eq('trips.id', tripId);
 
-	if (dbError) {
-		throw error(500, {
-			message: dbError.message
-		});
-	}
+			if (dbError) {
+				throw error(500, {
+					message: dbError.message
+				});
+			}
 
-	const tripPlayers = data.map((player) => ({
-		id: player.id,
-		name: player.name,
-		handicap: player.handicap
-	}));
+			const tripPlayers = data.map((player) => ({
+				id: player.id,
+				name: player.name,
+				handicap: player.handicap
+			}));
 
-	return tripPlayers;
-}
+			return tripPlayers;
+		},
+		createPlayer: async function ({ name, handicap }: { name: string; handicap: number }) {
+			const { error: dbError } = await supabaseClient.from('players').insert({ name, handicap });
 
-type NewPlayer = {
-	name: string;
-	handicap: number;
-};
-
-export async function createPlayer(
-	supabaseClient: TypedSupabaseClient,
-	{ name, handicap }: NewPlayer
-) {
-	const { error: dbError } = await supabaseClient.from('players').insert({ name, handicap });
-
-	if (dbError) {
-		return fail(500, {
-			message: dbError.message
-		});
-	}
+			if (dbError) {
+				return fail(500, {
+					message: dbError.message
+				});
+			}
+		}
+	};
 }
