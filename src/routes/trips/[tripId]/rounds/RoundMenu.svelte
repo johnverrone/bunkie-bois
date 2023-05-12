@@ -1,13 +1,11 @@
 <script lang="ts">
 	import Icon from '@components/Icon.svelte';
 	export let id = 'popover';
-	export let tripId: number | undefined;
 	export let roundId: number | undefined;
 </script>
 
 <div {id} class="action-menu">
 	<form method="post" action="?/deleteRound" style="display: inline-block">
-		<input type="hidden" name="tripId" value={tripId} />
 		<input type="hidden" name="roundId" value={roundId} />
 		<button class="delete"><Icon name="trash" /> Delete Round</button>
 	</form>

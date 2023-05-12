@@ -20,7 +20,7 @@
 						<button
 							use:popover={{
 								component: RoundMenu,
-								props: { tripId: data.trip.id, roundId: round.id }
+								props: { roundId: round.id }
 							}}
 						>
 							<Icon name="more-vertical" />
