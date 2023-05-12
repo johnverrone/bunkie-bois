@@ -1,10 +1,11 @@
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
-import { error } from '@sveltejs/kit';
-import { coursesAPI } from './courses';
-import type { Prettify } from '../utils/typeHelpers';
+import { error, fail } from '@sveltejs/kit';
 
 export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 	return {
+		/**
+		 * Get all rounds for a trip
+		 */
 		getRounds: async function (tripId?: string) {
 			const { data: roundsData, error: roundsError } = await supabaseClient
 				.from('rounds')
@@ -25,28 +26,43 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 				});
 			}
 
-			const courses = await coursesAPI(supabaseClient).getCourses();
-			type Course = Prettify<typeof courses[number]>;
-			const coursesById = courses.reduce<Record<string, Course>>(
-				(acc, curr) => ({ ...acc, [curr.id]: curr }),
-				{}
-			);
-
-			const rounds = roundsData.map(({ id, name, date, course_id }) => {
-				const course = coursesById[course_id];
-				if (!course) {
-					throw error(500, { message: `error finding course ${course_id}` });
-				}
-
+			const rounds = roundsData.map(({ date, ...round }) => {
 				return {
-					id,
-					name,
-					course,
+					...round,
 					date: date ? new Date(date) : null
 				};
 			});
 
 			return rounds;
+		},
+
+		/**
+		 * Create new round on trip
+		 */
+		createRound: async function (
+			tripId: number,
+			{ courseId, name, date }: { courseId: number; name: string; date: Date }
+		) {
+			const { error: dbError } = await supabaseClient.from('rounds').insert({
+				trip_id: tripId,
+				course_id: courseId,
+				name,
+				date: date.toISOString()
+			});
+
+			if (dbError) {
+				return fail(500, {
+					message: dbError.message
+				});
+			}
+		},
+
+		/**
+		 * Delete a round by ID
+		 */
+		deleteRound: async function (id: number) {
+			const { error: dbError } = await supabaseClient.from('rounds').delete().eq('id', id);
+			if (dbError) return fail(500, { message: dbError.message });
 		}
 	};
 }

@@ -1,9 +1,10 @@
-import { redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 import { makeSupabaseAPI } from '@api';
+import type { Prettify } from '@utils/typeHelpers';
 
 export const load = (async (event) => {
-	const { session, getTripById, getPlayers, getRounds } = await makeSupabaseAPI(event);
+	const { session, getTripById, getPlayers, getRounds, getCourses } = await makeSupabaseAPI(event);
 	if (!session) throw redirect(303, '/');
 
 	const {
@@ -13,11 +14,31 @@ export const load = (async (event) => {
 	const trip = await getTripById(tripId);
 	const tripPlayers = await getPlayers(tripId);
 	const rounds = await getRounds(tripId);
+	const courses = await getCourses();
+	
+	type Course = Prettify<typeof courses[number]>;
+	const coursesById = courses.reduce<Record<string, Course>>(
+		(acc, curr) => ({ ...acc, [curr.id]: curr }),
+		{}
+	);
+
+	const roundsWithCourseName = rounds.map(({course_id, ...round }) => {
+		const course = coursesById[course_id];
+		if (!course) {
+			throw error(500, { message: `error finding course ${course_id}` });
+		}
+
+		return {
+			...round,
+			course,
+		};
+	});
+
 
 	return {
 		title: trip.name ?? 'unknown',
 		trip,
 		tripPlayers,
-		rounds
+		rounds: roundsWithCourseName
 	};
 }) satisfies LayoutLoad;

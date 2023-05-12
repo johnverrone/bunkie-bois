@@ -4,6 +4,9 @@ import type { ArrayElement, Prettify } from '../utils/typeHelpers';
 
 export function coursesAPI(supabaseClient: TypedSupabaseClient) {
 	return {
+		/**
+		 * Get names of all courses
+		 */
 		getCourses: async function () {
 			const { data, error: dbError } = await supabaseClient.from('courses').select(`
 				id,
@@ -17,6 +20,9 @@ export function coursesAPI(supabaseClient: TypedSupabaseClient) {
 			return data;
 		},
 
+		/**
+		 * Get the details of a single course
+		 */
 		getCourseDetails: async function (courseId: string) {
 			const { data, error: dbError } = await supabaseClient
 				.from('courses')
