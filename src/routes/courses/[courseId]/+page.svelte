@@ -6,7 +6,7 @@
 
 	let selectedTeeBoxId: number | null;
 
-	type TeeBox = typeof data.course['tee_boxes'][number];
+	type TeeBox = (typeof data.course)['tee_boxes'][number];
 	const teeBoxesById = data.course['tee_boxes'].reduce<Record<number, TeeBox>>(
 		(acc, curr) => ({ ...acc, [curr.id]: curr }),
 		{}

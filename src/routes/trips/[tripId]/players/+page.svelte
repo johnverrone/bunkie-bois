@@ -10,7 +10,7 @@
 
 	$: players = data.tripPlayers.sort((a, b) => a.handicap ?? 0 - (b.handicap ?? 0));
 
-	type Player = typeof data.tripPlayers[number];
+	type Player = (typeof data.tripPlayers)[number];
 	type HandicappedPlayer = {
 		[Key in keyof Player]: Exclude<Player[Key], null>;
 	};
