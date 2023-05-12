@@ -3,16 +3,22 @@
 	import Button from '@components/Button.svelte';
 	import Input from '@components/Input.svelte';
 	import Icon from '@components/Icon.svelte';
-	import type { PageData } from './$types';
+	import type { ActionData, PageData } from './$types';
 
 	export let data: PageData;
+	export let form: ActionData;
 
-	$: players = data.tripPlayers.sort((a, b) => a.handicap - b.handicap);
+	$: players = data.tripPlayers.sort((a, b) => a.handicap ?? 0 - (b.handicap ?? 0));
+
+	type Player = typeof data.tripPlayers[number];
+	type HandicappedPlayer = {
+		[Key in keyof Player]: Exclude<Player[Key], null>;
+	};
 
 	let addPlayerMode = false;
 	let newName: string | undefined;
 	let newHandicap: number | undefined;
-	let editingPlayer: typeof data.tripPlayers[number] | null;
+	let editingPlayer: HandicappedPlayer | null;
 
 	function focus(el: HTMLInputElement) {
 		el.focus();
@@ -21,6 +27,7 @@
 
 <div>
 	<h5 class="header">Handicaps</h5>
+	{#if form?.message}<p class="error">{form.message}</p>{/if}
 	<ul>
 		{#each players as player}
 			<li>
@@ -32,7 +39,7 @@
 						use:clickOutside
 						on:outclick={() => (editingPlayer = null)}
 					>
-						<input type="hidden" name="tripId" value={data.id} />
+						<input type="hidden" name="tripId" value={data.trip.id} />
 						<input type="hidden" name="playerId" value={player.id} />
 						<div class="name">
 							<Input name="name" bind:value={editingPlayer.name}>{player.name}</Input>
@@ -41,7 +48,7 @@
 							<Input
 								type="number"
 								inputmode="numeric"
-								step="0.01"
+								step="0.1"
 								name="handicap"
 								bind:value={editingPlayer.handicap}
 							>
@@ -57,13 +64,13 @@
 					<div class="edit-controls">
 						<span>{player.handicap}</span>
 						<Button
-							on:click={() => (editingPlayer = Object.assign({}, player))}
+							on:click={() => (editingPlayer = Object.assign({ handicap: 0 }, player))}
 							variant="secondary"
 						>
 							<Icon name="edit" />
 						</Button>
 						<form method="post" action="?/deletePlayer" style="display: inline-block">
-							<input type="hidden" name="tripId" value={data.id} />
+							<input type="hidden" name="tripId" value={data.trip.id} />
 							<input type="hidden" name="playerId" value={player.id} />
 							<Button type="submit" variant="secondary">
 								<Icon name="trash" />
@@ -84,16 +91,17 @@
 		use:clickOutside
 		on:outclick={() => (addPlayerMode = false)}
 	>
-		<input type="hidden" name="tripId" value={data.id} />
+		<input type="hidden" name="tripId" value={data.trip.id} />
 		<div class="name">
 			<Input type="text" placeholder="Joe Shmoe" name="name" bind:value={newName} {focus} />
 		</div>
 		<div class="handicap">
 			<Input
 				type="number"
-				placeholder="20"
 				inputmode="numeric"
+				step="0.1"
 				name="handicap"
+				placeholder="20"
 				bind:value={newHandicap}
 			/>
 		</div>
@@ -161,5 +169,9 @@
 		.handicap {
 			flex: 1;
 		}
+	}
+
+	.error {
+		color: red;
 	}
 </style>

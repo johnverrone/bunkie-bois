@@ -1,6 +1,7 @@
 <script lang="ts">
 	export let type: 'button' | 'submit' | 'reset' = 'button';
 	export let variant: 'primary' | 'secondary' = 'primary';
+	export let fullWidth: boolean = false;
 </script>
 
 <button
@@ -8,6 +9,7 @@
 	{type}
 	class:primary={variant === 'primary'}
 	class:secondary={variant === 'secondary'}
+	class:fullWidth
 	{...$$restProps}
 >
 	<slot />
@@ -17,6 +19,10 @@
 	button {
 		height: 36px;
 		padding: 0 6px;
+	}
+
+	.fullWidth {
+		width: 100%;
 	}
 
 	.primary {

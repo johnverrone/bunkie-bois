@@ -1,5 +1,8 @@
 <script lang="ts">
+	import Icon from '@components/Icon.svelte';
 	import PageTitle from '@components/PageTitle.svelte';
+	import TripMenu from './TripMenu.svelte';
+	import { popover } from '@utils/popover';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -11,7 +14,19 @@
 	{#if data.trips.length}
 		{#each data.trips as trip}
 			<li>
-				<a href={`/trips/${trip.id}/rounds`}><h5>{trip.name}</h5></a>
+				<a href={`/trips/${trip.id}/rounds`}>
+					<div class="action-menu-container">
+						<button
+							use:popover={{
+								component: TripMenu,
+								props: { tripId: trip.id }
+							}}
+						>
+							<Icon name="more-vertical" />
+						</button>
+					</div>
+					<h5>{trip.name}</h5></a
+				>
 			</li>
 		{/each}
 	{:else}
@@ -34,6 +49,7 @@
 				text-decoration: none;
 				width: 100%;
 				height: 100%;
+				position: relative;
 
 				display: flex;
 				flex-direction: column;
@@ -45,6 +61,21 @@
 
 				background-color: var(--dp-01);
 			}
+		}
+	}
+
+	.action-menu-container {
+		position: absolute;
+		top: 0;
+		right: 0;
+
+		button {
+			color: var(--primary);
+			background: none;
+			border: none;
+			padding: 10px;
+
+			cursor: pointer;
 		}
 	}
 </style>
