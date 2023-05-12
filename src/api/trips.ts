@@ -3,6 +3,9 @@ import { error, fail } from '@sveltejs/kit';
 
 export function tripsAPI(supabaseClient: TypedSupabaseClient) {
 	return {
+		/**
+		 * Get all trips
+		 */
 		getTrips: async function () {
 			const { data, error: dbError } = await supabaseClient.from('trips').select();
 
@@ -15,6 +18,9 @@ export function tripsAPI(supabaseClient: TypedSupabaseClient) {
 			return data;
 		},
 
+		/**
+		 * Get a single trip by ID
+		 */
 		getTripById: async function (tripId: string) {
 			const { data, error: dbError } = await supabaseClient
 				.from('trips')
@@ -31,6 +37,10 @@ export function tripsAPI(supabaseClient: TypedSupabaseClient) {
 
 			return data;
 		},
+
+		/**
+		 * Create a trip
+		 */
 		createTrip: async function (name: string) {
 			const { error: dbError } = await supabaseClient.from('trips').insert({ name });
 
@@ -40,6 +50,10 @@ export function tripsAPI(supabaseClient: TypedSupabaseClient) {
 				});
 			}
 		},
+
+		/**
+		 * Update a trip's name, startDate, or endDate
+		 */
 		updateTrip: async function ({
 			id,
 			name,
@@ -56,6 +70,14 @@ export function tripsAPI(supabaseClient: TypedSupabaseClient) {
 				.update({ name, start_date: startDate?.toISOString(), end_date: endDate?.toISOString() })
 				.eq('id', id);
 
+			if (dbError) return fail(500, { message: dbError.message });
+		},
+
+		/**
+		 * Delete a trip by ID
+		 */
+		deleteTrip: async function (id: string) {
+			const { error: dbError } = await supabaseClient.from('trips').delete().eq('id', id);
 			if (dbError) return fail(500, { message: dbError.message });
 		}
 	};
