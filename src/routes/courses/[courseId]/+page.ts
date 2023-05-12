@@ -3,12 +3,13 @@ import type { PageLoad } from './$types';
 
 export const load = (async (event) => {
 	const { getCourseDetails } = await makeSupabaseAPI(event);
-  const { params: { courseId } } = event;
+	const {
+		params: { courseId }
+	} = event;
 
-  const course = await getCourseDetails(courseId);
+	const course = await getCourseDetails(courseId);
 
-  return {
-    course,
-  }
-
+	return {
+		course
+	};
 }) satisfies PageLoad;

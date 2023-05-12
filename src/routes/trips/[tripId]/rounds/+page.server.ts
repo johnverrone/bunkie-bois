@@ -3,7 +3,7 @@ import { error, fail } from '@sveltejs/kit';
 import { z } from 'zod';
 import type { Actions } from './$types';
 
-export const actions: Actions = {
+export const actions = {
 	addRound: async (event) => {
 		const { request } = event;
 		const { session, supabaseClient } = await getSupabase(event);
@@ -47,4 +47,4 @@ export const actions: Actions = {
 			return fail(400, { message: `failed to parse ids, ${error}` });
 		}
 	}
-};
+} satisfies Actions;

@@ -14,7 +14,7 @@ export const actions = {
 			id: z.coerce.number(),
 			name: z.string(),
 			startDate: z.coerce.date(),
-      endDate: z.coerce.date(),
+			endDate: z.coerce.date()
 		});
 
 		try {
@@ -23,5 +23,5 @@ export const actions = {
 		} catch (error) {
 			return fail(400, { message: `failed to parse player, ${error}` });
 		}
-	},
+	}
 } satisfies Actions;

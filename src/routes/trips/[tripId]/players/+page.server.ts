@@ -19,13 +19,12 @@ export const actions = {
 		try {
 			const { tripId, name, handicap } = playerSchema.parse(data);
 
-			const { playerId, error: createPlayerMessage } = await createPlayer({name, handicap});
+			const { playerId, error: createPlayerMessage } = await createPlayer({ name, handicap });
 			if (!playerId) {
-				return fail(500, { message: `failed to create player, ${createPlayerMessage}`})
+				return fail(500, { message: `failed to create player, ${createPlayerMessage}` });
 			}
 
 			return addPlayerToTrip(playerId, tripId);
-
 		} catch (error) {
 			return fail(400, { message: `failed to parse player, ${error}` });
 		}
