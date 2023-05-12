@@ -82,6 +82,7 @@
 		--primary: hsl(106deg 19% 55%);
 		--secondary: hsl(105deg 90% 80%);
 		--destructive: hsl(60deg 90% 70%);
+		--disabled: hsl(0deg 0% 50%);
 
 		background-color: var(--background);
 		color: var(--foreground);

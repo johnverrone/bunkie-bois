@@ -1,83 +1,95 @@
 <script lang="ts">
-	import { scorecardsById } from '../data/course';
+	type TeeBox = {
+		id: number;
+		name: string;
+		course_id: number;
+		rating: number;
+		slope: number;
+		hole_info: {
+			tee_box_id: number;
+			hole_number: number;
+			par: number;
+			yardage: number;
+			handicap: number;
+		}[];
+	};
 
-	const scorecard = scorecardsById['crown-park']!;
+	export let courseTeeBox: TeeBox;
 
-	const front9Score = scorecard.front9;
-	const back9Score = scorecard.back9;
+	$: holes = courseTeeBox.hole_info;
+	$: front9Holes = holes.filter((hole) => hole.hole_number <= 9);
+	$: back9Holes = holes.filter((hole) => hole.hole_number > 9);
 
-	const front9HoleNumbers = Object.keys(front9Score);
-	const front9HoleDetails = Object.values(front9Score);
-	const back9HoleNumbers = Object.keys(back9Score);
-	const back9HoleDetails = Object.values(back9Score);
+	let front9Form: Record<number, number> = {};
+	let front9Inputs: Record<number, HTMLInputElement> = {};
+	let back9Form: Record<number, number> = {};
+	let back9Inputs: Record<number, HTMLInputElement> = {};
 
-	function range(size: number, startAt = 0) {
-		return [...Array(size).keys()].map((i) => i + startAt);
+	function maybeMoveNext(event: KeyboardEvent, next: number) {
+		const t = event.target as HTMLInputElement;
+		if (!/^[0-9]$/i.test(event.key)) return;
+		if (parseInt(t.value) > 1 || t.value.length >= 2) {
+			if (next <= 9) {
+				front9Inputs[next]?.focus();
+			} else if (next <= 18) {
+				back9Inputs[next]?.focus();
+			}
+		}
 	}
 
-	$: front9Total = Object.values(front9Score).reduce<number>(
-		(acc, curr) => (acc += curr.score ?? 0),
-		0
-	);
-	$: back9Total = Object.values(back9Score).reduce<number>(
-		(acc, curr) => (acc += curr.score ?? 0),
-		0
-	);
+	$: front9Total = Object.values(front9Form).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
+	$: back9Total = Object.values(back9Form).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
 
-	$: front9Par = Object.values(front9Score).reduce<number>(
-		(acc, curr) => (acc += curr.par ?? 0),
-		0
-	);
-	$: back9Par = Object.values(back9Score).reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0);
+	$: score = front9Total + back9Total;
+
+	$: front9Yards = front9Holes.reduce<number>((acc, curr) => (acc += curr.yardage ?? 0), 0);
+	$: back9Yards = back9Holes.reduce<number>((acc, curr) => (acc += curr.yardage ?? 0), 0);
+	$: front9Par = front9Holes.reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0);
+	$: back9Par = back9Holes.reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0);
 </script>
 
-<h2>this is a scorecard</h2>
 <div class="scorecard">
 	<table id="front9">
 		<thead>
-			<th>Hole</th>
-			{#each front9HoleNumbers as hole}
-				<th>{hole}</th>
-			{/each}
-			<th>Out</th>
+			<tr>
+				<th>Hole</th>
+				{#each front9Holes as hole}
+					<th>{hole.hole_number}</th>
+				{/each}
+				<th>Out</th>
+			</tr>
+			<tr>
+				<th>Yards</th>
+				{#each front9Holes as hole}
+					<th>{hole.yardage}</th>
+				{/each}
+				<th>{front9Yards}</th>
+			</tr>
+			<tr>
+				<th>Par</th>
+				{#each front9Holes as hole}
+					<th>{hole.par}</th>
+				{/each}
+				<th>{front9Par}</th>
+			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>Par</td>
-				{#each front9HoleDetails as hole}
-					<th>{hole.par}</th>
-				{/each}
-				<td>{front9Par}</td>
-			</tr>
-			<tr>
 				<td>Score</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[1]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[2]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[3]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[4]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[5]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[6]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[7]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[8]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={front9Score[9]} />
-				</td>
+				{#each front9Holes as hole}
+					<td>
+						<input
+							type="number"
+							inputmode="numeric"
+							autocomplete="off"
+							min="1"
+							max="9"
+							bind:value={front9Form[hole.hole_number]}
+							bind:this={front9Inputs[hole.hole_number]}
+							on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}
+						/>
+					</td>
+				{/each}
 				<td>{front9Total}</td>
 			</tr>
 		</tbody>
@@ -85,84 +97,94 @@
 
 	<table id="back9">
 		<thead>
-			<th>Hole</th>
-			{#each back9HoleNumbers as hole}
-				<th>{hole}</th>
-			{/each}
-			<th>In</th>
+			<tr>
+				<th>Hole</th>
+				{#each back9Holes as hole}
+					<th>{hole.hole_number}</th>
+				{/each}
+				<th>In</th>
+				<th>Total</th>
+			</tr>
+			<tr>
+				<th>Yards</th>
+				{#each back9Holes as hole}
+					<th>{hole.yardage}</th>
+				{/each}
+				<th>{back9Yards}</th>
+				<th>{front9Yards + back9Yards}</th>
+			</tr>
+			<tr>
+				<th>Par</th>
+				{#each back9Holes as hole}
+					<th>{hole.par}</th>
+				{/each}
+				<th>{back9Par}</th>
+				<th>{front9Par + back9Par}</th>
+			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td>Par</td>
-				{#each back9HoleDetails as hole}
-					<th>{hole.par}</th>
-				{/each}
-				<td>{back9Par}</td>
-			</tr>
-			<tr>
 				<td>Score</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[10]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[11]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[12]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[13]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[14]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[15]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[16]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[17]} />
-				</td>
-				<td>
-					<input type="number" autocomplete="off" min="1" max="9" bind:value={back9Score[18]} />
-				</td>
+				{#each back9Holes as hole}
+					<td>
+						<input
+							type="number"
+							inputmode="numeric"
+							autocomplete="off"
+							min="1"
+							max="9"
+							bind:value={back9Form[hole.hole_number]}
+							bind:this={back9Inputs[hole.hole_number]}
+							on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}
+						/>
+					</td>
+				{/each}
 				<td>{back9Total}</td>
+				<td>{score}</td>
 			</tr>
 		</tbody>
 	</table>
 </div>
 
-<style>
+<style lang="scss">
+	#front9 {
+		margin-bottom: 16px;
+	}
+
 	.scorecard {
-		width: 500px;
-		margin: 0 auto;
+		overflow-x: auto;
+
+		table {
+			table-layout: fixed;
+			border-collapse: collapse;
+
+			th {
+				min-width: 50px;
+			}
+
+			td {
+				text-align: center;
+				background-color: var(--dp-02);
+				input[type='number'] {
+					width: 100%;
+					border: none;
+					outline: none;
+					text-align: center;
+					background-color: unset;
+					color: var(--secondary);
+					font-weight: bold;
+				}
+			}
+		}
 	}
 
-	table {
-		table-layout: fixed;
-	}
-
-	table,
 	th,
 	td {
 		border: thin solid;
-		padding: 5px;
+		padding: 10px;
 	}
 
-	td {
-		text-align: center;
-	}
-
-	td input[type='number'] {
-		width: 100%;
-		border: none;
-		outline: none;
-		text-align: center;
-	}
-
-	input::-webkit-outer-spin-button,
+	td input::-webkit-outer-spin-button,
 	input::-webkit-inner-spin-button {
 		-webkit-appearance: none;
 		margin: 0;
