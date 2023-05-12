@@ -50,11 +50,8 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 				date: date.toISOString()
 			});
 
-			if (dbError) {
-				return fail(500, {
-					message: dbError.message
-				});
-			}
+			if (dbError) return { error: dbError.message };
+			return { success: true };
 		},
 
 		/**
