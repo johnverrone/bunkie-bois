@@ -100,6 +100,64 @@ export function playersAPI(supabaseClient: TypedSupabaseClient) {
 				.eq('id', playerId);
 
 			if (playerError) return fail(500, { message: playerError.message });
+		},
+
+		/**
+		 * Log score for a player
+		 */
+		logScore: async function ({
+			playerId,
+			roundId,
+			teeBoxId,
+			courseHandicap,
+			scores
+		}: {
+			playerId: number;
+			roundId: number;
+			teeBoxId: number;
+			courseHandicap: number;
+			scores: { [key: number]: number };
+		}) {
+			// create scorecard entry
+			const { data, error: scorecardError } = await supabaseClient
+				.from('scorecards')
+				.insert({
+					player_id: playerId,
+					round_id: roundId,
+					tee_box_id: teeBoxId,
+					player_handicap: courseHandicap
+				})
+				.select('id')
+				.single();
+
+			if (scorecardError) {
+				return {
+					ok: false as const,
+					error: scorecardError.message
+				};
+			}
+			const scorecardId = data.id;
+
+			// add scores to hole_scores
+			const scoresToInsert = Object.entries(scores).map(([holeNumber, score]) => ({
+				scorecard_id: scorecardId,
+				hole_number: parseInt(holeNumber),
+				score
+			}));
+			const { error: holeScoresError } = await supabaseClient
+				.from('hole_scores')
+				.insert(scoresToInsert);
+
+			if (holeScoresError) {
+				return {
+					ok: false as const,
+					error: holeScoresError.message
+				};
+			}
+
+			return {
+				ok: true
+			};
 		}
 	};
 }

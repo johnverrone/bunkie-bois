@@ -38,6 +38,7 @@ export const load = (async (event) => {
 		title: trip.name ?? 'unknown',
 		trip,
 		tripPlayers,
-		rounds: roundsWithCourseName
+		rounds: roundsWithCourseName,
+		courses: courses
 	};
 }) satisfies LayoutLoad;

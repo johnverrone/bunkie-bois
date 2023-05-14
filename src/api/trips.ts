@@ -41,14 +41,31 @@ export function tripsAPI(supabaseClient: TypedSupabaseClient) {
 		/**
 		 * Create a trip
 		 */
-		createTrip: async function (name: string) {
-			const { error: dbError } = await supabaseClient.from('trips').insert({ name });
+		createTrip: async function ({
+			name,
+			startDate,
+			endDate
+		}: {
+			name: string;
+			startDate: Date;
+			endDate: Date;
+		}) {
+			const { data, error: dbError } = await supabaseClient
+				.from('trips')
+				.insert({ name, start_date: startDate.toISOString(), end_date: endDate.toISOString() })
+				.select('id')
+				.single();
 
 			if (dbError) {
-				return fail(500, {
-					message: dbError.message
-				});
+				return {
+					ok: false as const,
+					error: dbError.message
+				};
 			}
+			return {
+				ok: true,
+				id: data.id
+			};
 		},
 
 		/**
@@ -70,7 +87,15 @@ export function tripsAPI(supabaseClient: TypedSupabaseClient) {
 				.update({ name, start_date: startDate?.toISOString(), end_date: endDate?.toISOString() })
 				.eq('id', id);
 
-			if (dbError) return fail(500, { message: dbError.message });
+			if (dbError) {
+				return {
+					ok: false as const,
+					error: dbError.message
+				};
+			}
+			return {
+				ok: true
+			};
 		},
 
 		/**

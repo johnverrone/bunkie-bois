@@ -8,33 +8,48 @@
 	export let data: PageData;
 </script>
 
-<PageTitle>Golf Trips</PageTitle>
+<PageTitle><a href="/">Golf Trips</a></PageTitle>
 
-<ul>
+<div class="trips-container">
 	{#if data.trips.length}
-		{#each data.trips as trip}
-			<li>
-				<a href={`/trips/${trip.id}/rounds`}>
-					<div class="action-menu-container">
-						<button
-							use:popover={{
-								component: TripMenu,
-								props: { tripId: trip.id }
-							}}
-						>
-							<Icon name="more-vertical" />
-						</button>
-					</div>
-					<h5>{trip.name}</h5></a
-				>
-			</li>
-		{/each}
+		<ul>
+			{#each data.trips as trip}
+				<li>
+					<a href={`/trips/${trip.id}/rounds`}>
+						<div class="action-menu-container">
+							<button
+								use:popover={{
+									component: TripMenu,
+									props: { tripId: trip.id }
+								}}
+							>
+								<Icon name="more-vertical" />
+							</button>
+						</div>
+						<h5>{trip.name}</h5></a
+					>
+				</li>
+			{/each}
+		</ul>
 	{:else}
 		<p>no trips yet</p>
 	{/if}
-</ul>
+
+	<a href={`/trips/create`}>
+		<div class="button-contents">
+			<Icon name="plus" />
+			Add trip
+		</div>
+	</a>
+</div>
 
 <style lang="scss">
+	.trips-container {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
 	ul {
 		display: flex;
 		flex-direction: column;
@@ -62,6 +77,13 @@
 				background-color: var(--dp-01);
 			}
 		}
+	}
+
+	.button-contents {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
 	}
 
 	.action-menu-container {

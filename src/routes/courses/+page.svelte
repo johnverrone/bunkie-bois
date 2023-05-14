@@ -5,7 +5,7 @@
 	export let data: PageData;
 </script>
 
-<PageTitle>Courses</PageTitle>
+<PageTitle><a href="/">Courses</a></PageTitle>
 
 <ul>
 	{#if data.courses.length}

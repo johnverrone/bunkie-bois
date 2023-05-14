@@ -2,12 +2,11 @@
 	import Button from '@components/Button.svelte';
 	import Input from '@components/Input.svelte';
 	import type { ActionData, PageData } from './$types';
-	import { randomGolfCourse } from '@utils/golf';
 
 	export let data: PageData;
 	export let form: ActionData;
 
-	let tripName: string | undefined;
+	let roundName: string | undefined;
 	let courseId: number | undefined;
 	let date: string | undefined;
 </script>
@@ -15,10 +14,16 @@
 <form class="round-form" method="post" action="?/createRound">
 	<input type="hidden" name="tripId" value={data.trip.id} />
 	<div class="name">
-		<Input type="text" placeholder={randomGolfCourse()} name="name" bind:value={tripName} />
+		<Input type="text" placeholder={'round name'} name="name" bind:value={roundName} />
 	</div>
 
-	<Input type="number" name="courseId" bind:value={courseId} />
+	<select class="course-select" name="courseId" id="course-select" bind:value={courseId}>
+		<option value={undefined}>Select a course</option>
+		{#each data.courses as course}
+			<option value={course.id}>{course.name}</option>
+		{/each}
+	</select>
+
 	<Input type="date" name="date" bind:value={date} />
 
 	{#if form?.message}<p class="error">{form.message}</p>{/if}
@@ -45,6 +50,18 @@
 				flex: 1;
 				text-align: center;
 			}
+		}
+
+		.course-select {
+			height: 36px;
+			background-color: var(--dp-12);
+			color: #fefefe;
+			border: none;
+			border-radius: 4px;
+			padding: 2px 4px;
+			outline-color: var(--primary);
+			outline-style: solid;
+			outline-width: 1px;
 		}
 	}
 </style>

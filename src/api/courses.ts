@@ -23,28 +23,28 @@ export function coursesAPI(supabaseClient: TypedSupabaseClient) {
 		/**
 		 * Get the details of a single course
 		 */
-		getCourseDetails: async function (courseId: string) {
+		getCourseDetails: async function (courseId: number) {
 			const { data, error: dbError } = await supabaseClient
 				.from('courses')
 				.select(
 					`
-				id,
-				name,
-				tee_boxes (
-					id,
-					course_id,
-					name,
-					rating,
-					slope,
-					hole_info (
-						tee_box_id,
-						hole_number,
-						par,
-						yardage,
-						handicap
-					)
-				)
-			`
+						id,
+						name,
+						tee_boxes (
+							id,
+							course_id,
+							name,
+							rating,
+							slope,
+							hole_info (
+								tee_box_id,
+								hole_number,
+								par,
+								yardage,
+								handicap
+							)
+						)
+					`
 				)
 				.eq('id', courseId)
 				.limit(1)
