@@ -1,50 +1,15 @@
-import { getSupabase } from '@supabase/auth-helpers-sveltekit';
-import { error } from '@sveltejs/kit';
-import type { ArrayElement, Prettify } from '@utils/typeHelpers';
+import { makeSupabaseAPI } from '@api';
 import type { PageLoad } from './$types';
 
 export const load = (async (event) => {
-	const { supabaseClient } = await getSupabase(event);
-  const { params } = event;
+	const { getCourseDetails } = await makeSupabaseAPI(event);
+	const {
+		params: { courseId }
+	} = event;
 
-	const { data, error: dbError } = await supabaseClient
-    .from('courses')
-    .select(`
-      id,
-      name,
-      tee_boxes (
-        id,
-        course_id,
-        name,
-        rating,
-        slope,
-        hole_info (
-          tee_box_id,
-          hole_number,
-          par,
-          yardage,
-          handicap
-        )
-      )
-    `)
-    .eq('id', params.courseId)
-    .limit(1)
-    .single();
-
-	if (dbError) {
-		throw error(500, {
-			message: dbError.message
-		});
-	}
-
-  // TODO: workaround until this is implemented: https://github.com/supabase/postgrest-js/issues/303
-  type ResultRow = typeof data;
-  type PatchedHoleInfo = Prettify<ArrayElement<ArrayElement<ResultRow['tee_boxes']>['hole_info']>>;
-  type PatchedTeeBoxes = Prettify<Omit<ArrayElement<ResultRow['tee_boxes']>, 'hole_info'> & { 'hole_info': PatchedHoleInfo[] }>;
-  type PatchedResult = Prettify<Omit<ResultRow, 'tee_boxes'> & { 'tee_boxes': PatchedTeeBoxes[] }>;
-
+	const course = await getCourseDetails(courseId);
 
 	return {
-		course: data as PatchedResult
+		course
 	};
 }) satisfies PageLoad;

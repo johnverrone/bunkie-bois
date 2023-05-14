@@ -10,6 +10,7 @@ const config = {
 	kit: {
 		adapter: vercel(),
 		alias: {
+			'@api': 'src/api',
 			'@components': 'src/components',
 			'@data': 'src/data',
 			'@utils': 'src/utils'

@@ -1,12 +1,12 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { z } from 'zod';
-import { getSupabase } from '@supabase/auth-helpers-sveltekit';
+import { makeSupabaseAPI } from '@api';
 
 export const actions = {
 	addPlayer: async (event) => {
 		const { request } = event;
-		const { session, supabaseClient } = await getSupabase(event);
+		const { session, createPlayer, addPlayerToTrip } = await makeSupabaseAPI(event);
 		if (!session) return fail(403, { message: 'Unauthorized' });
 
 		const data = Object.fromEntries(await request.formData());
@@ -19,26 +19,19 @@ export const actions = {
 		try {
 			const { tripId, name, handicap } = playerSchema.parse(data);
 
-			const { data: player, error: pgError } = await supabaseClient
-				.from('players')
-				.insert({ name, handicap })
-				.select('id')
-				.single();
+			const { playerId, error: createPlayerMessage } = await createPlayer({ name, handicap });
+			if (!playerId) {
+				return fail(500, { message: `failed to create player, ${createPlayerMessage}` });
+			}
 
-			if (pgError) return fail(500, { message: pgError.message });
-
-			const { error: tripPlayerError } = await supabaseClient
-				.from('trip_players')
-				.insert({ player_id: player.id, trip_id: tripId });
-
-			if (tripPlayerError) return fail(500, { message: tripPlayerError.message});
+			return addPlayerToTrip(playerId, tripId);
 		} catch (error) {
 			return fail(400, { message: `failed to parse player, ${error}` });
 		}
 	},
 	updatePlayer: async (event) => {
 		const { request } = event;
-		const { session, supabaseClient } = await getSupabase(event);
+		const { session, updatePlayer } = await makeSupabaseAPI(event);
 		if (!session) return fail(403, { message: 'Unauthorized' });
 
 		const data = Object.fromEntries(await request.formData());
@@ -51,19 +44,14 @@ export const actions = {
 		try {
 			const { playerId, name, handicap } = playerSchema.parse(data);
 
-			const { error: pgError } = await supabaseClient
-				.from('players')
-				.update({ name, handicap })
-				.eq('id', playerId);
-
-			if (pgError) return fail(500, { message: pgError.message});
+			return updatePlayer(playerId, { name, handicap });
 		} catch (error) {
 			return fail(400, { message: `failed to parse player, ${error}` });
 		}
 	},
 	deletePlayer: async (event) => {
 		const { request } = event;
-		const { session, supabaseClient } = await getSupabase(event);
+		const { session, deletePlayer } = await makeSupabaseAPI(event);
 		if (!session) return fail(403, { message: 'Unauthorized' });
 
 		const data = Object.fromEntries(await request.formData());
@@ -75,20 +63,7 @@ export const actions = {
 		try {
 			const { tripId, playerId } = deleteSchema.parse(data);
 
-			const { error: tripPlayerError } = await supabaseClient
-				.from('trip_players')
-				.delete()
-				.eq('trip_id', tripId)
-				.eq('player_id', playerId);
-
-			if (tripPlayerError) return fail(500, {message: tripPlayerError.message});
-
-			const { error: playerError } = await supabaseClient
-				.from('players')
-				.delete()
-				.eq('id', playerId);
-
-			if (playerError) return fail(500, {message: playerError.message});
+			return deletePlayer(tripId, playerId);
 		} catch (error) {
 			return fail(400, { message: 'failed to parse ids' });
 		}

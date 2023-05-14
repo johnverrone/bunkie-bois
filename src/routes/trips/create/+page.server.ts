@@ -1,17 +1,16 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { z } from 'zod';
 import { makeSupabaseAPI } from '@api';
+import { z } from 'zod';
 
 export const actions = {
-	updateTrip: async (event) => {
+	createTrip: async (event) => {
 		const { request } = event;
-		const { session, updateTrip } = await makeSupabaseAPI(event);
-		if (!session) return fail(403, { message: 'Unauthorized' });
+		const { session, createTrip } = await makeSupabaseAPI(event);
+		if (!session) throw error(403, { message: 'Unauthorized' });
 
 		const data = Object.fromEntries(await request.formData());
 		const tripSchema = z.object({
-			id: z.coerce.number(),
 			name: z.string(),
 			startDate: z.coerce.date(),
 			endDate: z.coerce.date()
@@ -21,13 +20,13 @@ export const actions = {
 		try {
 			trip = tripSchema.parse(data);
 		} catch (error) {
-			return fail(400, { message: `failed to parse player, ${error}` });
+			return fail(400, { message: 'invalid round config' });
 		}
 
-		const result = await updateTrip(trip);
+		const result = await createTrip(trip);
 		if (!result.ok) {
 			return fail(500, { message: result.error });
 		}
-		throw redirect(303, `/trips/${trip.id}/rounds`);
+		throw redirect(303, `/trips/${result.id}/rounds`);
 	}
 } satisfies Actions;

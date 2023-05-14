@@ -84,6 +84,7 @@
 							autocomplete="off"
 							min="1"
 							max="9"
+							name={`hole-${hole.hole_number}-score`}
 							bind:value={front9Form[hole.hole_number]}
 							bind:this={front9Inputs[hole.hole_number]}
 							on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}
@@ -133,6 +134,7 @@
 							autocomplete="off"
 							min="1"
 							max="9"
+							name={`hole-${hole.hole_number}-score`}
 							bind:value={back9Form[hole.hole_number]}
 							bind:this={back9Inputs[hole.hole_number]}
 							on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}

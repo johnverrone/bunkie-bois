@@ -2,9 +2,7 @@
 	import { scaleLinear } from 'd3-scale';
 	import { interpolateHsl } from 'd3-interpolate';
 	import { flip } from 'svelte/animate';
-	import { scores } from '@data/scores';
 	import type { PageData } from './$types';
-	import { calculateCourseHandicap } from '@utils/handicap';
 	import Icon from '@components/Icon.svelte';
 	import { slide } from 'svelte/transition';
 
@@ -17,21 +15,13 @@
 		showDetails = !showDetails;
 	}
 
-	type PlayersById = { [key: string]: typeof data.tripPlayers[number] };
-	$: playersById = data.tripPlayers.reduce<PlayersById>(
-		(acc, curr) => ({ ...acc, [curr.id]: curr }),
-		{}
-	);
-
 	let netScoreToggled: boolean = false;
 
-	$: leaderboard = $scores
-		.filter((player) => player.roundId === data.round.id)
-		.map((score) => ({
-			...playersById[score.playerId]!,
-			score: score.score
-		}))
-		.sort((a, b) => a.score - b.score);
+	$: sortedLeaderboard = data.leaderboard.sort((a, b) => {
+		const aScore = netScoreToggled ? a.score - a.courseHandicap : a.score;
+		const bScore = netScoreToggled ? b.score - b.courseHandicap : b.score;
+		return aScore - bScore;
+	});
 
 	const scoreScale = scaleLinear().domain([70, 150]);
 	const scoreColor = (t: number) =>
@@ -68,11 +58,11 @@
 			</label>
 		</div>
 		<ol class="leaderboard-list">
-			{#each leaderboard as player (player.id)}
+			{#each sortedLeaderboard as player (player.id)}
 				<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
 					<span class="player-name">{player.name}</span>
 					<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
-						{netScoreToggled ? player.score : player.score}
+						{netScoreToggled ? player.score - player.courseHandicap : player.score}
 					</span>
 				</li>
 			{/each}

@@ -6,7 +6,7 @@
 	export let data: LayoutData;
 </script>
 
-<PageTitle>{data.trip.name}</PageTitle>
+<PageTitle><a href="/trips">{data.trip.name}</a></PageTitle>
 
 <nav>
 	<ul class="tabs">
