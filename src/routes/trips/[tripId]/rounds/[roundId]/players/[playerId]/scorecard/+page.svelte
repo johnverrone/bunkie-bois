@@ -53,7 +53,7 @@
 
 	{#if form?.message}<p class="error">{form.message}</p>{/if}
 
-	<Button type="submit" fullWidth>Submit</Button>
+	<Button type="submit" disabled={!selectedTeeBox} fullWidth>Submit</Button>
 </form>
 
 <style lang="scss">

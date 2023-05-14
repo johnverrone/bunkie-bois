@@ -2,14 +2,17 @@
 	export let type: 'button' | 'submit' | 'reset' = 'button';
 	export let variant: 'primary' | 'secondary' = 'primary';
 	export let fullWidth: boolean = false;
+	export let disabled: boolean = false;
 </script>
 
 <button
 	on:click
 	{type}
+	{disabled}
 	class:primary={variant === 'primary'}
 	class:secondary={variant === 'secondary'}
 	class:fullWidth
+	class:disabled
 	{...$$restProps}
 >
 	<slot />
@@ -23,6 +26,13 @@
 
 	.fullWidth {
 		width: 100%;
+	}
+
+	.primary.disabled,
+	.secondary.disabled {
+		pointer-events: none;
+		background-color: var(--dp-02);
+		color: var(--dp-12);
 	}
 
 	.primary {

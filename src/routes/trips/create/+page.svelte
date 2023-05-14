@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '@components/Button.svelte';
 	import Input from '@components/Input.svelte';
+	import PageTitle from '@components/PageTitle.svelte';
 	import type { ActionData } from './$types';
 
 	export let form: ActionData;
@@ -10,11 +11,10 @@
 	let endDate: string | undefined;
 </script>
 
-<form class="round-form" method="post" action="?/createTrip">
-	<div class="name">
-		<Input type="text" name="name" bind:value={tripName} />
-	</div>
+<PageTitle>Create Trip</PageTitle>
 
+<form class="round-form" method="post" action="?/createTrip">
+	<Input type="text" placeholder="Trip name" name="name" bind:value={tripName} />
 	<Input type="date" name="startDate" bind:value={startDate} />
 	<Input type="date" name="endDate" bind:value={endDate} />
 
@@ -30,6 +30,7 @@
 
 <style lang="scss">
 	.round-form {
+		padding: 0 1rem;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;

@@ -18,5 +18,6 @@
 		outline-color: var(--primary);
 		outline-style: solid;
 		outline-width: 1px;
+		color-scheme: dark;
 	}
 </style>
