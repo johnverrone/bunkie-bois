@@ -1,6 +1,6 @@
 import { makeSupabaseAPI } from '@api';
 import type { Actions } from './$types';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { z } from 'zod';
 
 const scorecardSchema = z.object({
@@ -32,7 +32,7 @@ type Scorecard = z.infer<typeof scorecardSchema>;
 
 export const actions = {
 	logScore: async (event) => {
-		const { request } = event;
+		const { request, params } = event;
 		const { session, logScore } = await makeSupabaseAPI(event);
 		if (!session) return fail(403, { message: 'Unauthorized' });
 
@@ -57,6 +57,7 @@ export const actions = {
 		if (!result.ok) {
 			return fail(500, { message: result.error });
 		}
+		throw redirect(303, `/trips/${params.tripId}/rounds/${params.roundId}`);
 	}
 } satisfies Actions;
 
