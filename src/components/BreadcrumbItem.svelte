@@ -8,7 +8,7 @@
 		<a {href}>{label}</a>
 	</span>
 {:else}
-	{label}
+	<span>{label}</span>
 {/if}
 
 <style lang="scss">
