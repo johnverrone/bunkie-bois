@@ -158,6 +158,40 @@ export function playersAPI(supabaseClient: TypedSupabaseClient) {
 			return {
 				ok: true
 			};
+		},
+
+		/**
+		 * Get scorecard for a player's round
+		 */
+		getScorecard: async function ({ playerId, roundId }: { playerId: number; roundId: number }) {
+			const { data: scorecard, error: scorecardError } = await supabaseClient
+				.from('scorecards')
+				.select('*')
+				.eq('player_id', playerId)
+				.eq('round_id', roundId)
+				.single();
+
+			if (scorecardError || !scorecard) {
+				throw error(500, {
+					message: scorecardError.message || 'error fetching scorecard'
+				});
+			}
+
+			const { data, error: dbError } = await supabaseClient
+				.from('hole_scores')
+				.select('*')
+				.eq('scorecard_id', scorecard.id);
+
+			if (dbError) {
+				throw error(500, {
+					message: dbError.message
+				});
+			}
+
+			return {
+				...scorecard,
+				hole_scores: data
+			};
 		}
 	};
 }

@@ -1,9 +1,11 @@
 <script lang="ts">
+	import Breadcrumbs from '@components/Breadcrumbs.svelte';
+	import BreadcrumbItem from '@components/BreadcrumbItem.svelte';
+	import Icon from '@components/Icon.svelte';
 	import { scaleLinear } from 'd3-scale';
 	import { interpolateHsl } from 'd3-interpolate';
 	import { flip } from 'svelte/animate';
 	import type { PageData } from './$types';
-	import Icon from '@components/Icon.svelte';
 	import { slide } from 'svelte/transition';
 
 	export let data: PageData;
@@ -33,12 +35,10 @@
 </script>
 
 <div>
-	<nav class="breadcrumbs">
-		<span class="crumb">
-			<a href={`/trips/${data.trip.id}/rounds`}>Rounds</a>
-		</span>
-		<span>{data.round.name}</span>
-	</nav>
+	<Breadcrumbs>
+		<BreadcrumbItem href={`/trips/${data.trip.id}/rounds`} label="Rounds" />
+		<BreadcrumbItem label={data.round.name} />
+	</Breadcrumbs>
 
 	<div class="round-details">
 		<button class="toggle" on:click={toggleDetails}>
@@ -64,13 +64,15 @@
 		<ol class="leaderboard-list">
 			{#each sortedLeaderboard as player (player.id)}
 				<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
-					<span class="player-name">
-						{player.name}
-						<span class="tee-box-badge">{player.teeBox}</span>
-					</span>
-					<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
-						{netScoreToggled ? player.score - player.courseHandicap : player.score}
-					</span>
+					<a href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${player.id}/scorecard`}>
+						<span class="player-name">
+							{player.name}
+							<span class="tee-box-badge">{player.teeBox}</span>
+						</span>
+						<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
+							{netScoreToggled ? player.score - player.courseHandicap : player.score}
+						</span>
+					</a>
 				</li>
 			{/each}
 		</ol>
@@ -93,7 +95,7 @@
 		</select>
 	</div>
 	<a
-		href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${newPlayerId}/scorecard`}
+		href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${newPlayerId}/scorecard/edit`}
 		class="log-score-button"
 		class:disabled={!newPlayerId}
 	>
@@ -102,24 +104,6 @@
 </div>
 
 <style lang="scss">
-	.breadcrumbs .crumb {
-		color: grey;
-
-		a {
-			text-decoration: none;
-			color: inherit;
-
-			&:hover {
-				text-decoration: underline;
-			}
-		}
-
-		&::after {
-			content: '/';
-			margin-left: 4px;
-		}
-	}
-
 	.round-details {
 		position: relative;
 		margin-top: 10px;
@@ -156,14 +140,17 @@
 	}
 
 	.leaderboard-list-item {
-		background-color: var(--dp-02);
-		border-radius: 8px;
+		a {
+			color: unset;
+			background-color: var(--dp-02);
+			border-radius: 8px;
 
-		padding-left: 16px;
+			padding-left: 16px;
 
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
 	}
 
 	.player-name {
