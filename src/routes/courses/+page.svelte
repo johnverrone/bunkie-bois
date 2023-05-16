@@ -1,4 +1,6 @@
 <script lang="ts">
+	import List from '@components/List.svelte';
+	import ListItem from '@components/ListItem.svelte';
 	import PageTitle from '@components/PageTitle.svelte';
 	import type { PageData } from './$types';
 
@@ -7,12 +9,12 @@
 
 <PageTitle><a href="/">Courses</a></PageTitle>
 
-<ul>
-	{#if data.courses.length}
+{#if data.courses.length}
+	<List>
 		{#each data.courses as course}
-			<li><a href={`/courses/${course.id}`}>{course.name}</a></li>
+			<ListItem href={`/courses/${course.id}`} title={course.name} />
 		{/each}
-	{:else}
-		<p>no courses yet</p>
-	{/if}
-</ul>
+	</List>
+{:else}
+	<p>no courses yet</p>
+{/if}
