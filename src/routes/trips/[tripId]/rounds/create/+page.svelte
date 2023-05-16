@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '@components/Button.svelte';
 	import Input from '@components/Input.svelte';
+	import SelectMenu from '@components/SelectMenu.svelte';
 	import type { ActionData, PageData } from './$types';
 
 	export let data: PageData;
@@ -13,18 +14,9 @@
 
 <form class="round-form" method="post" action="?/createRound">
 	<input type="hidden" name="tripId" value={data.trip.id} />
-	<div class="name">
-		<Input type="text" placeholder={'round name'} name="name" bind:value={roundName} />
-	</div>
-
-	<select class="course-select" name="courseId" id="course-select" bind:value={courseId}>
-		<option value={undefined}>Select a course</option>
-		{#each data.courses as course}
-			<option value={course.id}>{course.name}</option>
-		{/each}
-	</select>
-
-	<Input type="date" name="date" bind:value={date} />
+	<Input label="Round Name" type="text" placeholder="Round 1" name="name" bind:value={roundName} />
+	<SelectMenu label="Course" name="courseId" bind:value={courseId} options={data.courses} />
+	<Input label="Date" type="date" name="date" bind:value={date} />
 
 	{#if form?.message}<p class="error">{form.message}</p>{/if}
 
@@ -43,25 +35,16 @@
 		gap: 8px;
 
 		.button-row {
+			margin-top: 16px;
 			display: flex;
 			align-items: center;
+			gap: 16px;
 
-			* {
+			.cancel,
+			.save {
 				flex: 1;
 				text-align: center;
 			}
-		}
-
-		.course-select {
-			height: 36px;
-			background-color: var(--dp-12);
-			color: #fefefe;
-			border: none;
-			border-radius: 4px;
-			padding: 2px 4px;
-			outline-color: var(--primary);
-			outline-style: solid;
-			outline-width: 1px;
 		}
 	}
 </style>

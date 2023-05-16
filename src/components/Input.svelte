@@ -1,9 +1,13 @@
 <script lang="ts">
+	export let label: string | undefined = undefined;
 	export let value: string | number | undefined = undefined;
 	export let focus: (el: HTMLInputElement) => void = () => {};
 </script>
 
-<input {...$$restProps} bind:value use:focus />
+<label>
+	{#if label}{label}{/if}
+	<input {...$$restProps} id={label} bind:value use:focus />
+</label>
 
 <style>
 	input {

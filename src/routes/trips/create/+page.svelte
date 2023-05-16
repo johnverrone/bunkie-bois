@@ -14,9 +14,15 @@
 <PageTitle>Create Trip</PageTitle>
 
 <form class="round-form" method="post" action="?/createTrip">
-	<Input type="text" placeholder="Trip name" name="name" bind:value={tripName} />
-	<Input type="date" name="startDate" bind:value={startDate} />
-	<Input type="date" name="endDate" bind:value={endDate} />
+	<Input
+		label="Trip Name"
+		type="text"
+		placeholder="Myrtle Beach 2023"
+		name="name"
+		bind:value={tripName}
+	/>
+	<Input label="Start Date" type="date" name="startDate" bind:value={startDate} />
+	<Input label="End Date" type="date" name="endDate" bind:value={endDate} />
 
 	{#if form?.message}<p class="error">{form.message}</p>{/if}
 
@@ -30,16 +36,18 @@
 
 <style lang="scss">
 	.round-form {
-		padding: 0 1rem;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
 
 		.button-row {
+			margin-top: 16px;
 			display: flex;
 			align-items: center;
+			gap: 16px;
 
-			* {
+			.cancel,
+			.save {
 				flex: 1;
 				text-align: center;
 			}

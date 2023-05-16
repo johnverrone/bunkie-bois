@@ -17,41 +17,35 @@
 
 <PageTitle><a href="/courses">{data.course.name}</a></PageTitle>
 
-<div class="container">
-	<select class="tee-box-select" bind:value={selectedTeeBoxId}>
-		<option value={undefined}>Select a tee box</option>
-		{#each data.course['tee_boxes'] as teeBox}
-			<option value={teeBox.id}>{teeBox.name} ({teeBox.rating} / {teeBox.slope})</option>
-		{/each}
-	</select>
+<select class="tee-box-select" bind:value={selectedTeeBoxId}>
+	<option value={undefined}>Select a tee box</option>
+	{#each data.course['tee_boxes'] as teeBox}
+		<option value={teeBox.id}>{teeBox.name} ({teeBox.rating} / {teeBox.slope})</option>
+	{/each}
+</select>
 
-	{#if selectedTeeBox}
-		<table class="table">
-			<thead>
-				<th>Hole</th>
-				<th>Par</th>
-				<th>Yardage</th>
-				<th>Handicap</th>
-			</thead>
-			<tbody>
-				{#each selectedTeeBox['hole_info'] as hole}
-					<tr>
-						<td><b>{hole['hole_number']}</b></td>
-						<td>{hole.par}</td>
-						<td>{hole.yardage}</td>
-						<td>{hole.handicap}</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	{/if}
-</div>
+{#if selectedTeeBox}
+	<table class="table">
+		<thead>
+			<th>Hole</th>
+			<th>Par</th>
+			<th>Yardage</th>
+			<th>Handicap</th>
+		</thead>
+		<tbody>
+			{#each selectedTeeBox['hole_info'] as hole}
+				<tr>
+					<td><b>{hole['hole_number']}</b></td>
+					<td>{hole.par}</td>
+					<td>{hole.yardage}</td>
+					<td>{hole.handicap}</td>
+				</tr>
+			{/each}
+		</tbody>
+	</table>
+{/if}
 
 <style lang="scss">
-	.container {
-		padding: 0 1rem;
-	}
-
 	.table {
 		margin-top: 16px;
 		width: 100%;

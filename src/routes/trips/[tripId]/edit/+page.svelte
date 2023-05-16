@@ -13,9 +13,9 @@
 
 <form class="edit-trip-form" method="post" action="?/updateTrip">
 	<input type="hidden" name="id" value={data.trip.id} />
-	<Input type="text" name="name" bind:value={tripName} />
-	<Input type="date" name="startDate" bind:value={startDate} />
-	<Input type="date" name="endDate" bind:value={endDate} />
+	<Input label="Trip Name" type="text" name="name" bind:value={tripName} />
+	<Input label="Start Date" type="date" name="startDate" bind:value={startDate} />
+	<Input label="End Date" type="date" name="endDate" bind:value={endDate} />
 
 	{#if form?.message}<p class="error">{form.message}</p>{/if}
 
@@ -31,11 +31,10 @@
 	.edit-trip-form {
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
-		width: 100%;
+		gap: 8px;
 
 		.button-row {
-			width: 100%;
+			margin-top: 16px;
 			display: flex;
 			align-items: center;
 			gap: 16px;
