@@ -23,6 +23,10 @@
 		return aScore - bScore;
 	});
 
+	$: scorelessPlayers = data.tripPlayers.filter(
+		(player) => data.leaderboard.find((leaderboard) => leaderboard.id === player.id) === undefined
+	);
+
 	const scoreScale = scaleLinear().domain([70, 150]);
 	const scoreColor = (t: number) =>
 		interpolateHsl('hsl(120, 80%, 50%)', 'hsl(0, 80%, 50%)')(scoreScale(t));
@@ -60,7 +64,10 @@
 		<ol class="leaderboard-list">
 			{#each sortedLeaderboard as player (player.id)}
 				<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
-					<span class="player-name">{player.name}</span>
+					<span class="player-name">
+						{player.name}
+						<span class="tee-box-badge">{player.teeBox}</span>
+					</span>
 					<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
 						{netScoreToggled ? player.score - player.courseHandicap : player.score}
 					</span>
@@ -80,7 +87,7 @@
 			bind:value={newPlayerId}
 		>
 			<option value={undefined}>Select a player</option>
-			{#each data.tripPlayers as player}
+			{#each scorelessPlayers as player}
 				<option value={player.id}>{player.name}</option>
 			{/each}
 		</select>
@@ -161,6 +168,16 @@
 
 	.player-name {
 		font-size: 1rem;
+		flex: 1;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding-right: 16px;
+	}
+
+	.tee-box-badge {
+		font-size: 0.75rem;
+		font-style: italic;
 	}
 
 	.player-score {

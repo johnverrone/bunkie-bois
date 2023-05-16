@@ -2,11 +2,12 @@ import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error, fail } from '@sveltejs/kit';
 import type { Prettify, ArrayElement } from '../utils/typeHelpers';
 
-type Leaderboard = {
-	id: string;
+type LeaderboardEntry = {
+	id: number;
 	name: string;
 	score: number;
 	courseHandicap: number;
+	teeBox: string;
 };
 
 export function roundsAPI(supabaseClient: TypedSupabaseClient) {
@@ -81,7 +82,8 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 					scorecard:scorecards (
 						player:players ( id, name ),
 						round_id,
-						player_handicap
+						player_handicap,
+						tee_box:tee_boxes ( id, name )
 					),
 					hole_number,
 					score
@@ -97,8 +99,12 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 
 			type ResultRow = (typeof data)[number];
 			type PatchedPlayer = Prettify<ArrayElement<ArrayElement<ResultRow['scorecard']>['player']>>;
+			type PatchedTeeBox = Prettify<ArrayElement<ArrayElement<ResultRow['scorecard']>['tee_box']>>;
 			type PatchedScorecard = Prettify<
-				Omit<ArrayElement<ResultRow['scorecard']>, 'player'> & { player: PatchedPlayer }
+				Omit<ArrayElement<ResultRow['scorecard']>, 'player' | 'tee_box'> & {
+					player: PatchedPlayer;
+					tee_box: PatchedTeeBox;
+				}
 			>;
 			type PatchedResult = Prettify<
 				Omit<ResultRow, 'scorecard'> & { scorecard: PatchedScorecard | null }
@@ -110,7 +116,8 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 				if (curr.scorecard === null) return acc;
 				const id = curr.scorecard.player.id;
 				const name = curr.scorecard.player.name;
-				const courseHandicap = curr.scorecard.player_handicap;
+				const courseHandicap = curr.scorecard.player_handicap ?? 0;
+				const teeBox = curr.scorecard.tee_box.name;
 
 				return {
 					...acc,
@@ -119,10 +126,11 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 						id,
 						name,
 						courseHandicap,
+						teeBox,
 						score: (acc[id]?.score ?? 0) + (curr.score ?? 0)
 					}
 				};
-			}, {} as { [key: string]: Leaderboard });
+			}, {} as { [key: number]: LeaderboardEntry });
 
 			return Object.values(scorecardByPlayer);
 		}
