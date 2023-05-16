@@ -1,13 +1,10 @@
 <script lang="ts">
-	import Button from '@components/Button.svelte';
+	import Breadcrumbs from '@components/Breadcrumbs.svelte';
+	import BreadcrumbItem from '@components/BreadcrumbItem.svelte';
 	import Scorecard from '@components/Scorecard.svelte';
-	import type { ActionData, PageData } from './$types';
-	import { calculateCourseHandicap } from '@utils/handicap';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
-	export let form: ActionData;
-
-	$: teeBoxes = data.courseData.tee_boxes;
 
 	type TeeBoxesById = { [key: string]: (typeof data.courseData.tee_boxes)[number] };
 	$: teeBoxesById = data.courseData.tee_boxes.reduce<TeeBoxesById>(
@@ -15,65 +12,36 @@
 		{}
 	);
 
-	let selectedTeeBoxId: number | null;
-	$: selectedTeeBox = selectedTeeBoxId ? teeBoxesById[selectedTeeBoxId] : null;
-	$: par = Object.values(selectedTeeBox?.hole_info ?? []).reduce(
-		(acc, curr) => (acc += curr.par),
-		0
-	);
+	$: teeBox = teeBoxesById[data.scorecard.tee_box_id];
+
+	$: front9 = data.scorecard.hole_scores
+		.filter((hole) => hole.hole_number <= 9)
+		.reduce((acc, holeScore) => ({ ...acc, [holeScore.hole_number]: holeScore.score }), {});
+
+	$: back9 = data.scorecard.hole_scores
+		.filter((hole) => hole.hole_number > 9)
+		.reduce((acc, holeScore) => ({ ...acc, [holeScore.hole_number]: holeScore.score }), {});
 </script>
 
-<form class="scorecard-container" method="post" action="?/logScore">
-	<p>{`${data.player.name}'s Scorecard`}</p>
-	<input type="hidden" name="playerId" value={data.player.id} />
-	<input type="hidden" name="roundId" value={data.round.id} />
-	<input
-		type="hidden"
-		name="courseHandicap"
-		value={!!selectedTeeBox
-			? calculateCourseHandicap(
-					data.player.handicap,
-					selectedTeeBox.slope,
-					selectedTeeBox.rating,
-					par
-			  )
-			: 0}
-	/>
+<div>
+	<Breadcrumbs>
+		<BreadcrumbItem href={`/trips/${data.trip.id}/rounds`} label="Rounds" />
+		<BreadcrumbItem
+			href={`/trips/${data.trip.id}/rounds/${data.round.id}`}
+			label={data.round.name}
+		/>
+		<BreadcrumbItem label={data.player.name} />
+	</Breadcrumbs>
 
-	<select class="tee-box-select" name="teeBoxId" bind:value={selectedTeeBoxId}>
-		<option>Select tee box</option>
-		{#each teeBoxes as teeBox}
-			<option value={teeBox.id}>{teeBox.name}</option>
-		{/each}
-	</select>
+	<div class="spacer" />
 
-	{#if !!selectedTeeBox}
-		<Scorecard courseTeeBox={selectedTeeBox} />
+	{#if teeBox}
+		<Scorecard courseTeeBox={teeBox} {front9} {back9} readonly />
 	{/if}
-
-	{#if form?.message}<p class="error">{form.message}</p>{/if}
-
-	<Button type="submit" disabled={!selectedTeeBox} fullWidth>Submit</Button>
-</form>
+</div>
 
 <style lang="scss">
-	.scorecard-container {
-		overflow: auto;
-		display: flex;
-		flex-direction: column;
-		gap: 16px;
-	}
-
-	.tee-box-select {
+	.spacer {
 		height: 36px;
-		background-color: var(--dp-12);
-		color: #fefefe;
-		border: none;
-		border-radius: 4px;
-		padding: 2px 4px;
-		outline-color: var(--primary);
-		outline-style: solid;
-		outline-width: 1px;
-		outline-offset: -1px;
 	}
 </style>

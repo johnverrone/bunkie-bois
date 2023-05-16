@@ -15,14 +15,15 @@
 	};
 
 	export let courseTeeBox: TeeBox;
+	export let front9: Record<number, number> = {};
+	export let back9: Record<number, number> = {};
+	export let readonly = false;
 
 	$: holes = courseTeeBox.hole_info;
 	$: front9Holes = holes.filter((hole) => hole.hole_number <= 9);
 	$: back9Holes = holes.filter((hole) => hole.hole_number > 9);
 
-	let front9Form: Record<number, number> = {};
 	let front9Inputs: Record<number, HTMLInputElement> = {};
-	let back9Form: Record<number, number> = {};
 	let back9Inputs: Record<number, HTMLInputElement> = {};
 
 	function maybeMoveNext(event: KeyboardEvent, next: number) {
@@ -37,8 +38,8 @@
 		}
 	}
 
-	$: front9Total = Object.values(front9Form).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
-	$: back9Total = Object.values(back9Form).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
+	$: front9Total = Object.values(front9).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
+	$: back9Total = Object.values(back9).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
 
 	$: score = front9Total + back9Total;
 
@@ -78,17 +79,21 @@
 				<td>Score</td>
 				{#each front9Holes as hole}
 					<td>
-						<input
-							type="number"
-							inputmode="numeric"
-							autocomplete="off"
-							min="1"
-							max="9"
-							name={`hole-${hole.hole_number}-score`}
-							bind:value={front9Form[hole.hole_number]}
-							bind:this={front9Inputs[hole.hole_number]}
-							on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}
-						/>
+						{#if readonly}
+							<span>{front9[hole.hole_number]}</span>
+						{:else}
+							<input
+								type="number"
+								inputmode="numeric"
+								autocomplete="off"
+								min="1"
+								max="9"
+								name={`hole-${hole.hole_number}-score`}
+								bind:value={front9[hole.hole_number]}
+								bind:this={front9Inputs[hole.hole_number]}
+								on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}
+							/>
+						{/if}
 					</td>
 				{/each}
 				<td>{front9Total}</td>
@@ -128,17 +133,21 @@
 				<td>Score</td>
 				{#each back9Holes as hole}
 					<td>
-						<input
-							type="number"
-							inputmode="numeric"
-							autocomplete="off"
-							min="1"
-							max="9"
-							name={`hole-${hole.hole_number}-score`}
-							bind:value={back9Form[hole.hole_number]}
-							bind:this={back9Inputs[hole.hole_number]}
-							on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}
-						/>
+						{#if readonly}
+							<span>{back9[hole.hole_number]}</span>
+						{:else}
+							<input
+								type="number"
+								inputmode="numeric"
+								autocomplete="off"
+								min="1"
+								max="9"
+								name={`hole-${hole.hole_number}-score`}
+								bind:value={back9[hole.hole_number]}
+								bind:this={back9Inputs[hole.hole_number]}
+								on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}
+							/>
+						{/if}
 					</td>
 				{/each}
 				<td>{back9Total}</td>

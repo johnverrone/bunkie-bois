@@ -3,10 +3,11 @@ import type { PageLoad } from './$types';
 import { makeSupabaseAPI } from '@api';
 
 export const load = (async (event) => {
-	const { session, getScorecard, getCourseDetails } = await makeSupabaseAPI(event);
+	const { session, getCourseDetails } = await makeSupabaseAPI(event);
 	if (!session) throw redirect(303, '/');
 
 	const { params, parent } = event;
+
 	const { rounds, tripPlayers } = await parent();
 	const player = tripPlayers.find((p) => p.id === parseInt(params.playerId));
 	if (!player) throw error(404, 'Player not found');
@@ -14,17 +15,12 @@ export const load = (async (event) => {
 	const round = rounds.find((r) => r.id === parseInt(params.roundId));
 	if (!round) throw error(500, 'Unable to load round information');
 
-	const playerId = Number(params.playerId);
-	const roundId = Number(params.roundId);
-
-	const scorecard = await getScorecard({ playerId, roundId });
-	const courseData = await getCourseDetails(round.course.id);
+	const data = await getCourseDetails(round.course.id);
 
 	return {
 		title: `${player.name} Scorecard`,
-		round,
 		player,
-		scorecard,
-		courseData
+		round,
+		courseData: data
 	};
 }) satisfies PageLoad;
