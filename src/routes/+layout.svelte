@@ -49,7 +49,9 @@
 	<div class="auth-button">
 		<Button on:click={signout} variant="secondary">Logout</Button>
 	</div>
-	<slot />
+	<main>
+		<slot />
+	</main>
 {:else}
 	<div class="auth-button login">
 		{#if import.meta.env.DEV}
@@ -90,6 +92,11 @@
 
 	body {
 		overflow-y: hidden;
+	}
+
+	main {
+		height: 100%;
+		padding: 1rem;
 	}
 
 	h1 {

@@ -15,7 +15,7 @@
 	$: selectedTeeBox = selectedTeeBoxId ? teeBoxesById[selectedTeeBoxId] : null;
 </script>
 
-<PageTitle>{data.course.name}</PageTitle>
+<PageTitle><a href="/courses">{data.course.name}</a></PageTitle>
 
 <div class="container">
 	<select class="tee-box-select" bind:value={selectedTeeBoxId}>

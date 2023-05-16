@@ -98,7 +98,7 @@
 		<div class="handicap">
 			<Input
 				type="number"
-				inputmode="numeric"
+				inputmode="decimal"
 				step="0.1"
 				name="handicap"
 				placeholder="20"

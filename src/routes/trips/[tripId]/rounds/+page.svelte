@@ -1,98 +1,36 @@
 <script lang="ts">
-	import Icon from '@components/Icon.svelte';
+	import IconText from '@components/IconText.svelte';
+	import List from '@components/List.svelte';
+	import ListItem from '@components/ListItem.svelte';
 	import type { PageData } from './$types';
-	import RoundMenu from './RoundMenu.svelte';
-	import { popover } from '@utils/popover';
+	import { enhance } from '$app/forms';
 
 	export let data: PageData;
 </script>
 
 {#if data.rounds.length}
-	<ul>
+	<List>
 		{#each data.rounds as round}
-			<li>
-				<a href={`/trips/${data.trip.id}/rounds/${round.id}`}>
-					<div class="action-menu-container">
-						<button
-							use:popover={{
-								component: RoundMenu,
-								props: { roundId: round.id }
-							}}
-						>
-							<Icon name="more-vertical" />
-						</button>
-					</div>
-					<h5>{round.name}</h5>
-					<h6>{round.course.name}</h6>
-					{#if round.date}
-						<p>
-							{round.date.toLocaleDateString(undefined, { dateStyle: 'medium' })}
-						</p>
-					{/if}
-				</a>
-			</li>
+			<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
+				<span slot="actionMenu">
+					<form method="post" action="?/deleteRound" style="display: inline-block" use:enhance>
+						<input type="hidden" name="roundId" value={round.id} />
+						<button class="delete"><IconText name="trash" label="Delete Round" /></button>
+					</form>
+				</span>
+				<h6>{round.course.name}</h6>
+				{#if round.date}
+					<h6>
+						{round.date.toLocaleDateString(undefined, { dateStyle: 'medium' })}
+					</h6>
+				{/if}
+			</ListItem>
 		{/each}
-	</ul>
+	</List>
 {:else}
 	<p>no rounds yet</p>
 {/if}
 
 <a href={`/trips/${data.trip.id}/rounds/create`}>
-	<div class="button-contents">
-		<Icon name="plus" />
-		Add round
-	</div>
+	<IconText name="plus" label="Add round" />
 </a>
-
-<style lang="scss">
-	ul {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		padding: 0;
-		list-style: none;
-
-		li {
-			height: 150px;
-			a {
-				color: inherit;
-				text-decoration: none;
-				width: 100%;
-				height: 100%;
-				position: relative;
-
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: flex-end;
-
-				padding: 10px;
-				border-radius: 8px;
-
-				background-color: var(--dp-01);
-			}
-		}
-	}
-
-	.button-contents {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
-	}
-
-	.action-menu-container {
-		position: absolute;
-		top: 0;
-		right: 0;
-
-		button {
-			color: var(--primary);
-			background: none;
-			border: none;
-			padding: 10px;
-
-			cursor: pointer;
-		}
-	}
-</style>

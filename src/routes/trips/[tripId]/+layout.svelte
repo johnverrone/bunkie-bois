@@ -19,9 +19,9 @@
 	</ul>
 </nav>
 
-<main>
+<div class="trip-layout">
 	<slot />
-</main>
+</div>
 
 <style>
 	:root {
@@ -29,9 +29,8 @@
 		--nav-height: 60px;
 	}
 
-	main {
+	.trip-layout {
 		height: calc(100% - var(--nav-height) - var(--header-height));
-		padding: 0 1rem 1rem 1rem;
 
 		display: grid;
 		grid-template-rows: 1fr auto;

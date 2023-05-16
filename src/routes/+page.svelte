@@ -5,8 +5,7 @@
 
 <style lang="scss">
 	.home-container {
-		display: grid;
-		place-items: center;
-		height: 100vh;
+		display: flex;
+		flex-direction: column;
 	}
 </style>
