@@ -1,12 +1,12 @@
-<div class="home-container">
-	<a href="/trips">Trips</a>
-	<a href="/courses">Courses</a>
-</div>
+<script>
+	import List from '@components/List.svelte';
+	import ListItem from '@components/ListItem.svelte';
+	import PageTitle from '@components/PageTitle.svelte';
+</script>
 
-<style lang="scss">
-	.home-container {
-		display: grid;
-		place-items: center;
-		height: 100vh;
-	}
-</style>
+<PageTitle>Bunkie Bois</PageTitle>
+
+<List>
+	<ListItem href="/trips" title="Trips" />
+	<ListItem href="/courses" title="Courses" />
+</List>

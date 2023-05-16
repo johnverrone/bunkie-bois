@@ -7,6 +7,6 @@
 
 <style lang="scss">
 	header {
-		padding: 10px 1rem;
+		margin-bottom: 20px;
 	}
 </style>

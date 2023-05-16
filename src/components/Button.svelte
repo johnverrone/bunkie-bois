@@ -22,17 +22,16 @@
 	button {
 		height: 36px;
 		padding: 0 6px;
+
+		&:disabled {
+			pointer-events: none;
+			background-color: var(--dp-02);
+			color: var(--dp-12);
+		}
 	}
 
 	.fullWidth {
 		width: 100%;
-	}
-
-	.primary.disabled,
-	.secondary.disabled {
-		pointer-events: none;
-		background-color: var(--dp-02);
-		color: var(--dp-12);
 	}
 
 	.primary {
