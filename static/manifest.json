@@ -10,15 +10,10 @@
 	],
 	"id": "/?source=pwa",
 	"start_url": "/?source=pwa",
-	"background_color": "#374049",
+	"background_color": "#1b3436",
 	"display": "standalone",
 	"scope": "/",
-	"theme_color": "#374049",
-	"shortcuts": [
-		{
-			"name": "RSVP",
-			"url": "/rsvp?source=pwa"
-		}
-	],
+	"theme_color": "#1b3436",
+	"shortcuts": [],
 	"description": "Golf score tracking app for a group."
 }
