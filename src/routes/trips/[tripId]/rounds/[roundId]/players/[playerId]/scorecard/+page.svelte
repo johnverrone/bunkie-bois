@@ -16,14 +16,20 @@
 
 	$: front9 = data.scorecard.hole_scores
 		.filter((hole) => hole.hole_number <= 9)
-		.reduce((acc, holeScore) => ({ ...acc, [holeScore.hole_number]: holeScore.score }), {});
+		.reduce(
+			(acc, holeScore) => ({ ...acc, [holeScore.hole_number]: holeScore.score }),
+			{} as Record<number, number | null>
+		);
 
 	$: back9 = data.scorecard.hole_scores
 		.filter((hole) => hole.hole_number > 9)
-		.reduce((acc, holeScore) => ({ ...acc, [holeScore.hole_number]: holeScore.score }), {});
+		.reduce(
+			(acc, holeScore) => ({ ...acc, [holeScore.hole_number]: holeScore.score }),
+			{} as Record<number, number | null>
+		);
 </script>
 
-<div>
+<div class="scorecard-container">
 	<Breadcrumbs>
 		<BreadcrumbItem href={`/trips/${data.trip.id}/rounds`} label="Rounds" />
 		<BreadcrumbItem
@@ -41,6 +47,10 @@
 </div>
 
 <style lang="scss">
+	.scorecard-container {
+		overflow: auto;
+	}
+
 	.spacer {
 		height: 36px;
 	}

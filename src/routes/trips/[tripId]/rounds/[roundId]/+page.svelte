@@ -150,6 +150,11 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+
+			&:hover {
+				text-decoration: none;
+				background-color: var(--dp-01);
+			}
 		}
 	}
 

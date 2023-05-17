@@ -15,8 +15,8 @@
 	};
 
 	export let courseTeeBox: TeeBox;
-	export let front9: Record<number, number> = {};
-	export let back9: Record<number, number> = {};
+	export let front9: Record<number, number | null> = {};
+	export let back9: Record<number, number | null> = {};
 	export let readonly = false;
 
 	$: holes = courseTeeBox.hole_info;
