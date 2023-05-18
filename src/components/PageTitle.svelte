@@ -7,6 +7,7 @@
 
 <style lang="scss">
 	header {
-		margin-bottom: 20px;
+		grid-area: header;
+		padding: 1rem;
 	}
 </style>

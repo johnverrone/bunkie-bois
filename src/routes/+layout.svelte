@@ -34,11 +34,6 @@
 			}
 		});
 	}
-
-	async function signout() {
-		const { error } = await supabase.auth.signOut();
-		if (!error) window.location.reload();
-	}
 </script>
 
 <svelte:head>
@@ -46,12 +41,7 @@
 </svelte:head>
 
 {#if $page.data.session}
-	<div class="auth-button">
-		<Button on:click={signout} variant="secondary">Logout</Button>
-	</div>
-	<main>
-		<slot />
-	</main>
+	<slot />
 {:else}
 	<div class="auth-button login">
 		{#if import.meta.env.DEV}
@@ -66,25 +56,28 @@
 	@import '../reset.css';
 
 	:root {
+		// fonts
 		--font-family: 'Nunito';
-
 		font-family: var(--font-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
 			Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 
-		--green: hsl(108deg 13% 83%);
-
+		// colors
+		--green: hsl(106deg 19% 55%);
 		--dp-01: hsla(0deg 100% 100% / 0.05);
 		--dp-02: hsla(0deg 100% 100% / 0.07);
 		--dp-12: hsla(0deg 100% 100% / 0.14);
 		--dp-24: hsla(0deg 100% 100% / 0.16);
-
 		--background: hsl(185deg 33% 16%);
 		--secondary-background: hsl(185deg 33% 40%);
 		--foreground: #fefefe;
+
 		--primary: hsl(106deg 19% 55%);
 		--secondary: hsl(105deg 90% 80%);
 		--destructive: hsl(60deg 90% 70%);
 		--disabled: hsl(0deg 0% 50%);
+
+		// sizing
+		--nav-height: 80px;
 
 		background-color: var(--background);
 		color: var(--foreground);
@@ -92,11 +85,12 @@
 
 	body {
 		overflow-y: hidden;
-	}
-
-	main {
-		height: 100%;
-		padding: 1rem;
+		display: grid;
+		grid-template-rows: min-content 1fr var(--nav-height);
+		grid-template-areas:
+			'header'
+			'main'
+			'nav';
 	}
 
 	h1 {
