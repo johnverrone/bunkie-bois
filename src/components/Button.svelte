@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let type: 'button' | 'submit' | 'reset' = 'button';
-	export let variant: 'primary' | 'secondary' = 'primary';
+	export let variant: 'primary' | 'secondary' | 'destructive' = 'primary';
 	export let fullWidth: boolean = false;
 	export let disabled: boolean = false;
 </script>
@@ -11,6 +11,7 @@
 	{disabled}
 	class:primary={variant === 'primary'}
 	class:secondary={variant === 'secondary'}
+	class:destructive={variant === 'destructive'}
 	class:fullWidth
 	class:disabled
 	{...$$restProps}
@@ -51,7 +52,21 @@
 	.secondary {
 		$bg-color: hsl(185deg 33% 16%);
 		background-color: inherit;
-		color: var(--primary);
+		color: var(--secondary);
+
+		&:hover {
+			background-color: scale-color($bg-color, $lightness: -20%);
+		}
+
+		&:active {
+			background-color: scale-color($bg-color, $lightness: -40%);
+		}
+	}
+
+	.destructive {
+		$bg-color: hsl(18, 61%, 49%);
+		background-color: $bg-color;
+		color: var(--foreground);
 
 		&:hover {
 			background-color: scale-color($bg-color, $lightness: -20%);
