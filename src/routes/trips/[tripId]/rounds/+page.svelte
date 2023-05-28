@@ -1,9 +1,11 @@
 <script lang="ts">
+	import Button from '@components/Button.svelte';
 	import IconText from '@components/IconText.svelte';
 	import List from '@components/List.svelte';
 	import ListItem from '@components/ListItem.svelte';
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
+	import { stop_propagation } from 'svelte/internal';
 
 	export let data: PageData;
 </script>
@@ -15,7 +17,9 @@
 				<span slot="actionMenu">
 					<form method="post" action="?/deleteRound" style="display: inline-block" use:enhance>
 						<input type="hidden" name="roundId" value={round.id} />
-						<button class="delete"><IconText name="trash" label="Delete Round" /></button>
+						<Button variant="destructive" type="submit">
+							<IconText name="trash" label="Delete Round" />
+						</Button>
 					</form>
 				</span>
 				<h6>{round.course.name}</h6>

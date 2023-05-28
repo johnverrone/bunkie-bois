@@ -68,7 +68,8 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 		 */
 		deleteRound: async function (id: number) {
 			const { error: dbError } = await supabaseClient.from('rounds').delete().eq('id', id);
-			if (dbError) return fail(500, { message: dbError.message });
+			if (dbError) return { error: dbError.message };
+			return { success: true };
 		},
 
 		/**
