@@ -1,5 +1,5 @@
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
-import { error, fail } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { Prettify, ArrayElement } from '../utils/typeHelpers';
 
 type LeaderboardEntry = {
