@@ -4,28 +4,26 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	$: hurdlePlayers = Object.keys(data?.hurdle ?? {}) as Array<keyof typeof data.hurdle>;
 </script>
 
 <div>
 	<Breadcrumbs>
 		<BreadcrumbItem href={`/trips/${data.trip.id}/games`} label="Games" />
-		<BreadcrumbItem label="Skins" />
+		<BreadcrumbItem href={`/trips/${data.trip.id}/games/hurdle`} label="Hurdle" />
+		<BreadcrumbItem label={`${data.round?.name}`} />
 	</Breadcrumbs>
-	<h2>Trip Leaderboard</h2>
-
+	<h2>{data.round?.name} Hurdle</h2>
 	<ol>
-		{#each data.tripPlayers as player}
+		{#each hurdlePlayers as player}
 			<li>
-				<span>{player.name}</span>
-				<span class="hole">3</span>
+				<span>{player}</span>
+				<span>
+					<span>Quota: {data.hurdle[player]?.quota}</span>
+					<span>Score: {data.hurdle[player]?.points}</span>
+				</span>
 			</li>
-		{/each}
-	</ol>
-
-	<h2>Round Breakdown</h2>
-	<ol>
-		{#each data.rounds as round}
-			<li><a href={`/trips/${data.trip.id}/games/skins/${round.id}`}>{round.name}</a></li>
 		{/each}
 	</ol>
 </div>
@@ -41,14 +39,5 @@
 		display: flex;
 		justify-content: space-between;
 		padding: 8px 0;
-	}
-
-	.hole {
-		display: inline-grid;
-		place-items: center;
-		width: 3ch;
-		height: 3ch;
-		background-color: var(--dp-02);
-		border-radius: 50%;
 	}
 </style>

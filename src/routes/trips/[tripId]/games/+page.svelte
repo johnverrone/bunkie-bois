@@ -7,5 +7,6 @@
 </script>
 
 <List>
+	<ListItem title="Hurdle" href={`/trips/${data.trip.id}/games/hurdle`} />
 	<ListItem title="Skins" href={`/trips/${data.trip.id}/games/skins`} />
 </List>
