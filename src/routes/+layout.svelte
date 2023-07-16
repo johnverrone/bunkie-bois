@@ -4,6 +4,9 @@
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import Button from '@components/Button.svelte';
+	import Input from '@components/Input.svelte';
+
+	let email: string;
 
 	onMount(() => {
 		const {
@@ -17,8 +20,8 @@
 		};
 	});
 
-	async function signInWithGoogle() {
-		const { data, error } = await supabase.auth.signInWithOAuth({
+	function signInWithGoogle() {
+		supabase.auth.signInWithOAuth({
 			provider: 'google',
 			options: {
 				redirectTo: window.location.origin
@@ -26,9 +29,9 @@
 		});
 	}
 
-	async function localOtpSignIn() {
-		const { data, error } = await supabase.auth.signInWithOtp({
-			email: import.meta.env.VITE_LOCAL_TEST_EMAIL,
+	function localOtpSignIn() {
+		supabase.auth.signInWithOtp({
+			email: email || import.meta.env.VITE_LOCAL_TEST_EMAIL,
 			options: {
 				emailRedirectTo: window.location.origin
 			}
@@ -44,11 +47,9 @@
 	<slot />
 {:else}
 	<div class="auth-button login">
-		{#if import.meta.env.DEV}
-			<Button on:click={localOtpSignIn}>Login</Button>
-		{:else}
-			<Button on:click={signInWithGoogle}>Login</Button>
-		{/if}
+		<Input type="email" bind:value={email} />
+		<Button on:click={localOtpSignIn}>Login with One Time Password</Button>
+		<Button on:click={signInWithGoogle}>Login with Google</Button>
 	</div>
 {/if}
 
@@ -139,13 +140,12 @@
 	}
 
 	.auth-button {
-		position: absolute;
-		top: 10px;
-		right: 1rem;
-
-		&.login {
-			top: calc(50% - 18px);
-			right: calc(50% - 27px);
-		}
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		margin: 0 auto;
+		grid-area: main;
+		gap: 8px;
+		width: 80%;
 	}
 </style>
