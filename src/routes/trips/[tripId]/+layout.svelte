@@ -49,7 +49,7 @@
 
 <style>
 	.float-bottom {
-		height: 100%;
+		min-height: 100%;
 		display: grid;
 		grid-template-rows: 1fr auto;
 	}

@@ -1,12 +1,9 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import BreadcrumbItem from '@components/BreadcrumbItem.svelte';
 	import Breadcrumbs from '@components/Breadcrumbs.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-
-	$: skinsPlayers = Object.keys(data?.skins ?? {}) as Array<keyof typeof data.skins>;
 </script>
 
 <div>
@@ -17,13 +14,17 @@
 	</Breadcrumbs>
 	<h2>{data.round?.name} Skins</h2>
 	<ol>
-		{#each skinsPlayers as player}
+		{#each [...data.skins] as [player, holes]}
 			<li>
-				<span>{player}</span>
-				<span>
-					{#each data.skins[player] as hole}
+				<span class="player-data">
+					<b>{player}</b>
+					<div class="holes">({holes.join(', ')})</div>
+				</span>
+				<span class="player-score">
+					{holes.length}
+					<!-- {#each holes as hole}
 						<span class="hole">{hole}</span>
-					{/each}
+					{/each} -->
 				</span>
 			</li>
 		{/each}
@@ -32,23 +33,47 @@
 
 <style lang="scss">
 	ol {
+		padding-left: 0;
 		list-style: none;
-		padding-inline-start: 0;
-		margin: 0;
+
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
 	}
 
 	li {
+		color: unset;
+		background-color: var(--dp-02);
+		border-radius: 8px;
+
+		padding-left: 16px;
+
 		display: flex;
 		justify-content: space-between;
-		padding: 8px 0;
+		align-items: stretch;
 	}
 
-	.hole {
-		display: inline-grid;
+	.holes {
+		font-style: italic;
+		font-size: 0.75rem;
+	}
+
+	.player-data {
+		padding-block: 8px;
+	}
+
+	.player-score {
+		background-color: hsl(120, 80%, 50%);
+		color: #121212;
+		border-radius: inherit;
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+		border: none;
+
+		min-width: 5ch;
+
+		display: grid;
 		place-items: center;
-		width: 3ch;
-		height: 3ch;
-		background-color: var(--dp-02);
-		border-radius: 50%;
+		font-weight: bold;
 	}
 </style>

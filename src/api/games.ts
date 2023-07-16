@@ -4,7 +4,7 @@ import { computeStablefordPoints } from '@utils/golf';
 
 type HurdleInfo = {
 	points: number;
-	quota: number;
+	quota?: number;
 };
 
 export function gamesAPI(supabaseClient: TypedSupabaseClient) {
@@ -78,8 +78,7 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 			.reduce<number>((acc, curr) => (acc += curr), 0);
 
 		const hurdleInfo: HurdleInfo = {
-			points,
-			quota: 12
+			points
 		};
 
 		return hurdleInfo;
@@ -121,13 +120,89 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 			)
 		).reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
-		console.log({ hurdleData });
-
 		return hurdleData;
+	}
+
+	async function getScoresForHole(scorecardIds: number[], holeNumber: number) {
+		const { data, error: dbError } = await supabaseClient
+			.from('hole_scores')
+			.select('*')
+			.in('scorecard_id', scorecardIds)
+			.eq('hole_number', holeNumber);
+
+		if (dbError) {
+			throw error(500, {
+				message: dbError.message
+			});
+		}
+
+		return data;
+	}
+
+	/**
+	 * Get all skins for a round
+	 */
+	async function getSkinsForRound(roundId: number) {
+		const { data: scorecardsData, error: scorecardsError } = await supabaseClient
+			.from('scorecards')
+			.select(`id, player_id, round_id`)
+			.eq('round_id', roundId);
+
+		if (scorecardsError) {
+			throw error(500, {
+				message: scorecardsError.message
+			});
+		}
+
+		const scorecardIds = scorecardsData.map((s) => s.id);
+
+		const scoresByHole = new Map<number, Awaited<ReturnType<typeof getScoresForHole>>>();
+
+		for (let holeNumber = 1; holeNumber <= 18; holeNumber++) {
+			scoresByHole.set(holeNumber, await getScoresForHole(scorecardIds, holeNumber));
+		}
+
+		const skinsMap = new Map<number, Awaited<ReturnType<typeof getScoresForHole>>[number]>();
+
+		for (const [holeNumber, scores] of scoresByHole) {
+			const minScore = scores.reduce(
+				(min, curr) => (curr.score && curr.score < min ? curr.score : min),
+				Number.MAX_SAFE_INTEGER
+			);
+			const playersWithMin = scores.filter((score) => score.score === minScore);
+			if (playersWithMin.length === 1 && playersWithMin[0]) {
+				skinsMap.set(holeNumber, playersWithMin[0]);
+			}
+		}
+
+		const playerMap = new Map<string, number[]>();
+
+		for (const [holeNumber, winner] of skinsMap) {
+			const { data: playerData, error: playersError } = await supabaseClient
+				.from('players')
+				.select(`id, name`)
+				.eq(
+					'id',
+					scorecardsData.find((scorecard) => scorecard.id === winner.scorecard_id)?.player_id
+				)
+				.limit(1)
+				.single();
+
+			if (playersError) {
+				throw error(500, {
+					message: playersError.message
+				});
+			}
+
+			playerMap.set(playerData.name, [...(playerMap.get(playerData.name) ?? []), holeNumber]);
+		}
+
+		return playerMap;
 	}
 
 	return {
 		getHurdlePointsForRound,
-		getHurdlePoints
+		getHurdlePoints,
+		getSkinsForRound
 	};
 }

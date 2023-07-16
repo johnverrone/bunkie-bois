@@ -20,8 +20,8 @@
 			<li>
 				<span>{player}</span>
 				<span>
-					<span>Quota: {data.hurdle[player]?.quota}</span>
-					<span>Score: {data.hurdle[player]?.points}</span>
+					<span><b>Quota:</b> {data.hurdle[player]?.quota ?? 'TBD'}</span>
+					<span><b>Score:</b> {data.hurdle[player]?.points}</span>
 				</span>
 			</li>
 		{/each}

@@ -11,17 +11,8 @@
 		<BreadcrumbItem href={`/trips/${data.trip.id}/games`} label="Games" />
 		<BreadcrumbItem label="Hurdle" />
 	</Breadcrumbs>
-	<!-- <h2>Trip Leaderboard</h2>
 
-	<ol>
-		{#each data.tripPlayers as player}
-			<li>
-				<span>{player.name}</span>
-			</li>
-		{/each}
-	</ol> -->
-
-	<h2>Round Breakdown</h2>
+	<h3>By Round</h3>
 	<ol>
 		{#each data.rounds as round}
 			<li><a href={`/trips/${data.trip.id}/games/hurdle/${round.id}`}>{round.name}</a></li>
