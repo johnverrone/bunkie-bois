@@ -29,6 +29,11 @@
 			active: $page.route.id?.startsWith('/trips/[tripId]/players') ?? false
 		},
 		{
+			href: `/trips/${data.trip.id}/games`,
+			label: 'Games',
+			active: $page.route.id?.startsWith('/trips/[tripId]/games') ?? false
+		},
+		{
 			href: '/settings',
 			label: 'Settings',
 			active: $page.route.id?.startsWith('/settings') ?? false
@@ -44,7 +49,7 @@
 
 <style>
 	.float-bottom {
-		height: 100%;
+		min-height: 100%;
 		display: grid;
 		grid-template-rows: 1fr auto;
 	}

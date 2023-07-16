@@ -25,15 +25,14 @@
 			>
 				<Icon name="more-vertical" />
 			</button>
-
-			{#if actionMenuOpened}
-				<Actions bind:opened={actionMenuOpened} anchor={actionMenuAnchor}>
-					<slot name="actionMenu" />
-				</Actions>
-			{/if}
 		{/if}
 		<slot />
 	</a>
+	{#if actionMenuOpened}
+		<Actions bind:opened={actionMenuOpened} anchor={actionMenuAnchor}>
+			<slot name="actionMenu" />
+		</Actions>
+	{/if}
 </li>
 
 <style lang="scss">

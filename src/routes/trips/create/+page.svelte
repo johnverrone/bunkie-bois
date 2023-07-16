@@ -3,6 +3,7 @@
 	import Input from '@components/Input.svelte';
 	import PageTitle from '@components/PageTitle.svelte';
 	import type { ActionData } from './$types';
+	import Main from '@components/Main.svelte';
 
 	export let form: ActionData;
 
@@ -13,26 +14,28 @@
 
 <PageTitle>Create Trip</PageTitle>
 
-<form class="round-form" method="post" action="?/createTrip">
-	<Input
-		label="Trip Name"
-		type="text"
-		placeholder="Myrtle Beach 2023"
-		name="name"
-		bind:value={tripName}
-	/>
-	<Input label="Start Date" type="date" name="startDate" bind:value={startDate} />
-	<Input label="End Date" type="date" name="endDate" bind:value={endDate} />
+<Main>
+	<form class="round-form" method="post" action="?/createTrip">
+		<Input
+			label="Trip Name"
+			type="text"
+			placeholder="Myrtle Beach 2023"
+			name="name"
+			bind:value={tripName}
+		/>
+		<Input label="Start Date" type="date" name="startDate" bind:value={startDate} />
+		<Input label="End Date" type="date" name="endDate" bind:value={endDate} />
 
-	{#if form?.message}<p class="error">{form.message}</p>{/if}
+		{#if form?.message}<p class="error">{form.message}</p>{/if}
 
-	<div class="button-row">
-		<a href={`/trips`} class="cancel">Cancel</a>
-		<div class="save">
-			<Button type="submit" fullWidth>Save</Button>
+		<div class="button-row">
+			<a href={`/trips`} class="cancel">Cancel</a>
+			<div class="save">
+				<Button type="submit" fullWidth>Save</Button>
+			</div>
 		</div>
-	</div>
-</form>
+	</form>
+</Main>
 
 <style lang="scss">
 	.round-form {

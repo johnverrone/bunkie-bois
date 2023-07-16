@@ -3,6 +3,7 @@ import { coursesAPI } from './courses';
 import { playersAPI } from './players';
 import { tripsAPI } from './trips';
 import { roundsAPI } from './rounds';
+import { gamesAPI } from './games';
 
 export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) {
 	const { session, supabaseClient } = await getSupabase(event);
@@ -13,6 +14,7 @@ export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) 
 		...coursesAPI(supabaseClient),
 		...playersAPI(supabaseClient),
 		...roundsAPI(supabaseClient),
-		...tripsAPI(supabaseClient)
+		...tripsAPI(supabaseClient),
+		...gamesAPI(supabaseClient)
 	};
 }

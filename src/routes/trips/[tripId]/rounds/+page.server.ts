@@ -16,7 +16,8 @@ export const actions = {
 
 		try {
 			const { roundId } = deleteSchema.parse(data);
-			return deleteRound(roundId);
+			const response = await deleteRound(roundId);
+			if (!response.success) return fail(500, { message: response.error });
 		} catch (error) {
 			return fail(400, { message: `failed to parse id, ${error}` });
 		}
