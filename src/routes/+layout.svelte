@@ -7,6 +7,9 @@
 	import Input from '@components/Input.svelte';
 
 	let email: string;
+	let loginCode: string;
+	let authMethod: 'otp' | 'google' | null = null;
+	let emailSent: boolean = false;
 
 	onMount(() => {
 		const {
@@ -29,13 +32,28 @@
 		});
 	}
 
-	function localOtpSignIn() {
+	function getOtp() {
 		supabase.auth.signInWithOtp({
 			email: email || import.meta.env.VITE_LOCAL_TEST_EMAIL,
 			options: {
 				emailRedirectTo: window.location.origin
 			}
 		});
+		emailSent = true;
+	}
+
+	function signInWithCode() {
+		supabase.auth.verifyOtp({
+			type: 'email',
+			email: email || import.meta.env.VITE_LOCAL_TEST_EMAIL,
+			token: loginCode
+		});
+	}
+
+	function cancel() {
+		emailSent = false;
+		email = '';
+		authMethod = null;
 	}
 </script>
 
@@ -47,9 +65,22 @@
 	<slot />
 {:else}
 	<div class="auth-button login">
-		<Input type="email" bind:value={email} />
-		<Button on:click={localOtpSignIn}>Login with One Time Password</Button>
-		<Button on:click={signInWithGoogle}>Login with Google</Button>
+		{#if !authMethod}
+			<Button on:click={() => (authMethod = 'otp')}>Login with One Time Password</Button>
+			<!-- Uncomment for prod where Google provider is enabled -->
+			<!-- <Button on:click={signInWithGoogle}>Login with Google</Button> -->
+		{:else if authMethod === 'otp'}
+			{#if emailSent}
+				<p>An email has been sent to <strong>{email}</strong>. Enter the login code:</p>
+				<Input type="text" inputmode="numeric" bind:value={loginCode} />
+				<Button on:click={signInWithCode}>Login</Button>
+				<Button on:click={cancel}>Cancel</Button>
+			{:else}
+				<p>Enter your email:</p>
+				<Input type="email" bind:value={email} />
+				<Button on:click={getOtp}>Get Login Code</Button>
+			{/if}
+		{/if}
 	</div>
 {/if}
 
