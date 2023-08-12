@@ -108,6 +108,11 @@
 		--destructive: hsl(60deg 90% 70%);
 		--disabled: hsl(0deg 0% 50%);
 
+		--gold: hsl(51deg 100% 80%);
+		--bogey: hsl(37deg 36% 60%);
+		--double: hsl(37deg 100% 59%);
+		--triple: hsl(17deg 100% 59%);
+
 		// sizing
 		--nav-height: 80px;
 

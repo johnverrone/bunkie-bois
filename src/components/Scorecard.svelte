@@ -80,7 +80,14 @@
 				{#each front9Holes as hole}
 					<td>
 						{#if readonly}
-							<span>{front9[hole.hole_number]}</span>
+							<span
+								class:birdie={front9[hole.hole_number] === hole.par - 1}
+								class:bogey={front9[hole.hole_number] === hole.par + 1}
+								class:double={front9[hole.hole_number] === hole.par + 2}
+								class:triple={front9[hole.hole_number] ?? 0 >= hole.par + 3}
+							>
+								{front9[hole.hole_number]}
+							</span>
 						{:else}
 							<input
 								type="number"
@@ -134,7 +141,14 @@
 				{#each back9Holes as hole}
 					<td>
 						{#if readonly}
-							<span>{back9[hole.hole_number]}</span>
+							<span
+								class:birdie={back9[hole.hole_number] === hole.par - 1}
+								class:bogey={back9[hole.hole_number] === hole.par + 1}
+								class:double={back9[hole.hole_number] === hole.par + 2}
+								class:triple={back9[hole.hole_number] ?? 0 >= hole.par + 3}
+							>
+								{back9[hole.hole_number]}
+							</span>
 						{:else}
 							<input
 								type="number"
@@ -176,6 +190,8 @@
 			td {
 				text-align: center;
 				background-color: var(--dp-02);
+				position: relative;
+
 				input[type='number'] {
 					width: 100%;
 					border: none;
@@ -184,6 +200,59 @@
 					background-color: unset;
 					color: var(--secondary);
 					font-weight: bold;
+				}
+
+				.birdie:before {
+					display: inline-block;
+					content: '';
+					position: absolute;
+					border: thin solid var(--gold);
+					border-radius: 50%;
+					top: 10%;
+					left: 10%;
+					right: 10%;
+					margin: auto;
+					height: 80%;
+					aspect-ratio: 1/1;
+				}
+
+				.bogey:before {
+					display: inline-block;
+					content: '';
+					position: absolute;
+					border: thin solid var(--bogey);
+					top: 10%;
+					left: 10%;
+					right: 10%;
+					margin: auto;
+					height: 80%;
+					aspect-ratio: 1/1;
+				}
+
+				.double:before {
+					display: inline-block;
+					content: '';
+					position: absolute;
+					border: 3px double var(--bogey);
+					top: 10%;
+					left: 10%;
+					right: 10%;
+					margin: auto;
+					height: 80%;
+					aspect-ratio: 1/1;
+				}
+
+				.triple:before {
+					display: inline-block;
+					content: '';
+					position: absolute;
+					border: 3px double var(--triple);
+					top: 10%;
+					left: 10%;
+					right: 10%;
+					margin: auto;
+					height: 80%;
+					aspect-ratio: 1/1;
 				}
 			}
 		}
