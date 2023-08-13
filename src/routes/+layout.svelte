@@ -108,6 +108,17 @@
 		--destructive: hsl(60deg 90% 70%);
 		--disabled: hsl(0deg 0% 50%);
 
+		--gold: hsl(51deg 100% 80%);
+		--light-orange: hsl(37deg 36% 60%);
+		--mid-orange: hsl(37deg 100% 59%);
+		--dark-orange: hsl(17deg 100% 59%);
+
+		--eagle: var(--gold);
+		--birdie: var(--gold);
+		--bogey: var(--light-orange);
+		--double: var(--light-orange);
+		--triple: var(--dark-orange);
+
 		// sizing
 		--nav-height: 80px;
 
