@@ -5,7 +5,7 @@
 
 	export let data: PageData;
 
-	$: hurdlePlayers = Object.keys(data?.hurdle ?? {}) as Array<keyof typeof data.hurdle>;
+	$: hurdlePlayers = [...(data.hurdle?.keys() ?? [])];
 </script>
 
 <div>
@@ -20,8 +20,8 @@
 			<li>
 				<span>{player}</span>
 				<span>
-					<span><b>Quota:</b> {data.hurdle[player]?.quota ?? 'TBD'}</span>
-					<span><b>Score:</b> {data.hurdle[player]?.points}</span>
+					<span><b>Quota:</b> {data.hurdle?.get(player)?.quota ?? 'TBD'}</span>
+					<span><b>Score:</b> {data.hurdle?.get(player)?.points}</span>
 				</span>
 			</li>
 		{/each}
