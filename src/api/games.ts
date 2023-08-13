@@ -1,6 +1,7 @@
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
 import { computeStablefordPoints } from '@utils/golf';
+import type { Prettify, ArrayElement } from '@utils/typeHelpers';
 
 type HurdleInfo = {
 	points: number;
@@ -123,30 +124,28 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 		return hurdleData;
 	}
 
-	async function getScoresForHole(scorecardIds: number[], holeNumber: number) {
-		const { data, error: dbError } = await supabaseClient
-			.from('hole_scores')
-			.select('*')
-			.in('scorecard_id', scorecardIds)
-			.eq('hole_number', holeNumber);
-
-		if (dbError) {
-			throw error(500, {
-				message: dbError.message
-			});
-		}
-
-		return data;
-	}
-
 	/**
 	 * Get all skins for a round
 	 */
 	async function getSkinsForRound(roundId: number) {
 		const { data: scorecardsData, error: scorecardsError } = await supabaseClient
-			.from('scorecards')
-			.select(`id, player_id, round_id`)
-			.eq('round_id', roundId);
+			.from('hole_scores')
+			.select(
+				`
+				scorecard_id,
+				hole_number,
+				score,
+				scorecards!inner (
+					id,
+					player_id,
+					players ( id, name ),
+					round_id
+				)
+			`
+			)
+			.eq('scorecards.round_id', roundId)
+			.limit(1, { foreignTable: 'scorecards.players' })
+			.order('hole_number');
 
 		if (scorecardsError) {
 			throw error(500, {
@@ -154,49 +153,51 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 			});
 		}
 
-		const scorecardIds = scorecardsData.map((s) => s.id);
+		type ResultRow = (typeof scorecardsData)[number];
+		type PatchedPlayers = Prettify<ArrayElement<ArrayElement<ResultRow['scorecards']>['players']>>;
+		type PatchedScorecards = Prettify<
+			Omit<ArrayElement<ResultRow['scorecards']>, 'players'> & { players: PatchedPlayers }
+		>;
+		type PatchedResult = Prettify<
+			Omit<ResultRow, 'scorecards'> & { scorecards: PatchedScorecards }
+		>;
 
-		const scoresByHole = new Map<number, Awaited<ReturnType<typeof getScoresForHole>>>();
+		const patchedData = scorecardsData as unknown as PatchedResult[];
 
-		for (let holeNumber = 1; holeNumber <= 18; holeNumber++) {
-			scoresByHole.set(holeNumber, await getScoresForHole(scorecardIds, holeNumber));
-		}
+		type PlayerScore = {
+			player: string;
+			score: number;
+		};
 
-		const skinsMap = new Map<number, Awaited<ReturnType<typeof getScoresForHole>>[number]>();
+		const dataByHole = patchedData.reduce<Record<number, PlayerScore[]>>(
+			(acc, curr) => ({
+				...acc,
+				[curr.hole_number]: [
+					...(acc[curr.hole_number] ?? []),
+					{ player: curr.scorecards.players.name, score: curr.score ?? 0 }
+				]
+			}),
+			{}
+		);
 
-		for (const [holeNumber, scores] of scoresByHole) {
-			const minScore = scores.reduce(
-				(min, curr) => (curr.score && curr.score < min ? curr.score : min),
-				Number.MAX_SAFE_INTEGER
+		const skinsMap = new Map<string, PlayerScore>();
+		for (const hole in dataByHole) {
+			const holeData = dataByHole[hole];
+			if (!holeData || !holeData[0]) return;
+			const lowScore = holeData.reduce(
+				(min, curr) => (curr.score < min.score ? curr : min),
+				holeData[0]
 			);
-			const playersWithMin = scores.filter((score) => score.score === minScore);
-			if (playersWithMin.length === 1 && playersWithMin[0]) {
-				skinsMap.set(holeNumber, playersWithMin[0]);
+			const playersWithScore = holeData.filter((score) => score.score === lowScore.score);
+			if (playersWithScore?.length === 1) {
+				skinsMap.set(hole, lowScore);
 			}
 		}
 
-		const playerMap = new Map<string, number[]>();
-
-		for (const [holeNumber, winner] of skinsMap) {
-			const { data: playerData, error: playersError } = await supabaseClient
-				.from('players')
-				.select(`id, name`)
-				.eq(
-					'id',
-					scorecardsData.find((scorecard) => scorecard.id === winner.scorecard_id)?.player_id
-				)
-				.limit(1)
-				.single();
-
-			if (playersError) {
-				throw error(500, {
-					message: playersError.message
-				});
-			}
-
-			playerMap.set(playerData.name, [...(playerMap.get(playerData.name) ?? []), holeNumber]);
+		const playerMap = new Map<string, string[]>();
+		for (const [hole, winner] of skinsMap) {
+			playerMap.set(winner.player, [...(playerMap.get(winner.player) ?? []), hole]);
 		}
-
 		return playerMap;
 	}
 
