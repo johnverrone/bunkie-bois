@@ -1,15 +1,16 @@
 <script lang="ts">
 	export let label: string | undefined = undefined;
 	export let value: string | number | undefined = undefined;
+	export let block: boolean = false;
 	export let focus: (el: HTMLInputElement) => void = () => {};
 </script>
 
 <label>
 	{#if label}{label}{/if}
-	<input {...$$restProps} id={label} bind:value use:focus />
+	<input {...$$restProps} id={label} class:block bind:value use:focus />
 </label>
 
-<style>
+<style lang="scss">
 	input {
 		width: 100%;
 		font: inherit;
@@ -23,5 +24,9 @@
 		outline-style: solid;
 		outline-width: 1px;
 		color-scheme: dark;
+
+		&.block {
+			display: block;
+		}
 	}
 </style>

@@ -16,7 +16,7 @@
 	<input type="hidden" name="tripId" value={data.trip.id} />
 	<Input label="Round Name" type="text" placeholder="Round 1" name="name" bind:value={roundName} />
 	<SelectMenu label="Course" name="courseId" bind:value={courseId} options={data.courses} />
-	<Input label="Date" type="date" name="date" bind:value={date} />
+	<Input label="Date" type="date" name="date" bind:value={date} block />
 
 	{#if form?.message}<p class="error">{form.message}</p>{/if}
 
