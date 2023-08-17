@@ -6,25 +6,33 @@
 	import Main from '@components/Main.svelte';
 	import PageTitle from '@components/PageTitle.svelte';
 	import type { PageData } from './$types';
+	import IconText from '@components/IconText.svelte';
 
 	export let data: PageData;
 </script>
 
-<PageTitle>Courses</PageTitle>
+<Breadcrumbs>
+	<BreadcrumbItem href={`/settings`} label="Settings" />
+	<BreadcrumbItem label="Courses" />
+</Breadcrumbs>
 
-<Main>
-	<Breadcrumbs>
-		<BreadcrumbItem href={`/settings`} label="Settings" />
-		<BreadcrumbItem label="Courses" />
-	</Breadcrumbs>
+{#if data.courses.length}
+	<List>
+		{#each data.courses as course}
+			<ListItem href={`/courses/${course.id}`} title={course.name} />
+		{/each}
+	</List>
+{:else}
+	<p>no courses yet</p>
+{/if}
 
-	{#if data.courses.length}
-		<List>
-			{#each data.courses as course}
-				<ListItem href={`/courses/${course.id}`} title={course.name} />
-			{/each}
-		</List>
-	{:else}
-		<p>no courses yet</p>
-	{/if}
-</Main>
+<a class="add-course-button" href={`/courses/create`}>
+	<IconText name="plus" label="Add course" />
+</a>
+
+<style lang="scss">
+	.add-course-button {
+		display: block;
+		margin-top: 1rem;
+	}
+</style>

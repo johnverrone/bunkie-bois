@@ -1,5 +1,5 @@
 import { makeSupabaseAPI } from '@api';
-import type { PageLoad } from './$types';
+import type { LayoutLoad } from './$types';
 
 export const load = (async (event) => {
 	const { getCourseDetails } = await makeSupabaseAPI(event);
@@ -7,9 +7,9 @@ export const load = (async (event) => {
 		params: { courseId }
 	} = event;
 
-	const course = await getCourseDetails(courseId);
+	const course = await getCourseDetails(parseInt(courseId, 10));
 
 	return {
 		course
 	};
-}) satisfies PageLoad;
+}) satisfies LayoutLoad;
