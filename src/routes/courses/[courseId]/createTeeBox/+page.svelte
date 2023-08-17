@@ -58,7 +58,7 @@
 	<Input
 		label="Rating"
 		type="number"
-		inputmode="numeric"
+		inputmode="decimal"
 		placeholder="70.0"
 		name="rating"
 		step="0.1"
