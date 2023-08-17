@@ -58,6 +58,7 @@
 	<Input
 		label="Rating"
 		type="number"
+		inputmode="numeric"
 		placeholder="70.0"
 		name="rating"
 		step="0.1"
@@ -69,6 +70,7 @@
 	<Input
 		label="Slope"
 		type="number"
+		inputmode="numeric"
 		placeholder="113"
 		name="slope"
 		step="1"
@@ -91,6 +93,7 @@
 					<td>
 						<input
 							type="number"
+							inputmode="numeric"
 							min="3"
 							max="5"
 							name={`hole-${number}-par`}
@@ -100,6 +103,7 @@
 					<td>
 						<input
 							type="number"
+							inputmode="numeric"
 							min="1"
 							max="700"
 							name={`hole-${number}-yardage`}
@@ -109,6 +113,7 @@
 					<td>
 						<input
 							type="number"
+							inputmode="numeric"
 							min="1"
 							max="18"
 							name={`hole-${number}-handicap`}

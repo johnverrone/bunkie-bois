@@ -206,11 +206,11 @@
 					display: inline-block;
 					content: '';
 					position: absolute;
+					pointer-events: none;
 					top: 10%;
 					left: 10%;
 					right: 10%;
 					margin: auto;
-					height: 80%;
 					aspect-ratio: 1/1;
 				}
 
