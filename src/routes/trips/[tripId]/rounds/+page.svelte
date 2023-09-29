@@ -21,12 +21,12 @@
 				<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
 					<span slot="actionMenu" class="action-menu">
 						<a href={`/trips/${data.trip.id}/rounds/${round.id}/edit`} class="edit">
-							<IconText name="edit" label="Edit round" />
+							<IconText name="edit" label="Edit" />
 						</a>
-						<form method="post" action="?/deleteRound" style="display: inline-block" use:enhance>
+						<form method="post" action="?/deleteRound" use:enhance>
 							<input type="hidden" name="roundId" value={round.id} />
-							<Button variant="destructive" type="submit">
-								<IconText name="trash" label="Delete Round" />
+							<Button variant="destructive" type="submit" fullWidth>
+								<IconText name="trash" label="Delete" />
 							</Button>
 						</form>
 					</span>
@@ -65,9 +65,15 @@
 		flex-flow: column;
 		align-items: flex-start;
 		gap: 16px;
+		min-width: 100px;
+
+		form {
+			width: 100%;
+		}
 	}
 
 	.edit {
+		width: 100%;
 		padding: 0 6px;
 	}
 </style>

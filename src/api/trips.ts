@@ -1,5 +1,5 @@
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
-import { error, fail } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 
 export function tripsAPI(supabaseClient: TypedSupabaseClient) {
 	return {
@@ -101,9 +101,15 @@ export function tripsAPI(supabaseClient: TypedSupabaseClient) {
 		/**
 		 * Delete a trip by ID
 		 */
-		deleteTrip: async function (id: string) {
+		deleteTrip: async function (id: number) {
 			const { error: dbError } = await supabaseClient.from('trips').delete().eq('id', id);
-			if (dbError) return fail(500, { message: dbError.message });
+			if (dbError) {
+				return {
+					ok: false as const,
+					error: dbError.message
+				};
+			}
+			return { ok: true };
 		}
 	};
 }

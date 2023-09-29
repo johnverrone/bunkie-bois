@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from '@components/Button.svelte';
 	import IconText from '@components/IconText.svelte';
 	import List from '@components/List.svelte';
 	import ListItem from '@components/ListItem.svelte';
@@ -7,6 +8,7 @@
 	import PageTitle from '@components/PageTitle.svelte';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
 
 	export let data: PageData;
 </script>
@@ -35,10 +37,16 @@
 				{#each data.trips as trip}
 					{#if data.role.isAdmin()}
 						<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
-							<span slot="actionMenu">
+							<span slot="actionMenu" class="action-menu">
 								<a href={`/trips/${trip.id}/edit`} class="edit">
-									<IconText name="edit" label="Edit trip" />
+									<IconText name="edit" label="Edit" />
 								</a>
+								<form method="post" action="?/deleteTrip" use:enhance>
+									<input type="hidden" name="tripId" value={trip.id} />
+									<Button variant="destructive" type="submit" fullWidth>
+										<IconText name="trash" label="Delete" />
+									</Button>
+								</form>
 							</span>
 						</ListItem>
 					{:else}
@@ -68,5 +76,22 @@
 		height: 100%;
 		display: grid;
 		grid-template-rows: 1fr auto;
+	}
+
+	.action-menu {
+		display: flex;
+		flex-flow: column;
+		align-items: flex-start;
+		gap: 16px;
+		min-width: 100px;
+
+		form {
+			width: 100%;
+		}
+	}
+
+	.edit {
+		width: 100%;
+		padding: 0 6px;
 	}
 </style>
