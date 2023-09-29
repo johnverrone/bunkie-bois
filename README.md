@@ -13,12 +13,14 @@ For development, you need the following installed:
 First install dependencies with `npm install`.
 
 Then run:
+
 ```bash
 # docker needs to be running for this
 npx supabase start
 ```
 
 The `npx supabase start` command will output your local supabase credentials and associated URLs like this:
+
 ```bash
 API URL: http://localhost:PORT
 DB URL: postgresql://postgres:postgres@localhost:PORT/postgres
@@ -34,11 +36,11 @@ _Note: `npx supabase start` will spin up a docker container for your database. M
 You can use the `Inbucket URL` to manage your local development email auth management.
 
 In a `.env.development` file, add the following:
+
 ```bash
 # use the variables output from `npx supabase start`
 VITE_SUPABASE_URL={API_URL}
 VITE_SUPABASE_ANON_KEY={ANON_KEY}
-VITE_LOCAL_TEST_EMAIL=test123@gmail.com
 ```
 
 To start the development server:
