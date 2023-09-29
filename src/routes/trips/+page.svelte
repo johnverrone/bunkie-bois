@@ -36,7 +36,7 @@
 					<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
 						<span slot="actionMenu">
 							<a href={`/trips/${trip.id}/edit`} class="edit">
-								<IconText name="trash" label="Edit trip" />
+								<IconText name="edit" label="Edit trip" />
 							</a>
 						</span>
 					</ListItem>
