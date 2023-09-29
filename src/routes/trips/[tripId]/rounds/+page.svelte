@@ -5,7 +5,6 @@
 	import ListItem from '@components/ListItem.svelte';
 	import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
-	import { stop_propagation } from 'svelte/internal';
 
 	export let data: PageData;
 </script>
@@ -14,7 +13,10 @@
 	<List>
 		{#each data.rounds as round}
 			<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
-				<span slot="actionMenu">
+				<span slot="actionMenu" class="action-menu">
+					<a href={`/trips/${data.trip.id}/rounds/${round.id}/edit`} class="edit">
+						<IconText name="edit" label="Edit round" />
+					</a>
 					<form method="post" action="?/deleteRound" style="display: inline-block" use:enhance>
 						<input type="hidden" name="roundId" value={round.id} />
 						<Button variant="destructive" type="submit">
@@ -25,7 +27,7 @@
 				<h6>{round.course.name}</h6>
 				{#if round.date}
 					<h6>
-						{round.date.toLocaleDateString(undefined, { dateStyle: 'medium' })}
+						{round.date}
 					</h6>
 				{/if}
 			</ListItem>
@@ -38,3 +40,16 @@
 <a href={`/trips/${data.trip.id}/rounds/create`}>
 	<IconText name="plus" label="Add round" />
 </a>
+
+<style lang="scss">
+	.action-menu {
+		display: flex;
+		flex-flow: column;
+		align-items: flex-start;
+		gap: 16px;
+	}
+
+	.edit {
+		padding: 0 6px;
+	}
+</style>

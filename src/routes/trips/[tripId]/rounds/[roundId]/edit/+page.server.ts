@@ -4,30 +4,30 @@ import { z } from 'zod';
 import { makeSupabaseAPI } from '@api';
 
 export const actions = {
-	updateTrip: async (event) => {
+	updateRound: async (event) => {
 		const { request } = event;
-		const { session, updateTrip } = await makeSupabaseAPI(event);
+		const { session, updateRound } = await makeSupabaseAPI(event);
 		if (!session) return fail(403, { message: 'Unauthorized' });
 
 		const data = Object.fromEntries(await request.formData());
-		const tripSchema = z.object({
+		const roundSchema = z.object({
 			id: z.coerce.number(),
 			name: z.string(),
-			startDate: z.coerce.date(),
-			endDate: z.coerce.date()
+			courseId: z.coerce.number(),
+			date: z.coerce.date()
 		});
 
-		let trip: z.infer<typeof tripSchema>;
+		let round: z.infer<typeof roundSchema>;
 		try {
-			trip = tripSchema.parse(data);
+			round = roundSchema.parse(data);
 		} catch (error) {
-			return fail(400, { message: `failed to parse trip, ${error}` });
+			return fail(400, { message: `failed to parse round, ${error}` });
 		}
 
-		const result = await updateTrip(trip);
-		if (!result.ok) {
+		const result = await updateRound(round);
+		if (!result.success) {
 			return fail(500, { message: result.error });
 		}
-		throw redirect(303, `/trips/${trip.id}/rounds`);
+		throw redirect(303, `/trips/${event.params.tripId}/rounds`);
 	}
 } satisfies Actions;

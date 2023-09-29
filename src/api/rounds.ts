@@ -35,14 +35,14 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 				});
 			}
 
-			const rounds = roundsData.map(({ date, ...round }) => {
-				return {
-					...round,
-					date: date ? new Date(date) : null
-				};
-			});
+			// const rounds = roundsData.map(({ date, ...round }) => {
+			// 	return {
+			// 		...round,
+			// 		date: date ? new Date(date) : null
+			// 	};
+			// });
 
-			return rounds;
+			return roundsData;
 		},
 
 		/**
@@ -61,6 +61,33 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 
 			if (dbError) return { error: dbError.message };
 			return { success: true };
+		},
+
+		/**
+		 * Update round information
+		 */
+		updateRound: async function ({
+			id,
+			courseId,
+			name,
+			date
+		}: {
+			id: number;
+			courseId: number;
+			name: string;
+			date: Date;
+		}) {
+			const { error: dbError } = await supabaseClient
+				.from('rounds')
+				.update({
+					course_id: courseId,
+					name,
+					date: date.toISOString()
+				})
+				.eq('id', id);
+
+			if (dbError) return { success: false as const, error: dbError.message };
+			return { success: true as const };
 		},
 
 		/**
