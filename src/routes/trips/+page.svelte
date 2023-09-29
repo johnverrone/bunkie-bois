@@ -33,22 +33,33 @@
 		{#if data.trips.length}
 			<List>
 				{#each data.trips as trip}
-					<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
-						<span slot="actionMenu">
-							<a href={`/trips/${trip.id}/edit`} class="edit">
-								<IconText name="edit" label="Edit trip" />
-							</a>
-						</span>
-					</ListItem>
+					{#if data.role.isAdmin()}
+						<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
+							<span slot="actionMenu">
+								<a href={`/trips/${trip.id}/edit`} class="edit">
+									<IconText name="edit" label="Edit trip" />
+								</a>
+							</span>
+						</ListItem>
+					{:else}
+						<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name} />
+					{/if}
 				{/each}
 			</List>
 		{:else}
-			<p>no trips yet</p>
+			<p>
+				no trips yet.
+				{#if !data.role.isAdmin()}
+					only an admin can create trips.
+				{/if}
+			</p>
 		{/if}
 
-		<a href={`/trips/create`}>
-			<IconText name="plus" label="Add trip" />
-		</a>
+		{#if data.role.isAdmin()}
+			<a href={`/trips/create`}>
+				<IconText name="plus" label="Add trip" />
+			</a>
+		{/if}
 	</div>
 </Main>
 

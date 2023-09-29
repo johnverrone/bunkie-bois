@@ -17,34 +17,47 @@
 {#if data.rounds.length}
 	<List>
 		{#each sortedRounds as round}
-			<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
-				<span slot="actionMenu" class="action-menu">
-					<a href={`/trips/${data.trip.id}/rounds/${round.id}/edit`} class="edit">
-						<IconText name="edit" label="Edit round" />
-					</a>
-					<form method="post" action="?/deleteRound" style="display: inline-block" use:enhance>
-						<input type="hidden" name="roundId" value={round.id} />
-						<Button variant="destructive" type="submit">
-							<IconText name="trash" label="Delete Round" />
-						</Button>
-					</form>
-				</span>
-				<h6>{round.course.name}</h6>
-				{#if round.date}
-					<h6>
-						{new Date(round.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-					</h6>
-				{/if}
-			</ListItem>
+			{#if data.role.isAdmin()}
+				<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
+					<span slot="actionMenu" class="action-menu">
+						<a href={`/trips/${data.trip.id}/rounds/${round.id}/edit`} class="edit">
+							<IconText name="edit" label="Edit round" />
+						</a>
+						<form method="post" action="?/deleteRound" style="display: inline-block" use:enhance>
+							<input type="hidden" name="roundId" value={round.id} />
+							<Button variant="destructive" type="submit">
+								<IconText name="trash" label="Delete Round" />
+							</Button>
+						</form>
+					</span>
+					<h6>{round.course.name}</h6>
+					{#if round.date}
+						<h6>
+							{new Date(round.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+						</h6>
+					{/if}
+				</ListItem>
+			{:else}
+				<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
+					<h6>{round.course.name}</h6>
+					{#if round.date}
+						<h6>
+							{new Date(round.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+						</h6>
+					{/if}
+				</ListItem>
+			{/if}
 		{/each}
 	</List>
 {:else}
 	<p>no rounds yet</p>
 {/if}
 
-<a href={`/trips/${data.trip.id}/rounds/create`}>
-	<IconText name="plus" label="Add round" />
-</a>
+{#if data.role.isAdmin()}
+	<a href={`/trips/${data.trip.id}/rounds/create`}>
+		<IconText name="plus" label="Add round" />
+	</a>
+{/if}
 
 <style lang="scss">
 	.action-menu {
