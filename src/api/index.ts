@@ -5,6 +5,7 @@ import { tripsAPI } from './trips';
 import { roundsAPI } from './rounds';
 import { gamesAPI } from './games';
 import { scoresAPI } from './scores';
+import { usersAPI } from './user';
 
 export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) {
 	const { session, supabaseClient } = await getSupabase(event);
@@ -17,6 +18,7 @@ export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) 
 		...roundsAPI(supabaseClient),
 		...tripsAPI(supabaseClient),
 		...gamesAPI(supabaseClient),
-		...scoresAPI(supabaseClient)
+		...scoresAPI(supabaseClient),
+		...usersAPI(supabaseClient)
 	};
 }
