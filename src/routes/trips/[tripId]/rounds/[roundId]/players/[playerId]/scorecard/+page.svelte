@@ -3,6 +3,7 @@
 	import BreadcrumbItem from '@components/BreadcrumbItem.svelte';
 	import Scorecard from '@components/Scorecard.svelte';
 	import type { PageData } from './$types';
+	import Button from '@components/Button.svelte';
 
 	export let data: PageData;
 
@@ -44,6 +45,15 @@
 	{#if teeBox}
 		<Scorecard courseTeeBox={teeBox} {front9} {back9} readonly />
 	{/if}
+
+	<div class="spacer" />
+
+	<div class="button-container">
+		<form method="post" action="?/deleteScore">
+			<input type="hidden" name="id" value={data.scorecard.id} />
+			<Button variant="destructive" type="submit">Delete Score</Button>
+		</form>
+	</div>
 </div>
 
 <style lang="scss">
