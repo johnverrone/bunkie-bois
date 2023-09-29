@@ -19,6 +19,8 @@
 
 	let netScoreToggled: boolean = false;
 
+	$: date = data.round.date ? new Date(data.round.date) : undefined;
+
 	$: sortedLeaderboard = data.leaderboard.sort((a, b) => {
 		const aScore = netScoreToggled ? a.score - a.courseHandicap : a.score;
 		const bScore = netScoreToggled ? b.score - b.courseHandicap : b.score;
@@ -47,7 +49,7 @@
 		<h5>Round Details</h5>
 		{#if showDetails}
 			<div transition:slide={{ duration: 300 }}>
-				<p>Date: {data.round.date?.toLocaleDateString(undefined, { dateStyle: 'medium' })}</p>
+				<p>Date: {date?.toLocaleDateString(undefined, { dateStyle: 'medium' })}</p>
 				<p>Course: {data.round.course.name}</p>
 			</div>
 		{/if}

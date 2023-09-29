@@ -7,11 +7,16 @@
 	import { enhance } from '$app/forms';
 
 	export let data: PageData;
+
+	$: sortedRounds = data.rounds.sort(({ date: a }, { date: b }) => {
+		if (a && b) return new Date(a).getTime() - new Date(b).getTime();
+		return 0;
+	});
 </script>
 
 {#if data.rounds.length}
 	<List>
-		{#each data.rounds as round}
+		{#each sortedRounds as round}
 			<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
 				<span slot="actionMenu" class="action-menu">
 					<a href={`/trips/${data.trip.id}/rounds/${round.id}/edit`} class="edit">
@@ -27,7 +32,7 @@
 				<h6>{round.course.name}</h6>
 				{#if round.date}
 					<h6>
-						{round.date}
+						{new Date(round.date).toLocaleDateString(undefined, { dateStyle: 'medium' })}
 					</h6>
 				{/if}
 			</ListItem>
