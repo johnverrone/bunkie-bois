@@ -9,7 +9,7 @@
 	export let data: PageData;
 
 	$: sortedRounds = data.rounds.sort(({ date: a }, { date: b }) => {
-		if (a && b) return new Date(a).getTime() - new Date(b).getTime();
+		if (a && b) return new Date(b).getTime() - new Date(a).getTime();
 		return 0;
 	});
 </script>
