@@ -58,7 +58,8 @@
 
 <style lang="scss">
 	.scorecard-container {
-		overflow: auto;
+		overflow-x: auto;
+		overflow-y: visible;
 	}
 
 	.spacer {
