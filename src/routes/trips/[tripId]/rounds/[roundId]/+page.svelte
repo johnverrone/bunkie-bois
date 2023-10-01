@@ -19,7 +19,7 @@
 
 	let netScoreToggled: boolean = false;
 
-	$: date = data.round.date ? new Date(data.round.date) : undefined;
+	$: date = data.round.date ? new Date(`${data.round.date}T00:00:00`) : undefined;
 
 	$: sortedLeaderboard = data.leaderboard.sort((a, b) => {
 		const aScore = netScoreToggled ? a.score - a.courseHandicap : a.score;
