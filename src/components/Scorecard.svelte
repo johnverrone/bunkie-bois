@@ -210,8 +210,8 @@
 					top: 10%;
 					left: 10%;
 					right: 10%;
+					bottom: 10%;
 					margin: auto;
-					aspect-ratio: 1/1;
 				}
 
 				&.eagle:after {
