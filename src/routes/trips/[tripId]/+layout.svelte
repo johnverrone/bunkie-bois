@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { LayoutData } from './$types';
-	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
 	import Main from '@components/Main.svelte';
 	import NavBar from '@components/NavBar.svelte';
 	import PageTitle from '@components/PageTitle.svelte';
-	import { onMount } from 'svelte';
+	import type { LayoutData } from './$types';
+	import { page } from '$app/stores';
 	import { trip } from '$lib/stores/trip';
 
 	export let data: LayoutData;
@@ -34,9 +34,9 @@
 			active: $page.route.id?.startsWith('/trips/[tripId]/games') ?? false
 		},
 		{
-			href: '/settings',
+			href: `/trips/${data.trip.id}/settings`,
 			label: 'Settings',
-			active: $page.route.id?.startsWith('/settings') ?? false
+			active: $page.route.id?.startsWith('/trips/[tripId]/settings') ?? false
 		}
 	]}
 />

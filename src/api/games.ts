@@ -5,6 +5,41 @@ import type { Prettify, ArrayElement } from '@utils/typeHelpers';
 
 export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 	/**
+	 *
+	 */
+	async function getTotalScoreForTrip(playerId: number, tripId: number) {
+		const { data, error: dbError } = await supabaseClient
+			.from('hole_scores')
+			.select(
+				`
+				scorecard_id,
+				hole_number,
+				score,
+				scorecards!inner (
+					player_id,
+					round_id,
+					rounds ( id, trip_id )
+				)
+			`
+			)
+			.eq('scorecards.rounds.trip_id', tripId)
+			.eq('scorecards.player_id', playerId);
+
+		if (dbError) {
+			throw error(500, {
+				message: dbError.message
+			});
+		}
+
+		const totalScore = data.reduce(
+			(acc: number, curr: { score: number | null }) => (acc += curr.score ?? 0),
+			0
+		);
+
+		return totalScore;
+	}
+
+	/**
 	 * Get all hurdle points for a round
 	 */
 	async function getHurdlePointsForRound(roundId: number) {
@@ -185,6 +220,7 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 	}
 
 	return {
+		getTotalScoreForTrip,
 		getHurdlePointsForRound,
 		getSkinsForRound
 	};

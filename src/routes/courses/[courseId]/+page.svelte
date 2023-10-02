@@ -18,7 +18,6 @@
 </script>
 
 <Breadcrumbs>
-	<BreadcrumbItem href="/settings" label="Settings" />
 	<BreadcrumbItem href="/courses" label="Courses" />
 	<BreadcrumbItem label={data.course.name} />
 </Breadcrumbs>

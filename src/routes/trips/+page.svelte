@@ -23,9 +23,9 @@
 			active: $page.route.id?.startsWith('/trips') ?? false
 		},
 		{
-			href: `/settings`,
-			label: 'Settings',
-			active: $page.route.id?.startsWith('/settings') ?? false
+			href: `/courses`,
+			label: 'Courses',
+			active: $page.route.id?.startsWith('/courses') ?? false
 		}
 	]}
 />
