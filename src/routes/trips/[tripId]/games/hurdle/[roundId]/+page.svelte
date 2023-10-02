@@ -5,7 +5,9 @@
 
 	export let data: PageData;
 
-	$: hurdlePlayers = [...(data.hurdle?.keys() ?? [])];
+	$: hurdlePlayers = [...(data.hurdle?.keys() ?? [])].sort(
+		(a, b) => (data.hurdle?.get(b)?.points ?? 0) - (data.hurdle?.get(a)?.points ?? 0)
+	);
 </script>
 
 <div>

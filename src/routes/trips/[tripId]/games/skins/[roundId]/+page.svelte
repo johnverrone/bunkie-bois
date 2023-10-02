@@ -4,6 +4,8 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	$: sortedSkins = [...data.skins].sort(([, aHoles], [, bHoles]) => bHoles.length - aHoles.length);
 </script>
 
 <div>
@@ -14,7 +16,7 @@
 	</Breadcrumbs>
 	<h2>{data.round?.name} Skins</h2>
 	<ol>
-		{#each [...data.skins] as [player, holes]}
+		{#each sortedSkins as [player, holes]}
 			<li>
 				<span class="player-data">
 					<b>{player}</b>
@@ -22,9 +24,6 @@
 				</span>
 				<span class="player-score">
 					{holes.length}
-					<!-- {#each holes as hole}
-						<span class="hole">{hole}</span>
-					{/each} -->
 				</span>
 			</li>
 		{/each}

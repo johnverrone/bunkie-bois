@@ -5,11 +5,13 @@
 	import IconText from '@components/IconText.svelte';
 
 	export let data: PageData;
+
+	$: sortedCourses = data.courses.sort();
 </script>
 
-{#if data.courses.length}
+{#if sortedCourses.length}
 	<List>
-		{#each data.courses as course}
+		{#each sortedCourses as course}
 			<ListItem href={`/courses/${course.id}`} title={course.name} />
 		{/each}
 	</List>

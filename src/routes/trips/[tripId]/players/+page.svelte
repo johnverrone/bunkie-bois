@@ -8,7 +8,7 @@
 	export let data: PageData;
 	export let form: ActionData;
 
-	$: players = data.tripPlayers.sort((a, b) => (a.handicap ?? 0) - (b.handicap ?? 0));
+	$: sortedPlayers = data.tripPlayers.sort((a, b) => (a.handicap ?? 0) - (b.handicap ?? 0));
 
 	type Player = (typeof data.tripPlayers)[number];
 	type HandicappedPlayer = {
@@ -29,7 +29,7 @@
 	<h5 class="header">Handicaps</h5>
 	{#if form?.message}<p class="error">{form.message}</p>{/if}
 	<ul>
-		{#each players as player}
+		{#each sortedPlayers as player}
 			<li>
 				{#if editingPlayer?.id === player.id}
 					<form

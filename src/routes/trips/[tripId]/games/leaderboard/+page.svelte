@@ -4,6 +4,8 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	$: sortedLeaderboard = data.leaderboard.sort((a, b) => a.score - b.score);
 </script>
 
 <div>
@@ -14,7 +16,7 @@
 
 	<h3>Leaderboard</h3>
 	<ol>
-		{#each data.leaderboard as { player, score }}
+		{#each sortedLeaderboard as { player, score }}
 			<li>
 				<span class="player-data">
 					<b>{player}</b>

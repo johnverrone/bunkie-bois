@@ -11,6 +11,10 @@
 	import { enhance } from '$app/forms';
 
 	export let data: PageData;
+
+	$: sortedTrips = data.trips.sort((a, b) =>
+		a.end_date && b.end_date ? new Date(b.end_date).getTime() - new Date(a.end_date).getTime() : 0
+	);
 </script>
 
 <PageTitle>Golf Trips</PageTitle>
@@ -32,9 +36,9 @@
 
 <Main>
 	<div class="float-bottom">
-		{#if data.trips.length}
+		{#if sortedTrips.length}
 			<List>
-				{#each data.trips as trip}
+				{#each sortedTrips as trip}
 					{#if data.role.isAdmin()}
 						<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
 							<span slot="actionMenu" class="action-menu">
