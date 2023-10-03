@@ -3,7 +3,7 @@ import { makeSupabaseAPI } from '@api';
 
 export const load = (async (event) => {
 	const { session, getUserRole } = await makeSupabaseAPI(event);
-	const role = await getUserRole(session.user.id);
+	const role = session ? await getUserRole(session.user.id) : '';
 
 	return {
 		session,
