@@ -1,11 +1,10 @@
-import { error, redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 import { makeSupabaseAPI } from '@api';
 import type { Prettify } from '@utils/typeHelpers';
 
 export const load = (async (event) => {
-	const { session, getTripById, getPlayers, getRounds, getCourses } = await makeSupabaseAPI(event);
-	if (!session) throw redirect(303, '/');
+	const { getTripById, getPlayers, getRounds, getCourses } = await makeSupabaseAPI(event);
 
 	const {
 		params: { tripId }
