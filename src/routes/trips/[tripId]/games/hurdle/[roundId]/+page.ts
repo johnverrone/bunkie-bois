@@ -1,14 +1,12 @@
 import { makeSupabaseAPI } from '@api';
 import type { PageLoad } from './$types';
-import { redirect } from '@sveltejs/kit';
 
 export const load = (async (event) => {
 	const { parent, params } = event;
 	const { title } = await parent();
-	const { session, getHurdlePointsForRound } = await makeSupabaseAPI(event);
-	if (!session) throw redirect(303, '/');
+	const { getHurdlePointsForRound } = await makeSupabaseAPI(event);
 
-	const roundId = parseInt(params.roundId, 10);
+	const roundId = +params.roundId;
 
 	const hurdle = await getHurdlePointsForRound(roundId);
 

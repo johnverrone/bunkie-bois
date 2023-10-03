@@ -1,14 +1,12 @@
 import { makeSupabaseAPI } from '@api';
-import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 export const load = (async (event) => {
 	const { params, parent } = event;
 	const { title, rounds } = await parent();
-	const { session, getSkinsForRound } = await makeSupabaseAPI(event);
-	if (!session) throw redirect(303, '/');
+	const { getSkinsForRound } = await makeSupabaseAPI(event);
 
-	const roundId = parseInt(params.roundId, 10);
+	const roundId = +params.roundId;
 
 	const skins = (await getSkinsForRound(roundId)) ?? new Map<string, string[]>();
 

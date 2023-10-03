@@ -2,13 +2,9 @@ import type { LayoutServerLoad } from './$types';
 import { makeSupabaseAPI } from '@api';
 
 export const load = (async (event) => {
-	const { session, getUserRole } = await makeSupabaseAPI(event);
-	const role = await getUserRole(session?.user.id);
+	const { session } = await makeSupabaseAPI(event);
 
 	return {
-		session,
-		role: {
-			isAdmin: () => role === 'admin'
-		}
+		session
 	};
 }) satisfies LayoutServerLoad;
