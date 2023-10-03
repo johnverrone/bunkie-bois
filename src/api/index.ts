@@ -4,11 +4,11 @@ import { playersAPI, playersSchemas } from './players';
 import { tripsAPI, tripsSchemas } from './trips';
 import { roundsAPI, roundsSchemas } from './rounds';
 import { gamesAPI } from './games';
-import { scoresAPI } from './scores';
+import { scoresAPI, scoresSchemas } from './scores';
 import { usersAPI } from './user';
 import { error } from '@sveltejs/kit';
 
-export { coursesSchemas, playersSchemas, tripsSchemas, roundsSchemas };
+export { coursesSchemas, playersSchemas, tripsSchemas, roundsSchemas, scoresSchemas };
 
 export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) {
 	const { session, supabaseClient } = await getSupabase(event);
