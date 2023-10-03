@@ -1,33 +1,18 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { z } from 'zod';
-import { makeSupabaseAPI } from '@api';
+import { makeSupabaseAPI, tripsSchemas } from '@api';
 
 export const actions = {
 	updateTrip: async (event) => {
 		const { request } = event;
-		const { session, updateTrip } = await makeSupabaseAPI(event);
-		if (!session) return fail(403, { message: 'Unauthorized' });
+		const { updateTrip } = await makeSupabaseAPI(event);
 
 		const data = Object.fromEntries(await request.formData());
-		const tripSchema = z.object({
-			id: z.coerce.number(),
-			name: z.string(),
-			startDate: z.coerce.date(),
-			endDate: z.coerce.date()
-		});
+		const parseResult = tripsSchemas.updateTripSchema.safeParse(data);
+		if (!parseResult.success) return fail(400, { message: 'Invalid trip information.' });
 
-		let trip: z.infer<typeof tripSchema>;
-		try {
-			trip = tripSchema.parse(data);
-		} catch (error) {
-			return fail(400, { message: `failed to parse trip, ${error}` });
-		}
-
-		const result = await updateTrip(trip);
-		if (!result.ok) {
-			return fail(500, { message: result.error });
-		}
-		throw redirect(303, `/trips/${trip.id}/rounds`);
+		const response = await updateTrip(parseResult.data);
+		if (!response.ok) return fail(500, { message: 'Failed to update trip,' });
+		throw redirect(303, `/trips/${parseResult.data.id}/rounds`);
 	}
 } satisfies Actions;

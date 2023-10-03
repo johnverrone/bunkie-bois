@@ -4,9 +4,7 @@ import type { PageLoad } from './$types';
 export const load = (async (event) => {
 	const { getCourses } = await makeSupabaseAPI(event);
 
-	const courses = await getCourses();
-
 	return {
-		courses
+		courses: await getCourses()
 	};
 }) satisfies PageLoad;

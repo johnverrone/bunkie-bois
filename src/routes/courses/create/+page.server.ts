@@ -1,29 +1,18 @@
-import { makeSupabaseAPI } from '@api';
-import { redirect, type Actions, error, fail } from '@sveltejs/kit';
-import { z } from 'zod';
+import { makeSupabaseAPI, coursesSchemas } from '@api';
+import { redirect, type Actions, fail } from '@sveltejs/kit';
 
 export const actions = {
 	createCourse: async (event) => {
 		const { request } = event;
-		const { session, createCourse } = await makeSupabaseAPI(event);
-		if (!session) throw error(403, { message: 'Unauthorized' });
+		const { createCourse } = await makeSupabaseAPI(event);
 
-		const data = Object.fromEntries(await request.formData());
-		const courseSchema = z.object({
-			name: z.string()
-		});
+		const requestData = Object.fromEntries(await request.formData());
+		const parseResult = coursesSchemas.createCourseSchema.safeParse(requestData);
+		if (!parseResult.success) return fail(400, { message: 'Invalid course name.' });
 
-		let courseId: number | undefined = undefined;
-		try {
-			const { name } = courseSchema.parse(data);
-			const result = await createCourse({ name });
-			if (result.error) {
-				return fail(500, { message: result.error });
-			}
-			courseId = result.data?.id;
-		} catch (error) {
-			return fail(400, { message: 'invalid course config' });
-		}
-		throw redirect(303, `/courses/${courseId}`);
+		const response = await createCourse(parseResult.data);
+		if (!response.ok) return fail(500, { message: 'There was an error creating course.' });
+
+		throw redirect(303, `/courses/${response.data.id}`);
 	}
 } satisfies Actions;

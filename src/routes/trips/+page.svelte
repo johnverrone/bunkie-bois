@@ -52,9 +52,30 @@
 									</Button>
 								</form>
 							</span>
+							{#if trip.start_date && trip.end_date}
+								<h6>
+									{new Date(`${trip.start_date}T00:00:00`).toLocaleDateString(undefined, {
+										dateStyle: 'medium'
+									})} -
+									{new Date(`${trip.end_date}T00:00:00`).toLocaleDateString(undefined, {
+										dateStyle: 'medium'
+									})}
+								</h6>
+							{/if}
 						</ListItem>
 					{:else}
-						<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name} />
+						<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
+							{#if trip.start_date && trip.end_date}
+								<h6>
+									{new Date(`${trip.start_date}T00:00:00`).toLocaleDateString(undefined, {
+										dateStyle: 'medium'
+									})} -
+									{new Date(`${trip.end_date}T00:00:00`).toLocaleDateString(undefined, {
+										dateStyle: 'medium'
+									})}
+								</h6>
+							{/if}
+						</ListItem>
 					{/if}
 				{/each}
 			</List>

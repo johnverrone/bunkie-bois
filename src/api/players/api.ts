@@ -1,5 +1,7 @@
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
-import { error, fail } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
+import { Result } from '../types';
+import type { CreatePlayerRequest, DeletePlayerRequest, UpdatePlayerRequest } from './schema';
 
 export function playersAPI(supabaseClient: TypedSupabaseClient) {
 	return {
@@ -21,11 +23,7 @@ export function playersAPI(supabaseClient: TypedSupabaseClient) {
 				)
 				.eq('trips.id', tripId);
 
-			if (dbError) {
-				throw error(500, {
-					message: dbError.message
-				});
-			}
+			if (dbError) throw error(500, { message: dbError.message });
 
 			const tripPlayers = data.map((player) => ({
 				id: player.id,
@@ -39,21 +37,15 @@ export function playersAPI(supabaseClient: TypedSupabaseClient) {
 		/**
 		 * Create a new player
 		 */
-		createPlayer: async function ({ name, handicap }: { name: string; handicap: number }) {
+		createPlayer: async function ({ name, handicap }: CreatePlayerRequest) {
 			const { data: player, error: dbError } = await supabaseClient
 				.from('players')
 				.insert({ name, handicap })
 				.select('id')
 				.single();
 
-			if (dbError) {
-				return {
-					playerId: null,
-					error: dbError.message
-				};
-			}
-
-			return { playerId: player.id, error: null };
+			if (dbError) return Result.error(dbError.message);
+			return Result.ok(player);
 		},
 
 		/**
@@ -65,41 +57,41 @@ export function playersAPI(supabaseClient: TypedSupabaseClient) {
 				trip_id: tripId
 			});
 
-			if (dbError) return fail(500, { message: dbError.message });
+			if (dbError) return Result.error(dbError.message);
+			return Result.ok(true);
 		},
 
 		/**
 		 * Update player
 		 */
-		updatePlayer: async function (
-			id: number,
-			{ name, handicap }: { name: string; handicap: number }
-		) {
+		updatePlayer: async function ({ playerId, name, handicap }: UpdatePlayerRequest) {
 			const { error: pgError } = await supabaseClient
 				.from('players')
 				.update({ name, handicap })
-				.eq('id', id);
+				.eq('id', playerId);
 
-			if (pgError) return fail(500, { message: pgError.message });
+			if (pgError) return Result.error(pgError.message);
+			return Result.ok(true);
 		},
 
 		/**
 		 * Delete player from trip
 		 */
-		deletePlayer: async function (tripId: number, playerId: number) {
+		deletePlayer: async function ({ tripId, playerId }: DeletePlayerRequest) {
 			const { error: tripPlayerError } = await supabaseClient
 				.from('trip_players')
 				.delete()
 				.eq('trip_id', tripId)
 				.eq('player_id', playerId);
-			if (tripPlayerError) return fail(500, { message: tripPlayerError.message });
+			if (tripPlayerError) return Result.error(tripPlayerError.message);
 
 			const { error: playerError } = await supabaseClient
 				.from('players')
 				.delete()
 				.eq('id', playerId);
 
-			if (playerError) return fail(500, { message: playerError.message });
+			if (playerError) return Result.error(playerError.message);
+			return Result.ok(true);
 		}
 	};
 }

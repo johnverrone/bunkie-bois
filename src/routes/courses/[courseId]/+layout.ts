@@ -7,9 +7,7 @@ export const load = (async (event) => {
 		params: { courseId }
 	} = event;
 
-	const course = await getCourseDetails(parseInt(courseId, 10));
-
 	return {
-		course
+		course: await getCourseDetails(+courseId)
 	};
 }) satisfies LayoutLoad;

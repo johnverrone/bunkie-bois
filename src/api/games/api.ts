@@ -25,11 +25,7 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 			.eq('scorecards.rounds.trip_id', tripId)
 			.eq('scorecards.player_id', playerId);
 
-		if (dbError) {
-			throw error(500, {
-				message: dbError.message
-			});
-		}
+		if (dbError) throw error(500, { message: 'There was an error fetching scores.' });
 
 		const totalScore = data.reduce(
 			(acc: number, curr: { score: number | null }) => (acc += curr.score ?? 0),
@@ -60,11 +56,7 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 			)
 			.eq('scorecards.round_id', roundId);
 
-		if (scorecardsError) {
-			throw error(500, {
-				message: scorecardsError.message
-			});
-		}
+		if (scorecardsError) throw error(500, { message: 'There was an error fetching scores.' });
 
 		type ResultRow = (typeof scorecardsData)[number];
 		type PatchedPlayers = Prettify<ArrayElement<ArrayElement<ResultRow['scorecards']>['players']>>;
@@ -108,11 +100,7 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 	    `
 		);
 
-		if (holeError) {
-			throw error(500, {
-				message: holeError.message
-			});
-		}
+		if (holeError) throw error(500, { message: 'There was an error fetching scores.' });
 
 		const parMap = holeInfo.reduce<Record<string, number>>(
 			(acc, curr) => ({ ...acc, [`${curr.tee_box_id}_${curr.hole_number}`]: curr.par }),
@@ -165,11 +153,7 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 			.limit(1, { foreignTable: 'scorecards.players' })
 			.order('hole_number');
 
-		if (scorecardsError) {
-			throw error(500, {
-				message: scorecardsError.message
-			});
-		}
+		if (scorecardsError) throw error(500, { message: 'There was an error fetching skins.' });
 
 		type ResultRow = (typeof scorecardsData)[number];
 		type PatchedPlayers = Prettify<ArrayElement<ArrayElement<ResultRow['scorecards']>['players']>>;

@@ -1,6 +1,8 @@
+import { Result } from '@api/types';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
-import type { Prettify, ArrayElement } from '../utils/typeHelpers';
+import type { ArrayElement, Prettify } from '@utils/typeHelpers';
+import type { CreateRoundRequest, DeleteRoundRequest, UpdateRoundRequest } from './schema';
 
 type LeaderboardEntry = {
 	id: number;
@@ -29,74 +31,9 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 				)
 				.eq('trip_id', tripId);
 
-			if (roundsError) {
-				throw error(500, {
-					message: roundsError.message
-				});
-			}
-
-			// const rounds = roundsData.map(({ date, ...round }) => {
-			// 	return {
-			// 		...round,
-			// 		date: date ? new Date(date) : null
-			// 	};
-			// });
+			if (roundsError) throw error(500, { message: roundsError.message });
 
 			return roundsData;
-		},
-
-		/**
-		 * Create new round on trip
-		 */
-		createRound: async function (
-			tripId: number,
-			{ courseId, name, date }: { courseId: number; name: string; date: Date }
-		) {
-			const { error: dbError } = await supabaseClient.from('rounds').insert({
-				trip_id: tripId,
-				course_id: courseId,
-				name,
-				date: date.toISOString()
-			});
-
-			if (dbError) return { error: dbError.message };
-			return { success: true };
-		},
-
-		/**
-		 * Update round information
-		 */
-		updateRound: async function ({
-			id,
-			courseId,
-			name,
-			date
-		}: {
-			id: number;
-			courseId: number;
-			name: string;
-			date: Date;
-		}) {
-			const { error: dbError } = await supabaseClient
-				.from('rounds')
-				.update({
-					course_id: courseId,
-					name,
-					date: date.toISOString()
-				})
-				.eq('id', id);
-
-			if (dbError) return { success: false as const, error: dbError.message };
-			return { success: true as const };
-		},
-
-		/**
-		 * Delete a round by ID
-		 */
-		deleteRound: async function (id: number) {
-			const { error: dbError } = await supabaseClient.from('rounds').delete().eq('id', id);
-			if (dbError) return { error: dbError.message };
-			return { success: true };
 		},
 
 		/**
@@ -107,23 +44,19 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 				.from('hole_scores')
 				.select(
 					`
-					scorecard:scorecards (
-						player:players ( id, name ),
-						round_id,
-						player_handicap,
-						tee_box:tee_boxes ( id, name )
-					),
-					hole_number,
-					score
-				`
+							scorecard:scorecards (
+								player:players ( id, name ),
+								round_id,
+								player_handicap,
+								tee_box:tee_boxes ( id, name )
+							),
+							hole_number,
+							score
+						`
 				)
 				.eq('scorecard.round_id', id);
 
-			if (dbError) {
-				throw error(500, {
-					message: dbError.message
-				});
-			}
+			if (dbError) throw error(500, { message: dbError.message });
 
 			type ResultRow = (typeof data)[number];
 			type PatchedPlayer = Prettify<ArrayElement<ArrayElement<ResultRow['scorecard']>['player']>>;
@@ -161,6 +94,47 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 			}, {} as { [key: number]: LeaderboardEntry });
 
 			return Object.values(scorecardByPlayer);
+		},
+
+		/**
+		 * Create new round on trip
+		 */
+		createRound: async function ({ tripId, courseId, name, date }: CreateRoundRequest) {
+			const { error: dbError } = await supabaseClient.from('rounds').insert({
+				trip_id: tripId,
+				course_id: courseId,
+				name,
+				date: date.toISOString()
+			});
+
+			if (dbError) return Result.error(dbError.message);
+			return Result.ok(true);
+		},
+
+		/**
+		 * Update round information
+		 */
+		updateRound: async function ({ id, courseId, name, date }: UpdateRoundRequest) {
+			const { error: dbError } = await supabaseClient
+				.from('rounds')
+				.update({
+					course_id: courseId,
+					name,
+					date: date.toISOString()
+				})
+				.eq('id', id);
+
+			if (dbError) return Result.error(dbError.message);
+			return Result.ok(true);
+		},
+
+		/**
+		 * Delete a round by ID
+		 */
+		deleteRound: async function ({ roundId }: DeleteRoundRequest) {
+			const { error: dbError } = await supabaseClient.from('rounds').delete().eq('id', roundId);
+			if (dbError) return Result.error(dbError.message);
+			return Result.ok(true);
 		}
 	};
 }

@@ -1,33 +1,19 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { z } from 'zod';
-import { makeSupabaseAPI } from '@api';
+import { makeSupabaseAPI, roundsSchemas } from '@api';
 
 export const actions = {
 	updateRound: async (event) => {
 		const { request } = event;
-		const { session, updateRound } = await makeSupabaseAPI(event);
-		if (!session) return fail(403, { message: 'Unauthorized' });
+		const { updateRound } = await makeSupabaseAPI(event);
 
 		const data = Object.fromEntries(await request.formData());
-		const roundSchema = z.object({
-			id: z.coerce.number(),
-			name: z.string(),
-			courseId: z.coerce.number(),
-			date: z.coerce.date()
-		});
+		const parseResult = roundsSchemas.updateRoundSchema.safeParse(data);
+		if (!parseResult.success) return fail(400, { message: 'Invalid round config.' });
 
-		let round: z.infer<typeof roundSchema>;
-		try {
-			round = roundSchema.parse(data);
-		} catch (error) {
-			return fail(400, { message: `failed to parse round, ${error}` });
-		}
+		const result = await updateRound(parseResult.data);
+		if (!result.ok) return fail(500, { message: 'There was an error updating round.' });
 
-		const result = await updateRound(round);
-		if (!result.success) {
-			return fail(500, { message: result.error });
-		}
 		throw redirect(303, `/trips/${event.params.tripId}/rounds`);
 	}
 } satisfies Actions;

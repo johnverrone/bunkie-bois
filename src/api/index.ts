@@ -1,14 +1,18 @@
 import { getSupabase } from '@supabase/auth-helpers-sveltekit';
-import { coursesAPI } from './courses';
-import { playersAPI } from './players';
-import { tripsAPI } from './trips';
-import { roundsAPI } from './rounds';
+import { coursesAPI, coursesSchemas } from './courses';
+import { playersAPI, playersSchemas } from './players';
+import { tripsAPI, tripsSchemas } from './trips';
+import { roundsAPI, roundsSchemas } from './rounds';
 import { gamesAPI } from './games';
-import { scoresAPI } from './scores';
-import { usersAPI } from './user';
+import { scoresAPI, scoresSchemas } from './scores';
+import { usersAPI } from './users';
+import { error } from '@sveltejs/kit';
+
+export { coursesSchemas, playersSchemas, tripsSchemas, roundsSchemas, scoresSchemas };
 
 export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) {
 	const { session, supabaseClient } = await getSupabase(event);
+	if (!session) throw error(403, { message: 'Unauthorized' });
 
 	return {
 		session,
