@@ -6,13 +6,11 @@ import { roundsAPI, roundsSchemas } from './rounds';
 import { gamesAPI } from './games';
 import { scoresAPI, scoresSchemas } from './scores';
 import { usersAPI } from './users';
-import { error } from '@sveltejs/kit';
 
 export { coursesSchemas, playersSchemas, tripsSchemas, roundsSchemas, scoresSchemas };
 
 export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) {
 	const { session, supabaseClient } = await getSupabase(event);
-	if (!session) throw error(403, { message: 'Unauthorized' });
 
 	return {
 		session,
