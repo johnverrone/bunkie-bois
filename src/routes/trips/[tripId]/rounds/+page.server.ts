@@ -1,25 +1,17 @@
-import { error, fail } from '@sveltejs/kit';
-import { z } from 'zod';
+import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { makeSupabaseAPI } from '@api';
+import { makeSupabaseAPI, roundsSchemas } from '@api';
 
 export const actions = {
 	deleteRound: async (event) => {
 		const { request } = event;
-		const { session, deleteRound } = await makeSupabaseAPI(event);
-		if (!session) throw error(403, { message: 'Unauthorized' });
+		const { deleteRound } = await makeSupabaseAPI(event);
 
 		const data = Object.fromEntries(await request.formData());
-		const deleteSchema = z.object({
-			roundId: z.coerce.number()
-		});
+		const parseResult = roundsSchemas.deleteRoundSchema.safeParse(data);
+		if (!parseResult.success) return fail(400, { message: 'Invalid round information.' });
 
-		try {
-			const { roundId } = deleteSchema.parse(data);
-			const response = await deleteRound(roundId);
-			if (!response.success) return fail(500, { message: response.error });
-		} catch (error) {
-			return fail(400, { message: `failed to parse id, ${error}` });
-		}
+		const response = await deleteRound(parseResult.data);
+		if (!response.ok) return fail(500, { message: 'There was an error deleting round.' });
 	}
 } satisfies Actions;

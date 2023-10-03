@@ -1,5 +1,5 @@
 import { fail } from '@sveltejs/kit';
-import { makeSupabaseAPI, schemas } from '@api';
+import { makeSupabaseAPI, tripsSchemas } from '@api';
 import type { Actions } from './$types';
 
 export const actions = {
@@ -8,7 +8,7 @@ export const actions = {
 		const { deleteTrip } = await makeSupabaseAPI(event);
 
 		const data = Object.fromEntries(await request.formData());
-		const parseResult = schemas.deleteTripSchema.safeParse(data);
+		const parseResult = tripsSchemas.deleteTripSchema.safeParse(data);
 		if (!parseResult.success) return fail(400, { message: 'Invalid trip ID.' });
 
 		const response = await deleteTrip(parseResult.data);

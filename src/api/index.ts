@@ -2,17 +2,13 @@ import { getSupabase } from '@supabase/auth-helpers-sveltekit';
 import { coursesAPI, coursesSchemas } from './courses';
 import { playersAPI, playersSchemas } from './players';
 import { tripsAPI, tripsSchemas } from './trips';
-import { roundsAPI } from './rounds';
+import { roundsAPI, roundsSchemas } from './rounds';
 import { gamesAPI } from './games';
 import { scoresAPI } from './scores';
 import { usersAPI } from './user';
 import { error } from '@sveltejs/kit';
 
-export const schemas = {
-	...coursesSchemas,
-	...playersSchemas,
-	...tripsSchemas
-};
+export { coursesSchemas, playersSchemas, tripsSchemas, roundsSchemas };
 
 export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) {
 	const { session, supabaseClient } = await getSupabase(event);

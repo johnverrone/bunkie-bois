@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { makeSupabaseAPI, schemas } from '@api';
+import { makeSupabaseAPI, tripsSchemas } from '@api';
 
 export const actions = {
 	updateTrip: async (event) => {
@@ -8,7 +8,7 @@ export const actions = {
 		const { updateTrip } = await makeSupabaseAPI(event);
 
 		const data = Object.fromEntries(await request.formData());
-		const parseResult = schemas.updateTripSchema.safeParse(data);
+		const parseResult = tripsSchemas.updateTripSchema.safeParse(data);
 		if (!parseResult.success) return fail(400, { message: 'Invalid trip information.' });
 
 		const response = await updateTrip(parseResult.data);

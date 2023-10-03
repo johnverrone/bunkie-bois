@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { makeSupabaseAPI, schemas } from '@api';
+import { makeSupabaseAPI, playersSchemas } from '@api';
 
 export const actions = {
 	addPlayer: async (event) => {
@@ -8,7 +8,7 @@ export const actions = {
 		const { createPlayer, addPlayerToTrip } = await makeSupabaseAPI(event);
 
 		const requestData = Object.fromEntries(await request.formData());
-		const parseResult = schemas.createPlayerSchema.safeParse(requestData);
+		const parseResult = playersSchemas.createPlayerSchema.safeParse(requestData);
 		if (!parseResult.success) return fail(400, { message: 'Invalid player information.' });
 
 		const response = await createPlayer(parseResult.data);
@@ -23,7 +23,7 @@ export const actions = {
 		const { updatePlayer } = await makeSupabaseAPI(event);
 
 		const requestData = Object.fromEntries(await request.formData());
-		const parseResult = schemas.updatePlayerSchema.safeParse(requestData);
+		const parseResult = playersSchemas.updatePlayerSchema.safeParse(requestData);
 		if (!parseResult.success) return fail(400, { message: 'Invalid player information.' });
 
 		const response = await updatePlayer(parseResult.data);
@@ -34,7 +34,7 @@ export const actions = {
 		const { deletePlayer } = await makeSupabaseAPI(event);
 
 		const requestData = Object.fromEntries(await request.formData());
-		const parseResult = schemas.deletePlayerSchema.safeParse(requestData);
+		const parseResult = playersSchemas.deletePlayerSchema.safeParse(requestData);
 		if (!parseResult.success) return fail(400, { message: 'Invalid request.' });
 
 		const response = await deletePlayer(parseResult.data);

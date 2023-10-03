@@ -1,4 +1,4 @@
-import { schemas, makeSupabaseAPI } from '@api';
+import { makeSupabaseAPI, coursesSchemas } from '@api';
 import { redirect, type Actions, fail } from '@sveltejs/kit';
 
 export const actions = {
@@ -7,7 +7,7 @@ export const actions = {
 		const { createCourse } = await makeSupabaseAPI(event);
 
 		const requestData = Object.fromEntries(await request.formData());
-		const parseResult = schemas.createCourseSchema.safeParse(requestData);
+		const parseResult = coursesSchemas.createCourseSchema.safeParse(requestData);
 		if (!parseResult.success) return fail(400, { message: 'Invalid course name.' });
 
 		const response = await createCourse(parseResult.data);

@@ -1,4 +1,4 @@
-import { makeSupabaseAPI, schemas } from '@api';
+import { coursesSchemas, makeSupabaseAPI } from '@api';
 import { redirect, type Actions, fail } from '@sveltejs/kit';
 
 export const actions = {
@@ -7,7 +7,7 @@ export const actions = {
 		const { createTeeBox } = await makeSupabaseAPI(event);
 
 		const requestData = Object.fromEntries(await request.formData());
-		const parseResult = schemas.createTeeBoxSchema.safeParse(requestData);
+		const parseResult = coursesSchemas.createTeeBoxSchema.safeParse(requestData);
 		if (!parseResult.success) return fail(400, { message: 'Invalid hole information.' });
 
 		const response = await createTeeBox(parseResult.data);
