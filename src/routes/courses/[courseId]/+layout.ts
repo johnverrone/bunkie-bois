@@ -1,4 +1,5 @@
 import { makeSupabaseAPI } from '@api';
+import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 
 export const load = (async (event) => {
@@ -7,9 +8,10 @@ export const load = (async (event) => {
 		params: { courseId }
 	} = event;
 
-	const course = await getCourseDetails(parseInt(courseId, 10));
+	const response = await getCourseDetails(parseInt(courseId, 10));
+	if (!response.ok) throw error(response.status, response.error);
 
 	return {
-		course
+		course: response.data
 	};
 }) satisfies LayoutLoad;
