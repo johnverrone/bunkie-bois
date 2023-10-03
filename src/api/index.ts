@@ -5,7 +5,7 @@ import { tripsAPI, tripsSchemas } from './trips';
 import { roundsAPI, roundsSchemas } from './rounds';
 import { gamesAPI } from './games';
 import { scoresAPI, scoresSchemas } from './scores';
-import { usersAPI } from './user';
+import { usersAPI } from './users';
 import { error } from '@sveltejs/kit';
 
 export { coursesSchemas, playersSchemas, tripsSchemas, roundsSchemas, scoresSchemas };
