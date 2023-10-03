@@ -1,8 +1,14 @@
 import type { LayoutServerLoad } from './$types';
-import { getServerSession } from '@supabase/auth-helpers-sveltekit';
+import { makeSupabaseAPI } from '@api';
 
 export const load = (async (event) => {
+	const { session, getUserRole } = await makeSupabaseAPI(event);
+	const role = await getUserRole(session?.user.id);
+
 	return {
-		session: await getServerSession(event)
+		session,
+		role: {
+			isAdmin: () => role === 'admin'
+		}
 	};
 }) satisfies LayoutServerLoad;

@@ -1,0 +1,70 @@
+import { z } from 'zod';
+
+export const createCourseSchema = z.object({
+	name: z.string()
+});
+
+export type CreateCourseRequest = z.infer<typeof createCourseSchema>;
+
+export const createTeeBoxSchema = z.object({
+	courseId: z.coerce.number(),
+	name: z.string(),
+	rating: z.coerce.number(),
+	slope: z.coerce.number(),
+	'hole-1-par': z.coerce.number(),
+	'hole-1-yardage': z.coerce.number(),
+	'hole-1-handicap': z.coerce.number(),
+	'hole-2-par': z.coerce.number(),
+	'hole-2-yardage': z.coerce.number(),
+	'hole-2-handicap': z.coerce.number(),
+	'hole-3-par': z.coerce.number(),
+	'hole-3-yardage': z.coerce.number(),
+	'hole-3-handicap': z.coerce.number(),
+	'hole-4-par': z.coerce.number(),
+	'hole-4-yardage': z.coerce.number(),
+	'hole-4-handicap': z.coerce.number(),
+	'hole-5-par': z.coerce.number(),
+	'hole-5-yardage': z.coerce.number(),
+	'hole-5-handicap': z.coerce.number(),
+	'hole-6-par': z.coerce.number(),
+	'hole-6-yardage': z.coerce.number(),
+	'hole-6-handicap': z.coerce.number(),
+	'hole-7-par': z.coerce.number(),
+	'hole-7-yardage': z.coerce.number(),
+	'hole-7-handicap': z.coerce.number(),
+	'hole-8-par': z.coerce.number(),
+	'hole-8-yardage': z.coerce.number(),
+	'hole-8-handicap': z.coerce.number(),
+	'hole-9-par': z.coerce.number(),
+	'hole-9-yardage': z.coerce.number(),
+	'hole-9-handicap': z.coerce.number(),
+	'hole-10-par': z.coerce.number(),
+	'hole-10-yardage': z.coerce.number(),
+	'hole-10-handicap': z.coerce.number(),
+	'hole-11-par': z.coerce.number(),
+	'hole-11-yardage': z.coerce.number(),
+	'hole-11-handicap': z.coerce.number(),
+	'hole-12-par': z.coerce.number(),
+	'hole-12-yardage': z.coerce.number(),
+	'hole-12-handicap': z.coerce.number(),
+	'hole-13-par': z.coerce.number(),
+	'hole-13-yardage': z.coerce.number(),
+	'hole-13-handicap': z.coerce.number(),
+	'hole-14-par': z.coerce.number(),
+	'hole-14-yardage': z.coerce.number(),
+	'hole-14-handicap': z.coerce.number(),
+	'hole-15-par': z.coerce.number(),
+	'hole-15-yardage': z.coerce.number(),
+	'hole-15-handicap': z.coerce.number(),
+	'hole-16-par': z.coerce.number(),
+	'hole-16-yardage': z.coerce.number(),
+	'hole-16-handicap': z.coerce.number(),
+	'hole-17-par': z.coerce.number(),
+	'hole-17-yardage': z.coerce.number(),
+	'hole-17-handicap': z.coerce.number(),
+	'hole-18-par': z.coerce.number(),
+	'hole-18-yardage': z.coerce.number(),
+	'hole-18-handicap': z.coerce.number()
+});
+
+export type CreateTeeBoxRequest = z.infer<typeof createTeeBoxSchema>;

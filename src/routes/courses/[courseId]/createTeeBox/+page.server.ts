@@ -1,16 +1,17 @@
-import { makeSupabaseAPI } from '@api';
-import { redirect, type Actions, error, fail } from '@sveltejs/kit';
+import { makeSupabaseAPI, schemas } from '@api';
+import { redirect, type Actions, fail } from '@sveltejs/kit';
 
 export const actions = {
 	createTeeBox: async (event) => {
 		const { request } = event;
-		const { session, createTeeBox } = await makeSupabaseAPI(event);
-		if (!session) throw error(403, { message: 'Unauthorized' });
+		const { createTeeBox } = await makeSupabaseAPI(event);
 
-		const response = await createTeeBox(request);
-		if (!response.ok) {
-			return fail(response.status, { message: response.error });
-		}
+		const requestData = Object.fromEntries(await request.formData());
+		const parseResult = schemas.createTeeBoxSchema.safeParse(requestData);
+		if (!parseResult.success) return fail(400, { message: 'Invalid hole information.' });
+
+		const response = await createTeeBox(parseResult.data);
+		if (!response.ok) return fail(500, { message: 'There was an error creating the tee box.' });
 
 		throw redirect(303, `/courses/${event.params.courseId}`);
 	}

@@ -1,71 +1,43 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { z } from 'zod';
-import { makeSupabaseAPI } from '@api';
+import { makeSupabaseAPI, schemas } from '@api';
 
 export const actions = {
 	addPlayer: async (event) => {
 		const { request } = event;
-		const { session, createPlayer, addPlayerToTrip } = await makeSupabaseAPI(event);
-		if (!session) return fail(403, { message: 'Unauthorized' });
+		const { createPlayer, addPlayerToTrip } = await makeSupabaseAPI(event);
 
-		const data = Object.fromEntries(await request.formData());
-		const playerSchema = z.object({
-			tripId: z.coerce.number(),
-			name: z.string(),
-			handicap: z.coerce.number()
-		});
+		const requestData = Object.fromEntries(await request.formData());
+		const parseResult = schemas.createPlayerSchema.safeParse(requestData);
+		if (!parseResult.success) return fail(400, { message: 'Invalid player information.' });
 
-		try {
-			const { tripId, name, handicap } = playerSchema.parse(data);
+		const response = await createPlayer(parseResult.data);
+		if (!response.ok) return fail(500, { message: 'There was an error creating the player.' });
 
-			const { playerId, error: createPlayerMessage } = await createPlayer({ name, handicap });
-			if (!playerId) {
-				return fail(500, { message: `failed to create player, ${createPlayerMessage}` });
-			}
-
-			return addPlayerToTrip(playerId, tripId);
-		} catch (error) {
-			return fail(400, { message: `failed to parse player, ${error}` });
-		}
+		const addToTripResponse = await addPlayerToTrip(response.data.id, parseResult.data.tripId);
+		if (!addToTripResponse.ok)
+			return fail(500, { message: 'There was an error adding player to this trip.' });
 	},
 	updatePlayer: async (event) => {
 		const { request } = event;
-		const { session, updatePlayer } = await makeSupabaseAPI(event);
-		if (!session) return fail(403, { message: 'Unauthorized' });
+		const { updatePlayer } = await makeSupabaseAPI(event);
 
-		const data = Object.fromEntries(await request.formData());
-		const playerSchema = z.object({
-			playerId: z.coerce.number(),
-			name: z.string(),
-			handicap: z.coerce.number()
-		});
+		const requestData = Object.fromEntries(await request.formData());
+		const parseResult = schemas.updatePlayerSchema.safeParse(requestData);
+		if (!parseResult.success) return fail(400, { message: 'Invalid player information.' });
 
-		try {
-			const { playerId, name, handicap } = playerSchema.parse(data);
-
-			return updatePlayer(playerId, { name, handicap });
-		} catch (error) {
-			return fail(400, { message: `failed to parse player, ${error}` });
-		}
+		const response = await updatePlayer(parseResult.data);
+		if (!response.ok) return fail(500, { message: 'There was an error updating player.' });
 	},
 	deletePlayer: async (event) => {
 		const { request } = event;
-		const { session, deletePlayer } = await makeSupabaseAPI(event);
-		if (!session) return fail(403, { message: 'Unauthorized' });
+		const { deletePlayer } = await makeSupabaseAPI(event);
 
-		const data = Object.fromEntries(await request.formData());
-		const deleteSchema = z.object({
-			tripId: z.coerce.number(),
-			playerId: z.coerce.number()
-		});
+		const requestData = Object.fromEntries(await request.formData());
+		const parseResult = schemas.deletePlayerSchema.safeParse(requestData);
+		if (!parseResult.success) return fail(400, { message: 'Invalid request.' });
 
-		try {
-			const { tripId, playerId } = deleteSchema.parse(data);
-
-			return deletePlayer(tripId, playerId);
-		} catch (error) {
-			return fail(400, { message: 'failed to parse ids' });
-		}
+		const response = await deletePlayer(parseResult.data);
+		if (!response.ok) return fail(500, { message: 'There was an error deleting player.' });
 	}
 } satisfies Actions;
