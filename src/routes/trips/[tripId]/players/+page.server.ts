@@ -18,6 +18,7 @@ export const actions = {
 		if (!addToTripResponse.ok)
 			return fail(500, { message: 'There was an error adding player to this trip.' });
 	},
+
 	updatePlayer: async (event) => {
 		const { request } = event;
 		const { updatePlayer } = await makeSupabaseAPI(event);
@@ -29,6 +30,7 @@ export const actions = {
 		const response = await updatePlayer(parseResult.data);
 		if (!response.ok) return fail(500, { message: 'There was an error updating player.' });
 	},
+
 	deletePlayer: async (event) => {
 		const { request } = event;
 		const { deletePlayer } = await makeSupabaseAPI(event);

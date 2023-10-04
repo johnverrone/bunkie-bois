@@ -34,7 +34,7 @@ export const load = (async (event) => {
 	});
 
 	return {
-		title: trip.name ?? 'unknown',
+		title: trip.name,
 		trip,
 		tripPlayers,
 		rounds: roundsWithCourseName,
