@@ -1,7 +1,7 @@
 import { Result } from '$lib/api/types';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
-import type { Prettify, ArrayElement } from '@utils/typeHelpers';
+import type { Prettify, ArrayElement } from '$lib/utils/typeHelpers';
 import { transformScoreData } from './helpers';
 import type { DeleteScoreRequest, UpdateScorecardRequest } from './schema';
 import type { LeaderboardEntry } from './types';
