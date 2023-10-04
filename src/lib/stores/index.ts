@@ -1,0 +1,1 @@
+export { delayedNavigation } from './delayedNavigation';

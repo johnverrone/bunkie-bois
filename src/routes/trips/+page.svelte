@@ -9,6 +9,8 @@
 	import { page } from '$app/stores';
 	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
+	import Loading from '$lib/components/Loading.svelte';
+	import { delayedNavigation } from '$lib/stores';
 
 	export let data: PageData;
 
@@ -35,6 +37,9 @@
 />
 
 <Main>
+	{#if $delayedNavigation}
+		<Loading />
+	{/if}
 	<div class="float-bottom">
 		{#if sortedTrips.length}
 			<List>

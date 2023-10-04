@@ -4,6 +4,8 @@
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
+	import Loading from '$lib/components/Loading.svelte';
+	import { delayedNavigation } from '$lib/stores';
 
 	export let data: LayoutData;
 </script>
@@ -36,6 +38,9 @@
 />
 
 <Main>
+	{#if $delayedNavigation}
+		<Loading />
+	{/if}
 	<div class="float-bottom">
 		<slot />
 	</div>
