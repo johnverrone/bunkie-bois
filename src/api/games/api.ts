@@ -5,7 +5,7 @@ import type { Prettify, ArrayElement } from '@utils/typeHelpers';
 
 export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 	/**
-	 *
+	 * Gets the total score for trip
 	 */
 	async function getTotalScoreForTrip(playerId: number, tripId: number) {
 		const { data, error: dbError } = await supabaseClient
@@ -18,6 +18,7 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 				scorecards!inner (
 					player_id,
 					round_id,
+					player_handicap,
 					rounds ( id, trip_id )
 				)
 			`
@@ -27,12 +28,28 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 
 		if (dbError) throw error(500, { message: 'There was an error fetching scores.' });
 
-		const totalScore = data.reduce(
-			(acc: number, curr: { score: number | null }) => (acc += curr.score ?? 0),
-			0
-		);
+		type ResultRow = (typeof data)[number];
+		type PatchedRounds = Prettify<ArrayElement<ArrayElement<ResultRow['scorecards']>['rounds']>>;
+		type PatchedScorecards = Prettify<
+			Omit<ArrayElement<ResultRow['scorecards']>, 'rounds'> & { rounds: PatchedRounds }
+		>;
+		type PatchedResult = Prettify<
+			Omit<ResultRow, 'scorecards'> & { scorecards: PatchedScorecards }
+		>;
 
-		return totalScore;
+		const patchedData = data as unknown as PatchedResult[];
+
+		let gross = 0;
+		let handicap = 0;
+		for (const hs of patchedData) {
+			gross += hs.score ?? 0;
+			if (hs.hole_number === 1) {
+				// new scorecard, add course handicap
+				handicap += hs.scorecards?.player_handicap ?? 0;
+			}
+		}
+
+		return { gross, handicap };
 	}
 
 	/**
