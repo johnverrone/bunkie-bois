@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Button from '@components/Button.svelte';
-	import List from '@components/List.svelte';
-	import ListItem from '@components/ListItem.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import List from '$lib/components/List.svelte';
+	import ListItem from '$lib/components/ListItem.svelte';
 	import { supabase } from '$lib/supabaseClient';
 
 	async function signout() {

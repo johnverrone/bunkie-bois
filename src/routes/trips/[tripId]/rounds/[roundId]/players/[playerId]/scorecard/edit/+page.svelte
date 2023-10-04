@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Button from '@components/Button.svelte';
-	import Scorecard from '@components/Scorecard.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Scorecard from '$lib/components/Scorecard.svelte';
+	import { calculateCourseHandicap } from '$lib/utils/handicap';
 	import type { ActionData, PageData } from './$types';
-	import { calculateCourseHandicap } from '@utils/handicap';
 
 	export let data: PageData;
 	export let form: ActionData;

@@ -1,4 +1,4 @@
-import { makeSupabaseAPI, coursesSchemas } from '@api';
+import { makeSupabaseAPI, coursesSchemas } from '$lib/api';
 import { redirect, type Actions, fail } from '@sveltejs/kit';
 
 export const actions = {

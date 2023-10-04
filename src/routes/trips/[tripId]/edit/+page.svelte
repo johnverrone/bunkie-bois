@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from '@components/Button.svelte';
-	import Input from '@components/Input.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import type { ActionData, PageData } from './$types';
 
 	export let data: PageData;

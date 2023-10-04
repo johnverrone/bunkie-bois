@@ -1,5 +1,5 @@
 import { fail } from '@sveltejs/kit';
-import { makeSupabaseAPI, tripsSchemas } from '@api';
+import { makeSupabaseAPI, tripsSchemas } from '$lib/api';
 import type { Actions } from './$types';
 
 export const actions = {

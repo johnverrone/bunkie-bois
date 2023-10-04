@@ -1,4 +1,4 @@
-import { makeSupabaseAPI, scoresSchemas } from '@api';
+import { makeSupabaseAPI, scoresSchemas } from '$lib/api';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import List from '@components/List.svelte';
-	import ListItem from '@components/ListItem.svelte';
+	import IconText from '$lib/components/IconText.svelte';
+	import List from '$lib/components/List.svelte';
+	import ListItem from '$lib/components/ListItem.svelte';
 	import type { PageData } from './$types';
-	import IconText from '@components/IconText.svelte';
 
 	export let data: PageData;
 

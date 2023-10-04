@@ -1,4 +1,4 @@
-import { makeSupabaseAPI } from '@api';
+import { makeSupabaseAPI } from '$lib/api';
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 

@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { makeSupabaseAPI, roundsSchemas } from '@api';
+import { makeSupabaseAPI, roundsSchemas } from '$lib/api';
 
 export const actions = {
 	createRound: async (event) => {

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Breadcrumbs from '@components/Breadcrumbs.svelte';
-	import BreadcrumbItem from '@components/BreadcrumbItem.svelte';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
+	import IconText from '$lib/components/IconText.svelte';
 	import type { PageData } from './$types';
-	import IconText from '@components/IconText.svelte';
 
 	export let data: PageData;
 

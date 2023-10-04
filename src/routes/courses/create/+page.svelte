@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Breadcrumbs from '@components/Breadcrumbs.svelte';
-	import BreadcrumbItem from '@components/BreadcrumbItem.svelte';
-	import Button from '@components/Button.svelte';
-	import Input from '@components/Input.svelte';
-	import { randomGolfCourse } from '@utils/golf';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import { randomGolfCourse } from '$lib/utils/golf';
 	import type { ActionData } from './$types';
 
 	export let form: ActionData;

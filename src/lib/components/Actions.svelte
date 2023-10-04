@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createPopper, type Instance } from '@popperjs/core';
 	import { onMount } from 'svelte';
-	import { clickOutside } from '@utils/click_outside';
+	import { clickOutside } from '$lib/utils/click_outside';
 
 	export let anchor: HTMLElement;
 	export let opened = false;
