@@ -1,8 +1,10 @@
 import { Result } from '@api/types';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
+import type { Prettify, ArrayElement } from '@utils/typeHelpers';
 import { transformScoreData } from './helpers';
 import type { DeleteScoreRequest, UpdateScorecardRequest } from './schema';
+import type { LeaderboardEntry } from './types';
 
 export function scoresAPI(supabaseClient: TypedSupabaseClient) {
 	return {
@@ -38,6 +40,66 @@ export function scoresAPI(supabaseClient: TypedSupabaseClient) {
 				...scorecard,
 				hole_scores: data
 			};
+		},
+
+		/**
+		 * Get leaderboard for round
+		 */
+		getLeaderboard: async function (id: number) {
+			const { data, error: dbError } = await supabaseClient
+				.from('hole_scores')
+				.select(
+					`
+							scorecard:scorecards (
+								player:players ( id, name ),
+								round_id,
+								player_handicap,
+								tee_box:tee_boxes ( id, name )
+							),
+							hole_number,
+							score
+						`
+				)
+				.eq('scorecard.round_id', id);
+
+			if (dbError) throw error(500, { message: dbError.message });
+
+			type ResultRow = (typeof data)[number];
+			type PatchedPlayer = Prettify<ArrayElement<ArrayElement<ResultRow['scorecard']>['player']>>;
+			type PatchedTeeBox = Prettify<ArrayElement<ArrayElement<ResultRow['scorecard']>['tee_box']>>;
+			type PatchedScorecard = Prettify<
+				Omit<ArrayElement<ResultRow['scorecard']>, 'player' | 'tee_box'> & {
+					player: PatchedPlayer;
+					tee_box: PatchedTeeBox;
+				}
+			>;
+			type PatchedResult = Prettify<
+				Omit<ResultRow, 'scorecard'> & { scorecard: PatchedScorecard | null }
+			>;
+
+			const patchedData = data as PatchedResult[];
+
+			const scorecardByPlayer = patchedData.reduce((acc, curr) => {
+				if (curr.scorecard === null) return acc;
+				const id = curr.scorecard.player.id;
+				const name = curr.scorecard.player.name;
+				const courseHandicap = curr.scorecard.player_handicap ?? 0;
+				const teeBox = curr.scorecard.tee_box.name;
+
+				return {
+					...acc,
+					[id]: {
+						...acc[id],
+						id,
+						name,
+						courseHandicap,
+						teeBox,
+						score: (acc[id]?.score ?? 0) + (curr.score ?? 0)
+					}
+				};
+			}, {} as { [key: number]: LeaderboardEntry });
+
+			return Object.values(scorecardByPlayer);
 		},
 
 		/**

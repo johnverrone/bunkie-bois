@@ -5,7 +5,13 @@
 
 	export let data: PageData;
 
-	$: sortedLeaderboard = data.leaderboard.sort((a, b) => a.score - b.score);
+	let netScoreToggled: boolean = false;
+
+	$: sortedLeaderboard = data.leaderboard.sort((a, b) => {
+		const aScore = netScoreToggled ? a.score.gross - a.score.handicap : a.score.gross;
+		const bScore = netScoreToggled ? b.score.gross - b.score.handicap : b.score.gross;
+		return aScore - bScore;
+	});
 </script>
 
 <div>
@@ -14,7 +20,13 @@
 		<BreadcrumbItem label="Leaderboard" />
 	</Breadcrumbs>
 
-	<h3>Leaderboard</h3>
+	<div class="leaderboard-heading">
+		<h2>Leaderboard</h2>
+		<label>
+			<input type="checkbox" bind:checked={netScoreToggled} />
+			Net Scores
+		</label>
+	</div>
 	<ol>
 		{#each sortedLeaderboard as { player, score }}
 			<li>
@@ -23,7 +35,7 @@
 					<!-- <div class="holes">({holes.join(', ')})</div> -->
 				</span>
 				<span class="player-score">
-					{score}
+					{netScoreToggled ? score.gross - score.handicap : score.gross}
 				</span>
 			</li>
 		{/each}
@@ -31,6 +43,13 @@
 </div>
 
 <style lang="scss">
+	.leaderboard-heading {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		margin-bottom: 8px;
+	}
+
 	ol {
 		padding-left: 0;
 		list-style: none;
