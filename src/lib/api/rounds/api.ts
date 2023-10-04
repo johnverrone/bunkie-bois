@@ -1,4 +1,4 @@
-import { Result } from '@api/types';
+import { Result } from '$lib/api/types';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
 import type { CreateRoundRequest, DeleteRoundRequest, UpdateRoundRequest } from './schema';

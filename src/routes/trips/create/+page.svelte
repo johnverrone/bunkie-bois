@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Button from '@components/Button.svelte';
-	import Input from '@components/Input.svelte';
-	import PageTitle from '@components/PageTitle.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
+	import Main from '$lib/components/Main.svelte';
+	import PageTitle from '$lib/components/PageTitle.svelte';
 	import type { ActionData } from './$types';
-	import Main from '@components/Main.svelte';
 
 	export let form: ActionData;
 

@@ -1,6 +1,6 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { makeSupabaseAPI, playersSchemas } from '@api';
+import { makeSupabaseAPI, playersSchemas } from '$lib/api';
 
 export const actions = {
 	addPlayer: async (event) => {

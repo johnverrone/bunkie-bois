@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Breadcrumbs from '@components/Breadcrumbs.svelte';
-	import BreadcrumbItem from '@components/BreadcrumbItem.svelte';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
 	import type { ActionData, PageData } from './$types';
-	import Input from '@components/Input.svelte';
-	import Button from '@components/Button.svelte';
 
 	export let data: PageData;
 	export let form: ActionData;

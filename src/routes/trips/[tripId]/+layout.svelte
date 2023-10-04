@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Main from '@components/Main.svelte';
-	import NavBar from '@components/NavBar.svelte';
-	import PageTitle from '@components/PageTitle.svelte';
+	import Main from '$lib/components/Main.svelte';
+	import NavBar from '$lib/components/NavBar.svelte';
+	import PageTitle from '$lib/components/PageTitle.svelte';
 	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 

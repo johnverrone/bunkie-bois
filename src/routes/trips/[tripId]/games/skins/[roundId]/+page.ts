@@ -1,4 +1,4 @@
-import { makeSupabaseAPI } from '@api';
+import { makeSupabaseAPI } from '$lib/api';
 import type { PageLoad } from './$types';
 
 export const load = (async (event) => {

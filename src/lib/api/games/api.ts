@@ -1,7 +1,7 @@
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
-import { computeStablefordPoints } from '@utils/golf';
-import type { Prettify, ArrayElement } from '@utils/typeHelpers';
+import { computeStablefordPoints } from '$lib/utils/golf';
+import type { Prettify, ArrayElement } from '$lib/utils/typeHelpers';
 
 export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 	/**

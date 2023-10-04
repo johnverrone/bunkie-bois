@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { clickOutside } from '@utils/click_outside';
-	import Button from '@components/Button.svelte';
-	import Input from '@components/Input.svelte';
-	import { randomGolfCourse } from '@utils/golf';
+	import Button from './Button.svelte';
+	import Input from './Input.svelte';
+	import { clickOutside } from '$lib/utils/click_outside';
+	import { randomGolfCourse } from '$lib/utils/golf';
 
 	export let onClose: () => void = () => {};
 	export let id: number;

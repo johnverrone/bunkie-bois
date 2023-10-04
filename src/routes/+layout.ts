@@ -1,5 +1,5 @@
 import type { LayoutLoad } from './$types';
-import { makeSupabaseAPI } from '@api';
+import { makeSupabaseAPI } from '$lib/api';
 
 export const load = (async (event) => {
 	const { session, getUserRole } = await makeSupabaseAPI(event);

@@ -1,7 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import { makeSupabaseAPI } from '@api';
-import { tripsSchemas } from '@api/trips';
+import { makeSupabaseAPI } from '$lib/api';
+import { tripsSchemas } from '$lib/api/trips';
 
 export const actions = {
 	createTrip: async (event) => {

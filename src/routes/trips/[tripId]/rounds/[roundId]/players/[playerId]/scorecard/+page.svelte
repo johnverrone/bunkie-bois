@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Breadcrumbs from '@components/Breadcrumbs.svelte';
-	import BreadcrumbItem from '@components/BreadcrumbItem.svelte';
-	import Scorecard from '@components/Scorecard.svelte';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Scorecard from '$lib/components/Scorecard.svelte';
 	import type { PageData } from './$types';
-	import Button from '@components/Button.svelte';
 
 	export let data: PageData;
 

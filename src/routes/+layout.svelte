@@ -3,8 +3,8 @@
 	import { supabase } from '$lib/supabaseClient';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import Button from '@components/Button.svelte';
-	import Input from '@components/Input.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import Input from '$lib/components/Input.svelte';
 
 	let email: string;
 	let loginCode: string;

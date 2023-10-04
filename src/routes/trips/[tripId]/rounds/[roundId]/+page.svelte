@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Breadcrumbs from '@components/Breadcrumbs.svelte';
-	import BreadcrumbItem from '@components/BreadcrumbItem.svelte';
-	import Icon from '@components/Icon.svelte';
+	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
+	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 	import { scaleLinear } from 'd3-scale';
 	import { interpolateHsl } from 'd3-interpolate';
 	import { flip } from 'svelte/animate';

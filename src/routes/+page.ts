@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import { makeSupabaseAPI } from '@api';
+import { makeSupabaseAPI } from '$lib/api';
 
 export const load = (async (event) => {
 	const { session } = await makeSupabaseAPI(event);
