@@ -1,7 +1,6 @@
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
 import { computeStablefordPoints } from '$lib/utils/golf';
-import type { Prettify, ArrayElement } from '$lib/utils/typeHelpers';
 
 export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 	/**
@@ -28,20 +27,9 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 
 		if (dbError) throw error(500, { message: 'There was an error fetching scores.' });
 
-		type ResultRow = (typeof data)[number];
-		type PatchedRounds = Prettify<ArrayElement<ArrayElement<ResultRow['scorecards']>['rounds']>>;
-		type PatchedScorecards = Prettify<
-			Omit<ArrayElement<ResultRow['scorecards']>, 'rounds'> & { rounds: PatchedRounds }
-		>;
-		type PatchedResult = Prettify<
-			Omit<ResultRow, 'scorecards'> & { scorecards: PatchedScorecards }
-		>;
-
-		const patchedData = data as unknown as PatchedResult[];
-
 		let gross = 0;
 		let handicap = 0;
-		for (const hs of patchedData) {
+		for (const hs of data) {
 			gross += hs.score ?? 0;
 			if (hs.hole_number === 1) {
 				// new scorecard, add course handicap
@@ -75,17 +63,6 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 
 		if (scorecardsError) throw error(500, { message: 'There was an error fetching scores.' });
 
-		type ResultRow = (typeof scorecardsData)[number];
-		type PatchedPlayers = Prettify<ArrayElement<ArrayElement<ResultRow['scorecards']>['players']>>;
-		type PatchedScorecards = Prettify<
-			Omit<ArrayElement<ResultRow['scorecards']>, 'players'> & { players: PatchedPlayers }
-		>;
-		type PatchedResult = Prettify<
-			Omit<ResultRow, 'scorecards'> & { scorecards: PatchedScorecards }
-		>;
-
-		const patchedData = scorecardsData as unknown as PatchedResult[];
-
 		type ScorecardInfo = {
 			tee_box_id: number;
 			player: string;
@@ -93,21 +70,21 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 			score: number;
 		};
 
-		const dataByRound = patchedData.reduce<Record<number, ScorecardInfo[]>>(
-			(acc, curr) => ({
-				...acc,
-				[curr.scorecard_id]: [
-					...(acc[curr.scorecard_id] ?? []),
+		const dataByRound: Record<number, ScorecardInfo[]> = {};
+		for (const scorecard of scorecardsData) {
+			const player = scorecard.scorecards?.players;
+			if (scorecard.scorecards && player) {
+				dataByRound[scorecard.scorecard_id] = [
+					...(dataByRound[scorecard.scorecard_id] ?? []),
 					{
-						tee_box_id: curr.scorecards.tee_box_id,
-						player: curr.scorecards.players.name,
-						hole_number: curr.hole_number,
-						score: curr.score ?? 0
+						tee_box_id: scorecard.scorecards.tee_box_id,
+						player: player.name,
+						hole_number: scorecard.hole_number,
+						score: scorecard.score ?? 0
 					}
-				]
-			}),
-			{}
-		);
+				];
+			}
+		}
 
 		const { data: holeInfo, error: holeError } = await supabaseClient.from('hole_info').select(
 			`
@@ -172,32 +149,21 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 
 		if (scorecardsError) throw error(500, { message: 'There was an error fetching skins.' });
 
-		type ResultRow = (typeof scorecardsData)[number];
-		type PatchedPlayers = Prettify<ArrayElement<ArrayElement<ResultRow['scorecards']>['players']>>;
-		type PatchedScorecards = Prettify<
-			Omit<ArrayElement<ResultRow['scorecards']>, 'players'> & { players: PatchedPlayers }
-		>;
-		type PatchedResult = Prettify<
-			Omit<ResultRow, 'scorecards'> & { scorecards: PatchedScorecards }
-		>;
-
-		const patchedData = scorecardsData as unknown as PatchedResult[];
-
 		type PlayerScore = {
 			player: string;
 			score: number;
 		};
 
-		const dataByHole = patchedData.reduce<Record<number, PlayerScore[]>>(
-			(acc, curr) => ({
-				...acc,
-				[curr.hole_number]: [
-					...(acc[curr.hole_number] ?? []),
-					{ player: curr.scorecards.players.name, score: curr.score ?? 0 }
-				]
-			}),
-			{}
-		);
+		const dataByHole: Record<number, PlayerScore[]> = {};
+		for (const scorecard of scorecardsData) {
+			const player = scorecard.scorecards?.players;
+			if (player) {
+				dataByHole[scorecard.hole_number] = [
+					...(dataByHole[scorecard.hole_number] ?? []),
+					{ player: player.name, score: scorecard.score ?? 0 }
+				];
+			}
+		}
 
 		const skinsMap = new Map<string, PlayerScore>();
 		for (const hole in dataByHole) {

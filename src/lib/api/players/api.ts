@@ -9,10 +9,8 @@ export function playersAPI(supabaseClient: TypedSupabaseClient) {
 		 * Get all players (optionally filter by trip)
 		 */
 		getPlayers: async function (tripId?: string) {
-			const { data, error: dbError } = await supabaseClient
-				.from('players')
-				.select(
-					`
+			let query = supabaseClient.from('players').select(
+				`
 						id, 
 						name,
 						handicap,
@@ -20,8 +18,11 @@ export function playersAPI(supabaseClient: TypedSupabaseClient) {
 							id
 						)
 					`
-				)
-				.eq('trips.id', tripId);
+			);
+
+			if (tripId) query = query.eq('trips.id', tripId);
+
+			const { data, error: dbError } = await query;
 
 			if (dbError) throw error(500, { message: dbError.message });
 
