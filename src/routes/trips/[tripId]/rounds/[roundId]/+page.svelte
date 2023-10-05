@@ -48,7 +48,7 @@
 		</button>
 		<h5>Round Details</h5>
 		{#if showDetails}
-			<div transition:slide={{ duration: 300 }}>
+			<div transition:slide|global={{ duration: 300 }}>
 				<p>Date: {date?.toLocaleDateString(undefined, { dateStyle: 'medium' })}</p>
 				<p>Course: {data.round.course.name}</p>
 			</div>
