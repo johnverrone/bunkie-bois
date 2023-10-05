@@ -9,18 +9,19 @@ export function roundsAPI(supabaseClient: TypedSupabaseClient) {
 		 * Get all rounds for a trip
 		 */
 		getRounds: async function (tripId?: string) {
-			const { data: roundsData, error: roundsError } = await supabaseClient
-				.from('rounds')
-				.select(
-					`
+			let query = supabaseClient.from('rounds').select(
+				`
 						id,
 						trip_id,
 						course_id,
 						name,
 						date
 					`
-				)
-				.eq('trip_id', tripId);
+			);
+
+			if (tripId) query = query.eq('trip_id', tripId);
+
+			const { data: roundsData, error: roundsError } = await query;
 
 			if (roundsError) throw error(500, { message: roundsError.message });
 

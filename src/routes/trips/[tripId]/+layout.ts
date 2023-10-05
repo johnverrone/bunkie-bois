@@ -1,6 +1,5 @@
 import { error } from '@sveltejs/kit';
 import { makeSupabaseAPI } from '$lib/api';
-import type { Prettify } from '$lib/utils/typeHelpers';
 import type { LayoutLoad } from './$types';
 
 export const load = (async (event) => {
@@ -15,7 +14,7 @@ export const load = (async (event) => {
 	const rounds = await getRounds(tripId);
 	const courses = await getCourses();
 
-	type Course = Prettify<(typeof courses)[number]>;
+	type Course = (typeof courses)[number];
 	const coursesById = courses.reduce<Record<string, Course>>(
 		(acc, curr) => ({ ...acc, [curr.id]: curr }),
 		{}

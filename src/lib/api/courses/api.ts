@@ -1,7 +1,6 @@
 import { Result } from '$lib/api/types';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
-import type { Prettify, ArrayElement } from '$lib/utils/typeHelpers';
 import { transformTeeBoxRequest } from './helpers';
 import type { CreateCourseRequest, CreateTeeBoxRequest } from './schema';
 
@@ -114,17 +113,7 @@ export function coursesAPI(supabaseClient: TypedSupabaseClient) {
 
 		if (dbError) throw error(500, 'There was an error loading the course details.');
 
-		// TODO: workaround until this is implemented: https://github.com/supabase/postgrest-js/issues/303
-		type ResultRow = typeof data;
-		type PatchedHoleInfo = Prettify<
-			ArrayElement<ArrayElement<ResultRow['tee_boxes']>['hole_info']>
-		>;
-		type PatchedTeeBoxes = Prettify<
-			Omit<ArrayElement<ResultRow['tee_boxes']>, 'hole_info'> & { hole_info: PatchedHoleInfo[] }
-		>;
-		type PatchedResult = Prettify<Omit<ResultRow, 'tee_boxes'> & { tee_boxes: PatchedTeeBoxes[] }>;
-
-		return data as PatchedResult;
+		return data;
 	}
 
 	return {

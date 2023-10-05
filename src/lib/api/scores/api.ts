@@ -1,7 +1,6 @@
 import { Result } from '$lib/api/types';
 import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
-import type { Prettify, ArrayElement } from '$lib/utils/typeHelpers';
 import { transformScoreData } from './helpers';
 import type { DeleteScoreRequest, UpdateScorecardRequest } from './schema';
 import type { LeaderboardEntry } from './types';
@@ -64,23 +63,13 @@ export function scoresAPI(supabaseClient: TypedSupabaseClient) {
 
 			if (dbError) throw error(500, { message: dbError.message });
 
-			type ResultRow = (typeof data)[number];
-			type PatchedPlayer = Prettify<ArrayElement<ArrayElement<ResultRow['scorecard']>['player']>>;
-			type PatchedTeeBox = Prettify<ArrayElement<ArrayElement<ResultRow['scorecard']>['tee_box']>>;
-			type PatchedScorecard = Prettify<
-				Omit<ArrayElement<ResultRow['scorecard']>, 'player' | 'tee_box'> & {
-					player: PatchedPlayer;
-					tee_box: PatchedTeeBox;
-				}
-			>;
-			type PatchedResult = Prettify<
-				Omit<ResultRow, 'scorecard'> & { scorecard: PatchedScorecard | null }
-			>;
-
-			const patchedData = data as PatchedResult[];
-
-			const scorecardByPlayer = patchedData.reduce((acc, curr) => {
-				if (curr.scorecard === null) return acc;
+			const scorecardByPlayer = data.reduce((acc, curr) => {
+				if (
+					curr.scorecard === null ||
+					curr.scorecard.player === null ||
+					curr.scorecard.tee_box === null
+				)
+					return acc;
 				const id = curr.scorecard.player.id;
 				const name = curr.scorecard.player.name;
 				const courseHandicap = curr.scorecard.player_handicap ?? 0;
