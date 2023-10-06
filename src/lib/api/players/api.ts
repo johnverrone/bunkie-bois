@@ -14,7 +14,7 @@ export function playersAPI(supabaseClient: TypedSupabaseClient) {
 						id, 
 						name,
 						handicap,
-						trips (
+						trips!inner (
 							id
 						)
 					`
