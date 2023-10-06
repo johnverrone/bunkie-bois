@@ -67,8 +67,7 @@
 	<div class="auth-button login">
 		{#if !authMethod}
 			<Button on:click={() => (authMethod = 'otp')}>Login with One Time Password</Button>
-			<!-- Uncomment for prod where Google provider is enabled -->
-			<!-- <Button on:click={signInWithGoogle}>Login with Google</Button> -->
+			<Button on:click={signInWithGoogle}>Login with Google</Button>
 		{:else if authMethod === 'otp'}
 			{#if emailSent}
 				<p>An email has been sent to <strong>{email}</strong>. Enter the login code:</p>
