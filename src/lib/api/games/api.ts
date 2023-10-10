@@ -4,10 +4,10 @@ import { computeStablefordPoints } from '$lib/utils/golf';
 
 export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 	/**
-	 * Gets the total score for trip
+	 * Gets the total score for trip. Optionally filter by rounds.
 	 */
-	async function getTotalScoreForTrip(playerId: number, tripId: number) {
-		const { data, error: dbError } = await supabaseClient
+	async function getTotalScoreForTrip(playerId: number, tripId: number, roundIds?: number[]) {
+		const query = supabaseClient
 			.from('hole_scores')
 			.select(
 				`
@@ -24,6 +24,12 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 			)
 			.eq('scorecards.rounds.trip_id', tripId)
 			.eq('scorecards.player_id', playerId);
+
+		if (roundIds?.length) {
+			query.in('scorecards.round_id', roundIds);
+		}
+
+		const { data, error: dbError } = await query;
 
 		if (dbError) throw error(500, { message: 'There was an error fetching scores.' });
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import type { PageData } from './$types';
@@ -12,6 +13,15 @@
 		const bScore = netScoreToggled ? b.score.gross - b.score.handicap : b.score.gross;
 		return aScore - bScore;
 	});
+
+	function onToggleParams(id: number) {
+		const existingRounds = data.leaderboardRounds ?? [];
+		const newRounds = existingRounds.includes(id)
+			? existingRounds.filter((r) => r !== id)
+			: [...existingRounds, id];
+		const newSearchParams = new URLSearchParams({ rounds: newRounds.join(',') });
+		goto(`?${newSearchParams.toString()}`);
+	}
 </script>
 
 <div>
@@ -27,6 +37,20 @@
 			Net Scores
 		</label>
 	</div>
+	<fieldset class="round-select-container">
+		<legend>Rounds to include:</legend>
+		{#each data.rounds as round}
+			<div>
+				<input
+					type="checkbox"
+					id={`${round.id}`}
+					checked={data.leaderboardRounds?.includes(round.id)}
+					on:change={() => onToggleParams(round.id)}
+				/>
+				<label for={`${round.id}`}>{round.name}</label>
+			</div>
+		{/each}
+	</fieldset>
 	<ol>
 		{#each sortedLeaderboard as { player, score }}
 			<li>
@@ -88,5 +112,12 @@
 			place-items: center;
 			font-weight: bold;
 		}
+	}
+
+	.round-select-container {
+		margin-bottom: 8px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
 	}
 </style>
