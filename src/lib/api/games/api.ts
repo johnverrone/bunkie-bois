@@ -18,7 +18,7 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 					player_id,
 					round_id,
 					player_handicap,
-					rounds ( id, trip_id )
+					rounds!inner ( id, trip_id )
 				)
 			`
 			)
