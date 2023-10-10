@@ -144,29 +144,50 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 				score,
 				scorecards!inner (
 					player_id,
-					players ( id, name ),
-					round_id
+					player_handicap,
+					players!inner ( id, name ),
+					round_id,
+					tee_boxes!inner ( id, hole_info!inner ( tee_box_id, hole_number, handicap ) )
 				)
 			`
 			)
 			.eq('scorecards.round_id', roundId)
-			.limit(1, { foreignTable: 'scorecards.players' })
 			.order('hole_number');
 
-		if (scorecardsError) throw error(500, { message: 'There was an error fetching skins.' });
+		if (scorecardsError) {
+			console.error(scorecardsError.message);
+			throw error(500, { message: 'There was an error fetching skins.' });
+		}
 
 		type PlayerScore = {
 			player: string;
 			score: number;
+			netScore: number;
 		};
 
 		const dataByHole: Record<number, PlayerScore[]> = {};
 		for (const scorecard of scorecardsData) {
 			const player = scorecard.scorecards?.players;
 			if (player) {
+				const playerHandicap = scorecard.scorecards?.player_handicap ?? 0;
+				const holeHandicap = scorecard.scorecards?.tee_boxes?.hole_info.find(
+					(info) => info.hole_number === scorecard.hole_number
+				)?.handicap;
+				if (!holeHandicap) {
+					throw error(500, {
+						message: 'There was an error fetching hole handicaps when calculating skins.'
+					});
+				}
+				const full18Pops = Math.floor(playerHandicap / 18);
+				const extraPops = playerHandicap % 18;
+				const pops = full18Pops + (holeHandicap <= extraPops ? 1 : 0);
 				dataByHole[scorecard.hole_number] = [
 					...(dataByHole[scorecard.hole_number] ?? []),
-					{ player: player.name, score: scorecard.score ?? 0 }
+					{
+						player: player.name,
+						score: scorecard.score ?? 0,
+						netScore: (scorecard.score ?? 0) - pops
+					}
 				];
 			}
 		}
@@ -176,10 +197,10 @@ export function gamesAPI(supabaseClient: TypedSupabaseClient) {
 			const holeData = dataByHole[hole];
 			if (!holeData || !holeData[0]) return;
 			const lowScore = holeData.reduce(
-				(min, curr) => (curr.score < min.score ? curr : min),
+				(min, curr) => (curr.netScore < min.netScore ? curr : min),
 				holeData[0]
 			);
-			const playersWithScore = holeData.filter((score) => score.score === lowScore.score);
+			const playersWithScore = holeData.filter((score) => score.netScore === lowScore.netScore);
 			if (playersWithScore?.length === 1) {
 				skinsMap.set(hole, lowScore);
 			}
