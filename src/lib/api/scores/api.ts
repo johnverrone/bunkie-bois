@@ -49,11 +49,11 @@ export function scoresAPI(supabaseClient: TypedSupabaseClient) {
 				.from('hole_scores')
 				.select(
 					`
-							scorecard:scorecards (
-								player:players ( id, name ),
+							scorecard:scorecards!inner (
+								player:players!inner ( id, name ),
 								round_id,
 								player_handicap,
-								tee_box:tee_boxes ( id, name )
+								tee_box:tee_boxes!inner ( id, name )
 							),
 							hole_number,
 							score
