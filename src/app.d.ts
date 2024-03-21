@@ -5,9 +5,7 @@ import PocketBase from 'pocketbase';
 // and what to do when importing types
 declare global {
 	declare namespace App {
-		interface Locals {
-			pb: PocketBase;
-		}
+		// interface Locals {}
 		// interface Platform {}
 		// interface PrivateEnv {}
 		// interface PublicEnv {}
