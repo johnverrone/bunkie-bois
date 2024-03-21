@@ -46,5 +46,8 @@
 	"trustedDependencies": [
 		"supabase"
 	],
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"pocketbase": "^0.21.1"
+	}
 }

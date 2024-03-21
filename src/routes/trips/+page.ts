@@ -1,8 +1,8 @@
-import { makeSupabaseAPI } from '$lib/api';
+import { getTrips } from '$lib/api';
 import type { PageLoad } from './$types';
 
-export const load = (async (event) => {
-	const { getTrips } = await makeSupabaseAPI(event);
+export const load = (async ({ depends }) => {
+	depends('trips');
 
 	return {
 		trips: await getTrips()

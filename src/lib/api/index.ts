@@ -24,3 +24,5 @@ export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) 
 		...usersAPI(supabaseClient)
 	};
 }
+
+export * from './trips';
