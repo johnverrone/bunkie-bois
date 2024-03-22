@@ -26,3 +26,4 @@ export async function makeSupabaseAPI(event: Parameters<typeof getSupabase>[0]) 
 }
 
 export * from './trips';
+export * from './courses';

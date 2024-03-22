@@ -6,7 +6,7 @@
 
 	export let data: PageData;
 
-	$: sortedCourses = data.courses.sort();
+	$: sortedCourses = data.courses.ok ? data.courses.data.sort() : [];
 </script>
 
 {#if sortedCourses.length}

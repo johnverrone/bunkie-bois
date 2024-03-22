@@ -3,6 +3,31 @@ import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
 import { transformTeeBoxRequest } from './helpers';
 import type { CreateCourseRequest, CreateTeeBoxRequest } from './schema';
+import { pb } from '$lib/pocketbase';
+
+/**
+ * Create a course
+ */
+export async function createCourse(name: string) {
+	try {
+		const record = await pb.collection('courses').create({ name });
+		return Result.ok(record);
+	} catch (err) {
+		return Result.error(err as string);
+	}
+}
+
+/**
+ * Get names of all courses
+ */
+export async function getCourses() {
+	try {
+		const records = await pb.collection('courses').getFullList();
+		return Result.ok(records);
+	} catch (err) {
+		return Result.error(err as string);
+	}
+}
 
 export function coursesAPI(supabaseClient: TypedSupabaseClient) {
 	/**
