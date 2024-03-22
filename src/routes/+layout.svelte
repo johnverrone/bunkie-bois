@@ -4,12 +4,9 @@
 	import Button from '$lib/components/Button.svelte';
 
 	async function signInWithGoogle() {
-		const authData = await pb.collection('users').authWithOAuth2({
+		await pb.collection('users').authWithOAuth2({
 			provider: 'google'
 		});
-
-		console.log(authData.record.id);
-		console.log(authData.token);
 	}
 </script>
 
