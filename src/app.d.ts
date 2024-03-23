@@ -9,10 +9,6 @@ declare global {
 		// interface Platform {}
 		// interface PrivateEnv {}
 		// interface PublicEnv {}
-		interface Supabase {
-			Database: import('./lib/supabaseTypes').Database;
-			SchemaName: 'public';
-		}
 		// interface PageData {}
 	}
 }
