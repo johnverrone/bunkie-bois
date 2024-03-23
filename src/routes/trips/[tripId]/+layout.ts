@@ -1,42 +1,20 @@
-import { error } from '@sveltejs/kit';
-import { getCourses, getTripById, makeSupabaseAPI } from '$lib/api';
+import { getCourses, getPlayers, getRounds, getTripById } from '$lib/api';
 import type { LayoutLoad } from './$types';
-import type { Course } from '$lib/pocketbase';
 
-export const load = (async (event) => {
-	const { getPlayers, getRounds } = await makeSupabaseAPI(event);
-
-	const {
-		params: { tripId }
-	} = event;
+export const load = (async ({ depends, params }) => {
+	const { tripId } = params;
+	depends(`trips:${tripId}`);
 
 	const trip = await getTripById(tripId);
 	const tripPlayers = await getPlayers(tripId);
 	const rounds = await getRounds(tripId);
 	const courses = await getCourses();
 
-	const coursesById = courses.reduce<Record<string, Course>>(
-		(acc, curr) => ({ ...acc, [curr.id]: curr }),
-		{}
-	);
-
-	const roundsWithCourseName = rounds.map(({ course_id, ...round }) => {
-		const course = coursesById[course_id];
-		if (!course) {
-			throw error(500, { message: `error finding course ${course_id}` });
-		}
-
-		return {
-			...round,
-			course
-		};
-	});
-
 	return {
 		title: trip.name,
 		trip,
 		tripPlayers,
-		rounds: roundsWithCourseName,
+		rounds,
 		courses: courses
 	};
 }) satisfies LayoutLoad;

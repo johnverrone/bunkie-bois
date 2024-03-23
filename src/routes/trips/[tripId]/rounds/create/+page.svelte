@@ -1,24 +1,42 @@
 <script lang="ts">
+	import { goto, invalidate } from '$app/navigation';
+	import { createRound, roundsSchemas } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import SelectMenu from '$lib/components/SelectMenu.svelte';
-	import type { ActionData, PageData } from './$types';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
-	export let form: ActionData;
 
 	let roundName: string | undefined;
-	let courseId: number | undefined;
+	let courseId: string | undefined;
 	let date: string | undefined;
+	let errorMessage: string | undefined;
+
+	async function handleSubmit() {
+		const parseResult = roundsSchemas.createRoundSchema.safeParse({
+			tripId: data.trip.id,
+			courseId,
+			name: roundName,
+			date
+		});
+		if (!parseResult.success) {
+			console.error(parseResult.error);
+			return;
+		}
+
+		await createRound(parseResult.data);
+		await invalidate(`trips:${data.trip.id}`);
+		goto(`/trips/${data.trip.id}/rounds`);
+	}
 </script>
 
-<form class="round-form" method="post" action="?/createRound">
-	<input type="hidden" name="tripId" value={data.trip.id} />
+<form class="round-form" on:submit|preventDefault={handleSubmit}>
 	<Input label="Round Name" type="text" placeholder="Round 1" name="name" bind:value={roundName} />
 	<SelectMenu label="Course" name="courseId" bind:value={courseId} options={data.courses} />
 	<Input label="Date" type="date" name="date" bind:value={date} block />
 
-	{#if form?.message}<p class="error">{form.message}</p>{/if}
+	{#if errorMessage}<p class="error">{errorMessage}</p>{/if}
 
 	<div class="button-row">
 		<a href={`/trips/${data.trip.id}/rounds`} class="cancel">Cancel</a>

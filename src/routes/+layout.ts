@@ -2,7 +2,9 @@ import type { LayoutLoad } from './$types';
 import { pb } from '$lib/pocketbase';
 
 export const load = (async () => {
-	await pb.collection('users').authRefresh();
+	if (pb.authStore.isAuthRecord) {
+		await pb.collection('users').authRefresh();
+	}
 
 	return {
 		role: {

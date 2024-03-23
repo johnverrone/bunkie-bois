@@ -4,28 +4,29 @@
 	import Button from '$lib/components/Button.svelte';
 	import Scorecard from '$lib/components/Scorecard.svelte';
 	import type { PageData } from './$types';
+	import type { TeeBox } from '$lib/pocketbase';
 
 	export let data: PageData;
 
-	type TeeBoxesById = { [key: string]: (typeof data.courseData.tee_boxes)[number] };
-	$: teeBoxesById = data.courseData.tee_boxes.reduce<TeeBoxesById>(
+	type TeeBoxesById = { [key: string]: TeeBox };
+	$: teeBoxesById = data.courseData.expand?.teeBoxes_via_course.reduce<TeeBoxesById>(
 		(acc, curr) => ({ ...acc, [curr.id]: curr }),
 		{}
 	);
 
-	$: teeBox = teeBoxesById[data.scorecard.tee_box_id];
+	$: teeBox = teeBoxesById?.[data.scorecard.expand?.teeBox?.id ?? ''];
 
-	$: front9 = data.scorecard.hole_scores
-		.filter((hole) => hole.hole_number <= 9)
+	$: front9 = data.scorecard.expand?.holeScores_via_scorecard
+		.filter((hole) => hole.holeNumber <= 9)
 		.reduce(
-			(acc, holeScore) => ({ ...acc, [holeScore.hole_number]: holeScore.score }),
+			(acc, holeScore) => ({ ...acc, [holeScore.holeNumber]: holeScore.score }),
 			{} as Record<number, number | null>
 		);
 
-	$: back9 = data.scorecard.hole_scores
-		.filter((hole) => hole.hole_number > 9)
+	$: back9 = data.scorecard.expand?.holeScores_via_scorecard
+		.filter((hole) => hole.holeNumber > 9)
 		.reduce(
-			(acc, holeScore) => ({ ...acc, [holeScore.hole_number]: holeScore.score }),
+			(acc, holeScore) => ({ ...acc, [holeScore.holeNumber]: holeScore.score }),
 			{} as Record<number, number | null>
 		);
 </script>

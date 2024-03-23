@@ -1,12 +1,13 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import List from '$lib/components/List.svelte';
 	import ListItem from '$lib/components/ListItem.svelte';
-	import { supabase } from '$lib/supabaseClient';
+	import { pb } from '$lib/pocketbase';
 
-	async function signout() {
-		const { error } = await supabase.auth.signOut();
-		if (!error) window.location.reload();
+	function signout() {
+		pb.authStore.clear();
+		goto('/');
 	}
 </script>
 

@@ -7,6 +7,7 @@
 	import { flip } from 'svelte/animate';
 	import type { PageData } from './$types';
 	import { slide } from 'svelte/transition';
+	import { getScore } from '$lib/utils/scores';
 
 	export let data: PageData;
 
@@ -22,8 +23,12 @@
 	$: date = data.round.date ? new Date(`${data.round.date}T00:00:00`) : undefined;
 
 	$: sortedLeaderboard = data.leaderboard.sort((a, b) => {
-		const aScore = netScoreToggled ? a.score - a.courseHandicap : a.score;
-		const bScore = netScoreToggled ? b.score - b.courseHandicap : b.score;
+		const aScore = netScoreToggled
+			? getScore(a.expand?.holeScores_via_scorecard) - a.playerHandicap
+			: getScore(a.expand?.holeScores_via_scorecard);
+		const bScore = netScoreToggled
+			? getScore(b.expand?.holeScores_via_scorecard) - b.playerHandicap
+			: getScore(b.expand?.holeScores_via_scorecard);
 		return aScore - bScore;
 	});
 
@@ -50,7 +55,7 @@
 		{#if showDetails}
 			<div transition:slide|global={{ duration: 300 }}>
 				<p>Date: {date?.toLocaleDateString(undefined, { dateStyle: 'medium' })}</p>
-				<p>Course: {data.round.course.name}</p>
+				<p>Course: {data.round.expand?.course?.name}</p>
 			</div>
 		{/if}
 	</div>
@@ -68,11 +73,18 @@
 				<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
 					<a href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${player.id}/scorecard`}>
 						<span class="player-name">
-							{player.name}
-							<span class="tee-box-badge">{player.teeBox}</span>
+							{player.expand?.player?.name}
+							<span class="tee-box-badge">{player.expand?.teeBox?.name}</span>
 						</span>
-						<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
-							{netScoreToggled ? player.score - player.courseHandicap : player.score}
+						<span
+							class="player-score"
+							style={`--score-color: ${scoreColor(
+								getScore(player.expand?.holeScores_via_scorecard)
+							)}`}
+						>
+							{netScoreToggled
+								? getScore(player.expand?.holeScores_via_scorecard) - player.playerHandicap
+								: getScore(player.expand?.holeScores_via_scorecard)}
 						</span>
 					</a>
 				</li>
