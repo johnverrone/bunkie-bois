@@ -1,4 +1,3 @@
-import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
 import { computeStablefordPoints } from '$lib/utils/golf';
 import { pb, type HoleInfo } from '$lib/pocketbase';
