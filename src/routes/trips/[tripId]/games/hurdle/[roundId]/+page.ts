@@ -1,19 +1,17 @@
-import { makeSupabaseAPI } from '$lib/api';
+import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import { getHurdlePointsForRound } from '$lib/api';
 
 export const load = (async (event) => {
 	const { parent, params } = event;
 	const { title, rounds } = await parent();
-	const { getHurdlePointsForRound } = await makeSupabaseAPI(event);
 
-	const roundId = +params.roundId;
-	const round = rounds.find((r) => r.id === roundId);
-
-	const hurdle = await getHurdlePointsForRound(roundId);
+	const round = rounds.find((r) => r.id === params.roundId);
+	if (!round) throw error(404, 'Round not found');
 
 	return {
 		title: `${title} | ${round?.name} | Hurdle`,
 		round,
-		hurdle
+		hurdle: await getHurdlePointsForRound(round.id)
 	};
 }) satisfies PageLoad;

@@ -18,13 +18,8 @@
 			return;
 		}
 
-		const response = await createTrip(parseResult.data);
-		if (!response.ok) {
-			errorMessage = 'There was an error creating trip.';
-			return;
-		}
-
-		goto(`/trips/${response.data.id}/rounds`);
+		const trip = await createTrip(parseResult.data);
+		goto(`/trips/${trip.id}/rounds`);
 	}
 </script>
 

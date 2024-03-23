@@ -5,6 +5,8 @@
 	import Scorecard from '$lib/components/Scorecard.svelte';
 	import type { PageData } from './$types';
 	import type { TeeBox } from '$lib/pocketbase';
+	import { deleteScorecard } from '$lib/api';
+	import { goto, invalidate } from '$app/navigation';
 
 	export let data: PageData;
 
@@ -29,6 +31,12 @@
 			(acc, holeScore) => ({ ...acc, [holeScore.holeNumber]: holeScore.score }),
 			{} as Record<number, number | null>
 		);
+
+	async function handleDelete() {
+		await deleteScorecard(data.scorecard.id);
+		await invalidate(`trips:${data.trip.id}`);
+		goto(`/trips/${data.trip.id}/rounds/${data.round.id}`);
+	}
 </script>
 
 <div class="scorecard-container">
@@ -50,10 +58,7 @@
 	<div class="spacer" />
 
 	<div class="button-container">
-		<form method="post" action="?/deleteScore">
-			<input type="hidden" name="id" value={data.scorecard.id} />
-			<Button variant="destructive" type="submit">Delete Score</Button>
-		</form>
+		<Button on:click={handleDelete} variant="destructive">Delete Score</Button>
 	</div>
 </div>
 

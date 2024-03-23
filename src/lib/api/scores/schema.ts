@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-export const deleteScoreSchema = z.object({
-	id: z.coerce.number()
-});
-
-export type DeleteScoreRequest = z.infer<typeof deleteScoreSchema>;
-
 export const updateScorecardSchema = z.object({
 	playerId: z.string(),
 	roundId: z.string(),

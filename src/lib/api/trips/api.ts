@@ -43,8 +43,8 @@ export function getTripById(tripId: string) {
 export function updateTrip({ id, name, startDate, endDate }: UpdateTripRequest) {
 	const data = {
 		name,
-		startDate: startDate.toISOString().split('T').at(0),
-		endDate: endDate.toISOString().split('T').at(0)
+		startDate,
+		endDate
 	};
 
 	return pb.collection('trips').update(id, data);

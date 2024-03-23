@@ -69,22 +69,24 @@
 			</label>
 		</div>
 		<ol class="leaderboard-list">
-			{#each sortedLeaderboard as player (player.id)}
+			{#each sortedLeaderboard as scorecard (scorecard.id)}
 				<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
-					<a href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${player.id}/scorecard`}>
+					<a
+						href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${scorecard.expand?.player?.id}/scorecard`}
+					>
 						<span class="player-name">
-							{player.expand?.player?.name}
-							<span class="tee-box-badge">{player.expand?.teeBox?.name}</span>
+							{scorecard.expand?.player?.name}
+							<span class="tee-box-badge">{scorecard.expand?.teeBox?.name}</span>
 						</span>
 						<span
 							class="player-score"
 							style={`--score-color: ${scoreColor(
-								getScore(player.expand?.holeScores_via_scorecard)
+								getScore(scorecard.expand?.holeScores_via_scorecard)
 							)}`}
 						>
 							{netScoreToggled
-								? getScore(player.expand?.holeScores_via_scorecard) - player.playerHandicap
-								: getScore(player.expand?.holeScores_via_scorecard)}
+								? getScore(scorecard.expand?.holeScores_via_scorecard) - scorecard.playerHandicap
+								: getScore(scorecard.expand?.holeScores_via_scorecard)}
 						</span>
 					</a>
 				</li>

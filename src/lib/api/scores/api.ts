@@ -30,7 +30,8 @@ export async function logScore(req: UpdateScorecardRequest) {
 	const data = {
 		player: req.playerId,
 		round: req.roundId,
-		teeBox: req.teeBoxId
+		teeBox: req.teeBoxId,
+		playerHandicap: req.courseHandicap
 	};
 	const scorecard = await pb.collection('scorecards').create(data);
 
@@ -44,4 +45,11 @@ export async function logScore(req: UpdateScorecardRequest) {
 	console.log({ scoresToInsert });
 
 	scoresToInsert.map((s) => pb.collection('holeScores').create(s, { requestKey: null }));
+}
+
+/**
+ * Delete a score
+ */
+export function deleteScorecard(id: string) {
+	return pb.collection('scorecards').delete(id);
 }

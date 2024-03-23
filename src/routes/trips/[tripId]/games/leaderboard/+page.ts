@@ -1,11 +1,10 @@
-import { makeSupabaseAPI } from '$lib/api';
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import { getTotalScoreForTrip } from '$lib/api';
 
 export const load = (async (event) => {
 	const { url, parent } = event;
 	const { title, trip, tripPlayers, rounds } = await parent();
-	const { getTotalScoreForTrip } = await makeSupabaseAPI(event);
 
 	if (url.searchParams.get('rounds') === null)
 		throw redirect(307, `?rounds=${rounds.map((r) => r.id).join(',')}`);
@@ -13,8 +12,7 @@ export const load = (async (event) => {
 	const leaderboardRounds = url.searchParams
 		.get('rounds')
 		?.split(',')
-		.filter((s) => s.length)
-		.map((r) => +r);
+		.filter((s) => s.length);
 
 	const leaderboard = await Promise.all(
 		tripPlayers.map(async (p) => {

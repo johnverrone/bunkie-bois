@@ -26,7 +26,7 @@
 		el.focus();
 	}
 
-	function handleAddPlayer() {
+	async function handleAddPlayer() {
 		const parseResult = playersSchemas.createPlayerSchema.safeParse({
 			name: newName,
 			handicap: newHandicap,
@@ -37,12 +37,12 @@
 			return;
 		}
 
-		createPlayer(parseResult.data);
-		invalidate(`trips/${data.trip.id}`);
+		await createPlayer(parseResult.data);
+		invalidate(`trips:${data.trip.id}`);
 		addPlayerMode = false;
 	}
 
-	function handleEditPlayer() {
+	async function handleEditPlayer() {
 		const parseResult = playersSchemas.updatePlayerSchema.safeParse({
 			id: editingPlayer?.id,
 			name: editingPlayer?.name,
@@ -53,14 +53,14 @@
 			return;
 		}
 
-		updatePlayer(parseResult.data);
-		invalidate(`trips/${data.trip.id}`);
+		await updatePlayer(parseResult.data);
+		invalidate(`trips:${data.trip.id}`);
 		editingPlayer = null;
 	}
 
-	function handleDeletePlayer(id: string) {
-		deletePlayer(id);
-		invalidate(`trips/${data.trip.id}`);
+	async function handleDeletePlayer(id: string) {
+		await deletePlayer(id);
+		invalidate(`trips:${data.trip.id}`);
 	}
 </script>
 

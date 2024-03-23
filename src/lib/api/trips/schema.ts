@@ -11,8 +11,8 @@ export type CreateTripRequest = z.infer<typeof createTripSchema>;
 export const updateTripSchema = z.object({
 	id: z.string(),
 	name: z.string(),
-	startDate: z.coerce.date(),
-	endDate: z.coerce.date()
+	startDate: z.string(),
+	endDate: z.string()
 });
 
 export type UpdateTripRequest = z.infer<typeof updateTripSchema>;
