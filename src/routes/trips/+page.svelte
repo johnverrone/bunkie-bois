@@ -17,24 +17,22 @@
 
 	let deleteError: string | undefined;
 
-	$: sortedTrips = data.trips.ok
-		? data.trips.data.sort((a, b) =>
-				a.endDate && b.endDate ? new Date(b.endDate).getTime() - new Date(a.endDate).getTime() : 0
-		  )
-		: [];
+	$: sortedTrips = data.trips.sort((a, b) =>
+		a.endDate && b.endDate ? new Date(b.endDate).getTime() - new Date(a.endDate).getTime() : 0
+	);
 
 	async function handleDelete(id: string) {
-		const response = await deleteTrip(id);
-		if (!response.ok) {
-			deleteError = 'There was an error deleting trip.';
-			return;
+		try {
+			const success = await deleteTrip(id);
+			if (!success) throw new Error();
+			invalidate('trips');
+		} catch (e) {
+			deleteError = 'There was an error deleting the trip.';
 		}
-		invalidate('trips');
 	}
 
-	$: fetchError = !data.trips.ok && 'There was an error fetching trips.';
 	$: emptyError = sortedTrips.length < 1 && 'No trips yet.';
-	$: errorMessage = fetchError || deleteError || emptyError;
+	$: errorMessage = deleteError || emptyError;
 </script>
 
 <PageTitle>Golf Trips</PageTitle>

@@ -1,9 +1,10 @@
 import { error } from '@sveltejs/kit';
-import { makeSupabaseAPI } from '$lib/api';
+import { getCourses, getTripById, makeSupabaseAPI } from '$lib/api';
 import type { LayoutLoad } from './$types';
+import type { Course } from '$lib/pocketbase';
 
 export const load = (async (event) => {
-	const { getTripById, getPlayers, getRounds, getCourses } = await makeSupabaseAPI(event);
+	const { getPlayers, getRounds } = await makeSupabaseAPI(event);
 
 	const {
 		params: { tripId }
@@ -14,7 +15,6 @@ export const load = (async (event) => {
 	const rounds = await getRounds(tripId);
 	const courses = await getCourses();
 
-	type Course = (typeof courses)[number];
 	const coursesById = courses.reduce<Record<string, Course>>(
 		(acc, curr) => ({ ...acc, [curr.id]: curr }),
 		{}

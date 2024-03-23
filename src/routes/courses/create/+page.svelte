@@ -12,13 +12,12 @@
 
 	async function handleSubmit() {
 		if (!courseName) return;
-		const response = await createCourse(courseName);
-		if (!response.ok) {
+		try {
+			await createCourse(courseName);
+			goto('/courses');
+		} catch (e) {
 			errorMessage = 'There was an error creating the course.';
-			return;
 		}
-
-		goto('/courses');
 	}
 </script>
 
