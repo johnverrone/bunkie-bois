@@ -3,7 +3,7 @@ import type { PageLoad } from './$types';
 import { getTotalScoreForTrip } from '$lib/api';
 
 export const load = (async (event) => {
-	const { url, parent } = event;
+	const { url, parent, fetch } = event;
 	const { title, trip, tripPlayers, rounds } = await parent();
 
 	if (url.searchParams.get('rounds') === null)
@@ -16,7 +16,7 @@ export const load = (async (event) => {
 
 	const leaderboard = await Promise.all(
 		tripPlayers.map(async (p) => {
-			const playerScore = await getTotalScoreForTrip(p.id, trip.id, leaderboardRounds);
+			const playerScore = await getTotalScoreForTrip(p.id, trip.id, leaderboardRounds, { fetch });
 			return { player: p.name, score: playerScore };
 		})
 	);

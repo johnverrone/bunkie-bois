@@ -1,18 +1,25 @@
 import { error } from '@sveltejs/kit';
 import { computeStablefordPoints } from '$lib/utils/golf';
 import { pb, type HoleInfo } from '$lib/pocketbase';
+import type { SendOptions } from 'pocketbase';
 
 /**
  * Gets the total score for trip. Optionally filter by rounds.
  */
-export async function getTotalScoreForTrip(playerId: string, tripId: string, roundIds?: string[]) {
+export async function getTotalScoreForTrip(
+	playerId: string,
+	tripId: string,
+	roundIds?: string[],
+	opts?: SendOptions
+) {
 	let gross = 0;
 	let handicap = 0;
 
 	const scorecards = await pb.collection('scorecards').getFullList({
 		expand: 'player,round,holeScores_via_scorecard',
 		filter: `player='${playerId}'&&round.trip='${tripId}'&&'${roundIds}'?~round.id`,
-		requestKey: null
+		requestKey: `getScorecards-${playerId}-${tripId}-${roundIds?.join(',')}`,
+		...opts
 	});
 
 	for (const card of scorecards) {
@@ -30,10 +37,11 @@ export async function getTotalScoreForTrip(playerId: string, tripId: string, rou
 /**
  * Get all hurdle points for a round
  */
-export async function getHurdlePointsForRound(roundId: string) {
+export async function getHurdlePointsForRound(roundId: string, opts?: SendOptions) {
 	const scorecards = await pb.collection('scorecards').getFullList({
 		expand: 'player,round,holeScores_via_scorecard,teeBox,teeBox.holeInfo_via_teeBox',
-		filter: `round.id='${roundId}'`
+		filter: `round.id='${roundId}'`,
+		...opts
 	});
 
 	type HurdleInfo = {
@@ -69,10 +77,11 @@ export async function getHurdlePointsForRound(roundId: string) {
 /**
  * Get all skins for a round
  */
-export async function getSkinsForRound(roundId: string) {
+export async function getSkinsForRound(roundId: string, opts?: SendOptions) {
 	const scorecards = await pb.collection('scorecards').getFullList({
 		expand: 'player,round,holeScores_via_scorecard,teeBox,teeBox.holeInfo_via_teeBox',
-		filter: `round.id='${roundId}'`
+		filter: `round.id='${roundId}'`,
+		...opts
 	});
 
 	type PlayerScore = {

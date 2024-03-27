@@ -1,14 +1,14 @@
 import { getCourses, getPlayers, getRounds, getTripById } from '$lib/api';
 import type { LayoutLoad } from './$types';
 
-export const load = (async ({ depends, params }) => {
+export const load = (async ({ depends, params, fetch }) => {
 	const { tripId } = params;
 	depends(`trips:${tripId}`);
 
-	const trip = await getTripById(tripId);
-	const tripPlayers = await getPlayers(tripId);
-	const rounds = await getRounds(tripId);
-	const courses = await getCourses();
+	const trip = await getTripById(tripId, { fetch });
+	const tripPlayers = await getPlayers(tripId, { fetch });
+	const rounds = await getRounds(tripId, { fetch });
+	const courses = await getCourses({ fetch });
 
 	return {
 		title: trip.name,

@@ -3,7 +3,7 @@ import type { PageLoad } from './$types';
 import { getSkinsForRound } from '$lib/api';
 
 export const load = (async (event) => {
-	const { params, parent } = event;
+	const { params, parent, fetch } = event;
 	const { title, rounds } = await parent();
 
 	const round = rounds.find((round) => round.id === params.roundId);
@@ -12,6 +12,6 @@ export const load = (async (event) => {
 	return {
 		title: `${title} | ${round?.name} | Skins`,
 		round,
-		skins: await getSkinsForRound(round.id)
+		skins: await getSkinsForRound(round.id, { fetch })
 	};
 }) satisfies PageLoad;

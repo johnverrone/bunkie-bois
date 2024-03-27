@@ -1,33 +1,35 @@
 import type { CreateTeeBoxRequest } from './schema';
 import { pb } from '$lib/pocketbase';
+import type { SendOptions } from 'pocketbase';
 
 /**
  * Create a course
  */
-export function createCourse(name: string) {
-	return pb.collection('courses').create({ name });
+export function createCourse(name: string, opts?: SendOptions) {
+	return pb.collection('courses').create({ name }, opts);
 }
 
 /**
  * Get names of all courses
  */
-export function getCourses() {
-	return pb.collection('courses').getFullList();
+export function getCourses(opts?: SendOptions) {
+	return pb.collection('courses').getFullList(opts);
 }
 
 /**
  * Get course details
  */
-export function getCourseDetails(courseId: string) {
-	return pb
-		.collection('courses')
-		.getOne(courseId, { expand: 'teeBoxes_via_course,teeBoxes_via_course.holeInfo_via_teeBox' });
+export function getCourseDetails(courseId: string, opts?: SendOptions) {
+	return pb.collection('courses').getOne(courseId, {
+		expand: 'teeBoxes_via_course,teeBoxes_via_course.holeInfo_via_teeBox',
+		...opts
+	});
 }
 
 /**
  * Create tee box
  */
-export async function createTeeBox(req: CreateTeeBoxRequest) {
+export async function createTeeBox(req: CreateTeeBoxRequest, opts?: SendOptions) {
 	const holeData = Object.entries(req.holes);
 
 	if (holeData.length !== 9 && holeData.length !== 18) {
@@ -35,12 +37,15 @@ export async function createTeeBox(req: CreateTeeBoxRequest) {
 	}
 
 	// create teeBoxes record
-	const teeBox = await pb.collection('teeBoxes').create({
-		course: req.courseId,
-		name: req.name,
-		rating: req.rating,
-		slope: req.slope
-	});
+	const teeBox = await pb.collection('teeBoxes').create(
+		{
+			course: req.courseId,
+			name: req.name,
+			rating: req.rating,
+			slope: req.slope
+		},
+		opts
+	);
 
 	// create holeInfo records
 	holeData.map(([holeNumber, d]) =>
@@ -50,7 +55,7 @@ export async function createTeeBox(req: CreateTeeBoxRequest) {
 				holeNumber,
 				...d
 			},
-			{ requestKey: `POST holeInfo/${teeBox.id}/${holeNumber}` }
+			{ requestKey: `POST holeInfo/${teeBox.id}/${holeNumber}`, ...opts }
 		)
 	);
 }

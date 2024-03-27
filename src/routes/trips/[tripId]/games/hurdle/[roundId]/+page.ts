@@ -3,7 +3,7 @@ import type { PageLoad } from './$types';
 import { getHurdlePointsForRound } from '$lib/api';
 
 export const load = (async (event) => {
-	const { parent, params } = event;
+	const { parent, params, fetch } = event;
 	const { title, rounds } = await parent();
 
 	const round = rounds.find((r) => r.id === params.roundId);
@@ -12,6 +12,6 @@ export const load = (async (event) => {
 	return {
 		title: `${title} | ${round?.name} | Hurdle`,
 		round,
-		hurdle: await getHurdlePointsForRound(round.id)
+		hurdle: await getHurdlePointsForRound(round.id, { fetch })
 	};
 }) satisfies PageLoad;
