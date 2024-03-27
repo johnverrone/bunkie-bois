@@ -1,9 +1,9 @@
 import type { LayoutLoad } from './$types';
 import { pb } from '$lib/pocketbase';
 
-export const load = (async () => {
+export const load = (async ({ fetch }) => {
 	if (pb.authStore.isAuthRecord) {
-		await pb.collection('users').authRefresh();
+		await pb.collection('users').authRefresh({ fetch });
 	}
 
 	return {
