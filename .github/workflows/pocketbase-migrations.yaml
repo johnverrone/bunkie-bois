@@ -1,0 +1,20 @@
+name: PocketHost Migration
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  copy_pb_migrations:
+    name: Copy pb_migrations
+    runs-on: maurosoft1973/alpine-lftp
+    env:
+      POCKETHOST_SERVER: ${{ secrets.POCKETHOST_SERVER }}
+      POCKETHOST_USERNAME: ${{ secrets.POCKETHOST_USERNAME }}
+      POCKETHOSE_PASSWORD: ${{ secrets.POCKETHOST_PASSWORD }}
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+
+    - name: 📂 Sync files
+      run: lftp -e "mirror -R pocketbase/pb_migrations bunkie-bois/pb_migrations" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
