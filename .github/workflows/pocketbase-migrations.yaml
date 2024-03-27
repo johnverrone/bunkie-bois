@@ -12,7 +12,7 @@ jobs:
     env:
       POCKETHOST_SERVER: ${{ secrets.POCKETHOST_SERVER }}
       POCKETHOST_USERNAME: ${{ secrets.POCKETHOST_USERNAME }}
-      POCKETHOSE_PASSWORD: ${{ secrets.POCKETHOST_PASSWORD }}
+      POCKETHOST_PASSWORD: ${{ secrets.POCKETHOST_PASSWORD }}
     steps:
     - name: 🚚 Get latest code
       uses: actions/checkout@v4
