@@ -7,8 +7,8 @@ export const load = (async () => {
 	}
 
 	return {
+		isAuthed: pb.authStore.isValid,
 		role: {
-			// TODO: get from user attributes
 			isAdmin: pb.authStore.model?.role === 'admin'
 		}
 	};

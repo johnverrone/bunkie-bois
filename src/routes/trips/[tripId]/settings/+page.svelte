@@ -7,7 +7,7 @@
 
 	function signout() {
 		pb.authStore.clear();
-		goto('/');
+		goto('/', { invalidateAll: true });
 	}
 </script>
 

@@ -2,11 +2,22 @@
 	import { page } from '$app/stores';
 	import { pb } from '$lib/pocketbase';
 	import Button from '$lib/components/Button.svelte';
+	import type { PageData } from './$types';
+	import { invalidateAll } from '$app/navigation';
+
+	export let data: PageData;
+	let errorMessage: string | undefined;
 
 	async function signInWithGoogle() {
-		await pb.collection('users').authWithOAuth2({
-			provider: 'google'
-		});
+		try {
+			await pb.collection('users').authWithOAuth2({
+				provider: 'google'
+			});
+			invalidateAll();
+		} catch (e) {
+			console.error(e);
+			errorMessage = 'There was an error logging in.';
+		}
 	}
 </script>
 
@@ -14,12 +25,15 @@
 	<title>{$page.data.title || 'Bunkie Bois'}</title>
 </svelte:head>
 
-{#if pb.authStore.isValid}
+{#if data.isAuthed}
 	<slot />
 {:else}
 	<div class="auth-button login">
 		<Button on:click={signInWithGoogle}>Login with Google</Button>
 	</div>
+	{#if errorMessage}
+		<span>{errorMessage}</span>
+	{/if}
 {/if}
 
 <style lang="scss" global>
