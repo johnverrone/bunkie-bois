@@ -1,4 +1,4 @@
-name: PocketHost Migration
+name: PocketHost
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   copy_pb_migrations:
-    name: Copy pb_migrations
+    name: Copy migrations
     runs-on: ubuntu-latest
     container: finalgene/lftp
     env:
