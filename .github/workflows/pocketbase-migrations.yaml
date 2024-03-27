@@ -7,7 +7,8 @@ on:
 jobs:
   copy_pb_migrations:
     name: Copy pb_migrations
-    runs-on: maurosoft1973/alpine-lftp
+    runs-on: ubuntu-latest
+    container: finalgene/lftp
     env:
       POCKETHOST_SERVER: ${{ secrets.POCKETHOST_SERVER }}
       POCKETHOST_USERNAME: ${{ secrets.POCKETHOST_USERNAME }}
