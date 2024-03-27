@@ -48,14 +48,16 @@ export async function createTeeBox(req: CreateTeeBoxRequest, opts?: SendOptions)
 	);
 
 	// create holeInfo records
-	holeData.map(([holeNumber, d]) =>
-		pb.collection('holeInfo').create(
-			{
-				teeBox: teeBox.id,
-				holeNumber,
-				...d
-			},
-			{ requestKey: `POST holeInfo/${teeBox.id}/${holeNumber}`, ...opts }
+	return Promise.all(
+		holeData.map(([holeNumber, d]) =>
+			pb.collection('holeInfo').create(
+				{
+					teeBox: teeBox.id,
+					holeNumber,
+					...d
+				},
+				{ requestKey: `POST holeInfo/${teeBox.id}/${holeNumber}`, ...opts }
+			)
 		)
 	);
 }
