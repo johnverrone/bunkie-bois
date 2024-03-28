@@ -1,12 +1,14 @@
 <script lang="ts">
+	import { coursesSchemas, createTeeBox } from '$lib/api';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
-	import type { ActionData, PageData } from './$types';
+	import type { PageData } from './$types';
+	import { goto, invalidate } from '$app/navigation';
 
 	export let data: PageData;
-	export let form: ActionData;
+	let errorMessage: string | undefined;
 
 	let teeBoxName: string | undefined;
 	let rating: number | undefined;
@@ -34,19 +36,40 @@
 		17: { par: undefined, yardage: undefined, handicap: undefined },
 		18: { par: undefined, yardage: undefined, handicap: undefined }
 	};
+
+	async function handleSubmit() {
+		const parseResult = coursesSchemas.createTeeBoxSchema.safeParse({
+			courseId: data.course.id,
+			name: teeBoxName,
+			rating,
+			slope,
+			holes
+		});
+		if (!parseResult.success) {
+			console.error(parseResult.error);
+			return;
+		}
+
+		try {
+			await createTeeBox(parseResult.data);
+			await invalidate(`courses:${data.course.id}`);
+			goto(`/courses/${data.course.id}`);
+		} catch (e) {
+			console.error(e);
+		}
+	}
 </script>
 
 <Breadcrumbs>
 	<BreadcrumbItem href={`/settings`} label="Settings" />
 	<BreadcrumbItem href={`/courses`} label="Courses" />
-	<BreadcrumbItem href={`/courses/${data.course.id}`} label={data.course.name} />
+	<BreadcrumbItem href={`/courses/${data.course?.id}`} label={data.course?.name ?? ''} />
 	<BreadcrumbItem label="New Tee Box" />
 </Breadcrumbs>
 
-{#if form?.message}<p class="error">{form.message}</p>{/if}
+{#if errorMessage}<p class="error">{errorMessage}</p>{/if}
 
-<form class="tee-box-form" method="post" action="?/createTeeBox">
-	<input type="hidden" name="courseId" value={data.course.id} />
+<form class="tee-box-form" on:submit|preventDefault={handleSubmit}>
 	<Input
 		label="Tee Box Name"
 		type="text"

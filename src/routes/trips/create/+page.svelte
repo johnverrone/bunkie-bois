@@ -1,32 +1,43 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { createTrip, tripsSchemas } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Main from '$lib/components/Main.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
-	import type { ActionData } from './$types';
 
-	export let form: ActionData;
-
-	let tripName: string | undefined;
+	let name: string | undefined;
 	let startDate: string | undefined;
 	let endDate: string | undefined;
+	let errorMessage: string | undefined;
+
+	async function handleSubmit() {
+		const parseResult = tripsSchemas.createTripSchema.safeParse({ name, startDate, endDate });
+		if (!parseResult.success) {
+			errorMessage = 'Invalid trip information.';
+			return;
+		}
+
+		const trip = await createTrip(parseResult.data);
+		goto(`/trips/${trip.id}/rounds`);
+	}
 </script>
 
 <PageTitle>Create Trip</PageTitle>
 
 <Main>
-	<form class="round-form" method="post" action="?/createTrip">
+	<form class="round-form" on:submit|preventDefault={handleSubmit}>
 		<Input
 			label="Trip Name"
 			type="text"
 			placeholder="Myrtle Beach 2023"
 			name="name"
-			bind:value={tripName}
+			bind:value={name}
 		/>
 		<Input label="Start Date" type="date" name="startDate" bind:value={startDate} block />
 		<Input label="End Date" type="date" name="endDate" bind:value={endDate} block />
 
-		{#if form?.message}<p class="error">{form.message}</p>{/if}
+		{#if errorMessage}<p class="error">{errorMessage}</p>{/if}
 
 		<div class="button-row">
 			<a href={`/trips`} class="cancel">Cancel</a>

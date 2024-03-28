@@ -1,2 +1,2 @@
 export * as playersSchemas from './schema';
-export { playersAPI } from './api';
+export * from './api';

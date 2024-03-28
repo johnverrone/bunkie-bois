@@ -1,35 +1,34 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
+	import { deleteRound } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import IconText from '$lib/components/IconText.svelte';
 	import List from '$lib/components/List.svelte';
 	import ListItem from '$lib/components/ListItem.svelte';
 	import type { PageData } from './$types';
-	import { enhance } from '$app/forms';
 
 	export let data: PageData;
 
-	$: sortedRounds = data.rounds.sort((a, b) =>
-		a.date && b.date ? new Date(b.date).getTime() - new Date(a.date).getTime() : 0
-	);
+	async function handleDelete(id: string) {
+		await deleteRound(id);
+		invalidate(`trips:${data.trip.id}`);
+	}
 </script>
 
 {#if data.rounds.length}
 	<List>
-		{#each sortedRounds as round}
-			{#if data.role.isAdmin()}
+		{#each data.rounds as round}
+			{#if data.role.isAdmin}
 				<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
 					<span slot="actionMenu" class="action-menu">
 						<a href={`/trips/${data.trip.id}/rounds/${round.id}/edit`} class="edit">
 							<IconText name="edit" label="Edit" />
 						</a>
-						<form method="post" action="?/deleteRound" use:enhance>
-							<input type="hidden" name="roundId" value={round.id} />
-							<Button variant="destructive" type="submit" fullWidth>
-								<IconText name="trash" label="Delete" />
-							</Button>
-						</form>
+						<Button on:click={() => handleDelete(round.id)} variant="destructive" fullWidth>
+							<IconText name="trash" label="Delete" />
+						</Button>
 					</span>
-					<h6>{round.course.name}</h6>
+					<h6>{round.expand?.course?.name}</h6>
 					{#if round.date}
 						<h6>
 							{new Date(`${round.date}T00:00:00`).toLocaleDateString(undefined, {
@@ -40,7 +39,7 @@
 				</ListItem>
 			{:else}
 				<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
-					<h6>{round.course.name}</h6>
+					<h6>{round.expand?.course?.name}</h6>
 					{#if round.date}
 						<h6>
 							{new Date(`${round.date}T00:00:00`).toLocaleDateString(undefined, {
@@ -56,7 +55,7 @@
 	<p>no rounds yet</p>
 {/if}
 
-{#if data.role.isAdmin()}
+{#if data.role.isAdmin}
 	<a href={`/trips/${data.trip.id}/rounds/create`}>
 		<IconText name="plus" label="Add round" />
 	</a>
@@ -69,10 +68,6 @@
 		align-items: flex-start;
 		gap: 16px;
 		min-width: 100px;
-
-		form {
-			width: 100%;
-		}
 	}
 
 	.edit {

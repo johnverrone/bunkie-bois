@@ -1,2 +1,2 @@
-export { tripsAPI } from './api';
+export * from './api';
 export * as tripsSchemas from './schema';

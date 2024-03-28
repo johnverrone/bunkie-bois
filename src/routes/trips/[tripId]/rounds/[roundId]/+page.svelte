@@ -7,6 +7,7 @@
 	import { flip } from 'svelte/animate';
 	import type { PageData } from './$types';
 	import { slide } from 'svelte/transition';
+	import { getScore } from '$lib/utils/scores';
 
 	export let data: PageData;
 
@@ -22,13 +23,18 @@
 	$: date = data.round.date ? new Date(`${data.round.date}T00:00:00`) : undefined;
 
 	$: sortedLeaderboard = data.leaderboard.sort((a, b) => {
-		const aScore = netScoreToggled ? a.score - a.courseHandicap : a.score;
-		const bScore = netScoreToggled ? b.score - b.courseHandicap : b.score;
+		const aScore = netScoreToggled
+			? getScore(a.expand?.holeScores_via_scorecard) - a.playerHandicap
+			: getScore(a.expand?.holeScores_via_scorecard);
+		const bScore = netScoreToggled
+			? getScore(b.expand?.holeScores_via_scorecard) - b.playerHandicap
+			: getScore(b.expand?.holeScores_via_scorecard);
 		return aScore - bScore;
 	});
 
 	$: scorelessPlayers = data.tripPlayers.filter(
-		(player) => data.leaderboard.find((leaderboard) => leaderboard.id === player.id) === undefined
+		(player) =>
+			data.leaderboard.find((scorecard) => scorecard.expand?.player?.id === player.id) === undefined
 	);
 
 	const scoreScale = scaleLinear().domain([70, 150]);
@@ -50,7 +56,7 @@
 		{#if showDetails}
 			<div transition:slide|global={{ duration: 300 }}>
 				<p>Date: {date?.toLocaleDateString(undefined, { dateStyle: 'medium' })}</p>
-				<p>Course: {data.round.course.name}</p>
+				<p>Course: {data.round.expand?.course?.name}</p>
 			</div>
 		{/if}
 	</div>
@@ -64,15 +70,24 @@
 			</label>
 		</div>
 		<ol class="leaderboard-list">
-			{#each sortedLeaderboard as player (player.id)}
+			{#each sortedLeaderboard as scorecard (scorecard.id)}
 				<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
-					<a href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${player.id}/scorecard`}>
+					<a
+						href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${scorecard.expand?.player?.id}/scorecard`}
+					>
 						<span class="player-name">
-							{player.name}
-							<span class="tee-box-badge">{player.teeBox}</span>
+							{scorecard.expand?.player?.name}
+							<span class="tee-box-badge">{scorecard.expand?.teeBox?.name}</span>
 						</span>
-						<span class="player-score" style={`--score-color: ${scoreColor(player.score)}`}>
-							{netScoreToggled ? player.score - player.courseHandicap : player.score}
+						<span
+							class="player-score"
+							style={`--score-color: ${scoreColor(
+								getScore(scorecard.expand?.holeScores_via_scorecard)
+							)}`}
+						>
+							{netScoreToggled
+								? getScore(scorecard.expand?.holeScores_via_scorecard) - scorecard.playerHandicap
+								: getScore(scorecard.expand?.holeScores_via_scorecard)}
 						</span>
 					</a>
 				</li>

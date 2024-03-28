@@ -14,7 +14,7 @@
 		return aScore - bScore;
 	});
 
-	function onToggleParams(id: number) {
+	function onToggleParams(id: string) {
 		const existingRounds = data.leaderboardRounds ?? [];
 		const newRounds = existingRounds.includes(id)
 			? existingRounds.filter((r) => r !== id)

@@ -1,23 +1,34 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { updateTrip } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
-	import type { ActionData, PageData } from './$types';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
-	export let form: ActionData;
+	let errorMessage: string | undefined;
 
-	let tripName = data.trip.name ?? undefined;
-	let startDate = data.trip.start_date ?? undefined;
-	let endDate = data.trip.end_date ?? undefined;
+	let name = data.trip.name ?? undefined;
+	let startDate = data.trip.startDate ?? undefined;
+	let endDate = data.trip.endDate ?? undefined;
+
+	async function handleSubmit() {
+		await updateTrip({
+			id: data.trip.id,
+			name,
+			startDate,
+			endDate
+		});
+		goto(`/trips`);
+	}
 </script>
 
-<form class="edit-trip-form" method="post" action="?/updateTrip">
-	<input type="hidden" name="id" value={data.trip.id} />
-	<Input label="Trip Name" type="text" name="name" bind:value={tripName} />
+<form class="edit-trip-form" on:submit|preventDefault={handleSubmit}>
+	<Input label="Trip Name" type="text" name="name" bind:value={name} />
 	<Input label="Start Date" type="date" name="startDate" bind:value={startDate} block />
 	<Input label="End Date" type="date" name="endDate" bind:value={endDate} block />
 
-	{#if form?.message}<p class="error">{form.message}</p>{/if}
+	{#if errorMessage}<p class="error">{errorMessage}</p>{/if}
 
 	<div class="button-row">
 		<a href="/trips" class="cancel">Cancel</a>

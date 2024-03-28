@@ -1,27 +1,14 @@
 <script lang="ts">
-	type TeeBox = {
-		id: number;
-		name: string;
-		course_id: number;
-		rating: number;
-		slope: number;
-		hole_info: {
-			tee_box_id: number;
-			hole_number: number;
-			par: number;
-			yardage: number;
-			handicap: number;
-		}[];
-	};
+	import type { TeeBox } from '$lib/pocketbase';
 
 	export let courseTeeBox: TeeBox;
 	export let front9: Record<number, number | null> = {};
 	export let back9: Record<number, number | null> = {};
 	export let readonly = false;
 
-	$: holes = courseTeeBox.hole_info;
-	$: front9Holes = holes.filter((hole) => hole.hole_number <= 9);
-	$: back9Holes = holes.filter((hole) => hole.hole_number > 9);
+	$: holes = courseTeeBox.expand?.holeInfo_via_teeBox ?? [];
+	$: front9Holes = holes.filter((hole) => hole.holeNumber <= 9);
+	$: back9Holes = holes.filter((hole) => hole.holeNumber > 9);
 
 	let front9Inputs: Record<number, HTMLInputElement> = {};
 	let back9Inputs: Record<number, HTMLInputElement> = {};
@@ -55,7 +42,7 @@
 			<tr>
 				<th>Hole</th>
 				{#each front9Holes as hole}
-					<th>{hole.hole_number}</th>
+					<th>{hole.holeNumber}</th>
 				{/each}
 				<th>Out</th>
 			</tr>
@@ -80,14 +67,14 @@
 				{#each front9Holes as hole}
 					<td
 						class="score"
-						class:eagle={(front9[hole.hole_number] ?? 10) <= hole.par - 2}
-						class:birdie={front9[hole.hole_number] === hole.par - 1}
-						class:bogey={front9[hole.hole_number] === hole.par + 1}
-						class:double={front9[hole.hole_number] === hole.par + 2}
-						class:triple={(front9[hole.hole_number] ?? 0) >= hole.par + 3}
+						class:eagle={(front9[hole.holeNumber] ?? 10) <= hole.par - 2}
+						class:birdie={front9[hole.holeNumber] === hole.par - 1}
+						class:bogey={front9[hole.holeNumber] === hole.par + 1}
+						class:double={front9[hole.holeNumber] === hole.par + 2}
+						class:triple={(front9[hole.holeNumber] ?? 0) >= hole.par + 3}
 					>
 						{#if readonly}
-							<span> {front9[hole.hole_number]} </span>
+							<span> {front9[hole.holeNumber]} </span>
 						{:else}
 							<input
 								type="number"
@@ -95,10 +82,10 @@
 								autocomplete="off"
 								min="1"
 								max="9"
-								name={`hole-${hole.hole_number}-score`}
-								bind:value={front9[hole.hole_number]}
-								bind:this={front9Inputs[hole.hole_number]}
-								on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}
+								name={`hole-${hole.holeNumber}-score`}
+								bind:value={front9[hole.holeNumber]}
+								bind:this={front9Inputs[hole.holeNumber]}
+								on:keyup={(e) => maybeMoveNext(e, hole.holeNumber + 1)}
 							/>
 						{/if}
 					</td>
@@ -113,7 +100,7 @@
 			<tr>
 				<th>Hole</th>
 				{#each back9Holes as hole}
-					<th>{hole.hole_number}</th>
+					<th>{hole.holeNumber}</th>
 				{/each}
 				<th>In</th>
 				<th>Total</th>
@@ -141,14 +128,14 @@
 				{#each back9Holes as hole}
 					<td
 						class="score"
-						class:eagle={(back9[hole.hole_number] ?? 10) <= hole.par - 2}
-						class:birdie={back9[hole.hole_number] === hole.par - 1}
-						class:bogey={back9[hole.hole_number] === hole.par + 1}
-						class:double={back9[hole.hole_number] === hole.par + 2}
-						class:triple={(back9[hole.hole_number] ?? 0) >= hole.par + 3}
+						class:eagle={(back9[hole.holeNumber] ?? 10) <= hole.par - 2}
+						class:birdie={back9[hole.holeNumber] === hole.par - 1}
+						class:bogey={back9[hole.holeNumber] === hole.par + 1}
+						class:double={back9[hole.holeNumber] === hole.par + 2}
+						class:triple={(back9[hole.holeNumber] ?? 0) >= hole.par + 3}
 					>
 						{#if readonly}
-							<span>{back9[hole.hole_number]}</span>
+							<span>{back9[hole.holeNumber]}</span>
 						{:else}
 							<input
 								type="number"
@@ -156,10 +143,10 @@
 								autocomplete="off"
 								min="1"
 								max="9"
-								name={`hole-${hole.hole_number}-score`}
-								bind:value={back9[hole.hole_number]}
-								bind:this={back9Inputs[hole.hole_number]}
-								on:keyup={(e) => maybeMoveNext(e, hole.hole_number + 1)}
+								name={`hole-${hole.holeNumber}-score`}
+								bind:value={back9[hole.holeNumber]}
+								bind:this={back9Inputs[hole.holeNumber]}
+								on:keyup={(e) => maybeMoveNext(e, hole.holeNumber + 1)}
 							/>
 						{/if}
 					</td>

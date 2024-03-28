@@ -1,14 +1,17 @@
 import type { LayoutLoad } from './$types';
-import { makeSupabaseAPI } from '$lib/api';
+import { pb } from '$lib/pocketbase';
 
-export const load = (async (event) => {
-	const { session, getUserRole } = await makeSupabaseAPI(event);
-	const role = session ? await getUserRole(session.user.id) : '';
+export const load = (async ({ fetch }) => {
+	if (pb.authStore.isAuthRecord) {
+		await pb.collection('users').authRefresh({ fetch });
+	}
 
 	return {
-		session,
+		isAuthed: pb.authStore.isValid,
 		role: {
-			isAdmin: () => role === 'admin'
+			isAdmin: pb.authStore.model?.role === 'admin'
 		}
 	};
 }) satisfies LayoutLoad;
+
+export const ssr = false;

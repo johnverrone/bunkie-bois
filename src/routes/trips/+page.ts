@@ -1,10 +1,18 @@
-import { makeSupabaseAPI } from '$lib/api';
+import { getTrips } from '$lib/api';
+import type { Trip } from '$lib/pocketbase';
 import type { PageLoad } from './$types';
 
-export const load = (async (event) => {
-	const { getTrips } = await makeSupabaseAPI(event);
+export const load = (async ({ depends, fetch }) => {
+	depends('trips');
+
+	let trips: Trip[] = [];
+	try {
+		trips = await getTrips({ fetch });
+	} catch (e) {
+		console.error(e);
+	}
 
 	return {
-		trips: await getTrips()
+		trips
 	};
 }) satisfies PageLoad;
