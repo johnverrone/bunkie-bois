@@ -34,8 +34,7 @@
 
 	$: scorelessPlayers = data.tripPlayers.filter(
 		(player) =>
-			data.leaderboard.find((leaderboard) => leaderboard.expand?.player?.id === player.id) ===
-			undefined
+			data.leaderboard.find((scorecard) => scorecard.expand?.player?.id === player.id) === undefined
 	);
 
 	const scoreScale = scaleLinear().domain([70, 150]);
