@@ -9,10 +9,6 @@
 
 	export let data: PageData;
 
-	$: sortedRounds = data.rounds.sort((a, b) =>
-		a.date && b.date ? new Date(b.date).getTime() - new Date(a.date).getTime() : 0
-	);
-
 	async function handleDelete(id: string) {
 		await deleteRound(id);
 		invalidate(`trips:${data.trip.id}`);
@@ -21,7 +17,7 @@
 
 {#if data.rounds.length}
 	<List>
-		{#each sortedRounds as round}
+		{#each data.rounds as round}
 			{#if data.role.isAdmin}
 				<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
 					<span slot="actionMenu" class="action-menu">

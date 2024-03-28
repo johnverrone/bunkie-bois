@@ -10,11 +10,15 @@ export const load = (async ({ depends, params, fetch }) => {
 	const rounds = await getRounds(tripId, { fetch });
 	const courses = await getCourses({ fetch });
 
+	const sortedRounds = rounds.sort((a, b) =>
+		a.date && b.date ? new Date(b.date).getTime() - new Date(a.date).getTime() : 0
+	);
+
 	return {
 		title: trip.name,
 		trip,
 		tripPlayers,
-		rounds,
-		courses: courses
+		rounds: sortedRounds,
+		courses
 	};
 }) satisfies LayoutLoad;
