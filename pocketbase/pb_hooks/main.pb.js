@@ -7,7 +7,7 @@ routerAdd('POST', '/api/bb/createHoleScores', (c) => {
 	const holeScoresCollection = $app.dao().findCollectionByNameOrId('holeScores');
 
 	// TODO: request validation before trying to save to PB
-	scores.forEach((s: any) => {
+	scores.forEach(s => {
 		const record = new Record(holeScoresCollection);
 		const form = new RecordUpsertForm($app, record);
 		form.loadData(s);
