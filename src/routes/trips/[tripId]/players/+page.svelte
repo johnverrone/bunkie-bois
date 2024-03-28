@@ -40,6 +40,8 @@
 		await createPlayer(parseResult.data);
 		invalidate(`trips:${data.trip.id}`);
 		addPlayerMode = false;
+		newName = '';
+		newHandicap = undefined;
 	}
 
 	async function handleEditPlayer() {
