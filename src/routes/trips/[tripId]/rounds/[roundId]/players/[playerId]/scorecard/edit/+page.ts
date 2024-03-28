@@ -7,10 +7,10 @@ export const load = (async (event) => {
 	const { round, tripPlayers } = await parent();
 
 	const player = tripPlayers.find((p) => p.id === params.playerId);
-	if (!player) throw error(404, 'Player not found.');
+	if (!player) error(404, 'Player not found.');
 
 	const courseId = round.expand?.course?.id;
-	if (!courseId) throw error(500, 'Unable to get course information.');
+	if (!courseId) error(500, 'Unable to get course information.');
 
 	const courseData = await getCourseDetails(courseId, { fetch });
 

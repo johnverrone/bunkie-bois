@@ -7,7 +7,7 @@ export const load = (async (event) => {
 	const { title, trip, tripPlayers, rounds } = await parent();
 
 	if (url.searchParams.get('rounds') === null)
-		throw redirect(307, `?rounds=${rounds.map((r) => r.id).join(',')}`);
+		redirect(307, `?rounds=${rounds.map((r) => r.id).join(',')}`);
 
 	const leaderboardRounds = url.searchParams
 		.get('rounds')

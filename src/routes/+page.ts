@@ -4,5 +4,5 @@ import { pb } from '$lib/pocketbase';
 
 export const load = (async () => {
 	if (!pb.authStore.isValid) return;
-	throw redirect(307, '/trips');
+	redirect(307, '/trips');
 }) satisfies PageLoad;

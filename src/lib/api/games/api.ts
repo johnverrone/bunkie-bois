@@ -105,9 +105,9 @@ export async function getSkinsForRound(roundId: string, opts?: SendOptions) {
 		for (const hole of card.expand?.holeScores_via_scorecard ?? []) {
 			const holeHandicap = holeInfoMap[hole.holeNumber]?.handicap;
 			if (!holeHandicap) {
-				throw error(500, {
-					message: 'There was an error fetching hole handicaps when calculating skins.'
-				});
+				error(500, {
+                					message: 'There was an error fetching hole handicaps when calculating skins.'
+                				});
 			}
 
 			const full18Pops = Math.floor(playerHandicap / 18);

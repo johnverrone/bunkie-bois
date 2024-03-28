@@ -6,7 +6,7 @@ export const load = (async (event) => {
 	const { params, parent } = event;
 	const { title, rounds } = await parent();
 	const round = rounds.find((r) => r.id === params.roundId);
-	if (!round) throw error(404, 'Round not found');
+	if (!round) error(404, 'Round not found');
 
 	return {
 		title: `${round.name} | ${title}`,
