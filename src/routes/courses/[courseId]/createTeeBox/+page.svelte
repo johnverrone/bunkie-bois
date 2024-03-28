@@ -4,11 +4,11 @@
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
-	import type { ActionData, PageData } from './$types';
+	import type { PageData } from './$types';
 	import { goto, invalidate } from '$app/navigation';
 
 	export let data: PageData;
-	export let form: ActionData;
+	let errorMessage: string | undefined;
 
 	let teeBoxName: string | undefined;
 	let rating: number | undefined;
@@ -52,8 +52,8 @@
 
 		try {
 			await createTeeBox(parseResult.data);
+			await invalidate(`courses:${data.course.id}`);
 			goto(`/courses/${data.course.id}`);
-			invalidate(`courses/${data.course.id}`);
 		} catch (e) {
 			console.error(e);
 		}
@@ -67,7 +67,7 @@
 	<BreadcrumbItem label="New Tee Box" />
 </Breadcrumbs>
 
-{#if form?.message}<p class="error">{form.message}</p>{/if}
+{#if errorMessage}<p class="error">{errorMessage}</p>{/if}
 
 <form class="tee-box-form" on:submit|preventDefault={handleSubmit}>
 	<Input
