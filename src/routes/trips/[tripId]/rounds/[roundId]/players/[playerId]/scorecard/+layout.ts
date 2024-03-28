@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import type { PageLoad } from './$types';
+import type { LayoutLoad } from './$types';
 import { getCourseDetails } from '$lib/api';
 
 export const load = (async (event) => {
@@ -7,10 +7,10 @@ export const load = (async (event) => {
 	const { round, tripPlayers } = await parent();
 
 	const player = tripPlayers.find((p) => p.id === params.playerId);
-	if (!player) error(404, 'Player not found.');
+	if (!player) error(404, 'Player not found');
 
 	const courseId = round.expand?.course?.id;
-	if (!courseId) error(500, 'Unable to get course information.');
+	if (!courseId) error(500, 'Unable to get course information');
 
 	const courseData = await getCourseDetails(courseId, { fetch });
 
@@ -19,4 +19,4 @@ export const load = (async (event) => {
 		player,
 		courseData
 	};
-}) satisfies PageLoad;
+}) satisfies LayoutLoad;
