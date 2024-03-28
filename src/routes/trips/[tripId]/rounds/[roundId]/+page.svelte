@@ -33,7 +33,9 @@
 	});
 
 	$: scorelessPlayers = data.tripPlayers.filter(
-		(player) => data.leaderboard.find((leaderboard) => leaderboard.id === player.id) === undefined
+		(player) =>
+			data.leaderboard.find((leaderboard) => leaderboard.expand?.player?.id === player.id) ===
+			undefined
 	);
 
 	const scoreScale = scaleLinear().domain([70, 150]);
