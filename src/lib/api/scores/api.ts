@@ -48,7 +48,16 @@ export async function logScore(req: UpdateScorecardRequest, opts?: SendOptions) 
 		score
 	}));
 
-	scoresToInsert.map((s) => pb.collection('holeScores').create(s, { requestKey: null, ...opts }));
+	// use custom endpoint to bulk insert
+	const f = opts?.fetch ?? fetch;
+	const resp = await f(`${pb.baseUrl}/api/bb/createHoleScores`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ scores: scoresToInsert })
+	});
+	return await resp.json();
 }
 
 /**
