@@ -8,6 +8,7 @@ import type { SendOptions } from 'pocketbase';
 export function getPlayers(tripId?: string, opts?: SendOptions) {
 	return pb.collection('players').getFullList({
 		filter: tripId ? `trips?~'${tripId}'` : undefined,
+		sort: '+name',
 		...opts
 	});
 }
