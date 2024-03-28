@@ -13,7 +13,10 @@ export function createCourse(name: string, opts?: SendOptions) {
  * Get names of all courses
  */
 export function getCourses(opts?: SendOptions) {
-	return pb.collection('courses').getFullList(opts);
+	return pb.collection('courses').getFullList({
+		sort: '+name',
+		...opts
+	});
 }
 
 /**
