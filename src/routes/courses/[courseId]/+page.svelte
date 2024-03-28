@@ -7,6 +7,7 @@
 
 	export let data: PageData;
 	const teeBoxes = data.course.expand?.['teeBoxes_via_course'] ?? [];
+	const sortedTeeBoxes = teeBoxes.sort((a, b) => b.rating - a.rating);
 
 	let selectedTeeBoxId: number | null;
 
@@ -24,7 +25,7 @@
 
 <select class="tee-box-select" bind:value={selectedTeeBoxId}>
 	<option value={undefined}>Select a tee box</option>
-	{#each teeBoxes ?? [] as teeBox}
+	{#each sortedTeeBoxes as teeBox}
 		<option value={teeBox.id}>{teeBox.name} ({teeBox.rating} / {teeBox.slope})</option>
 	{/each}
 </select>
