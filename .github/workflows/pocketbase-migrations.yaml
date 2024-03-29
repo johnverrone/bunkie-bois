@@ -1,0 +1,25 @@
+name: PocketHost
+
+on:
+  pull_request:
+    paths:
+      - 'pocketbase/pb_migrations/**'
+  workflow_dispatch:
+
+jobs:
+  copy_pb_migrations:
+    name: Copy migrations
+    runs-on: ubuntu-latest
+    container: finalgene/lftp
+    env:
+      POCKETHOST_SERVER: ${{ secrets.POCKETHOST_SERVER }}
+      POCKETHOST_USERNAME: ${{ secrets.POCKETHOST_USERNAME }}
+      POCKETHOST_PASSWORD: ${{ secrets.POCKETHOST_PASSWORD }}
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v4
+
+    - name: 📂 Sync files
+      run: |
+        lftp -e "mirror -e -R pocketbase/pb_migrations bunkie-bois/pb_migrations" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
+        lftp -e "mirror -e -R pocketbase/pb_hooks bunkie-bois/pb_hooks" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER

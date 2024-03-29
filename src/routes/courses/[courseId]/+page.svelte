@@ -3,28 +3,29 @@
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import IconText from '$lib/components/IconText.svelte';
 	import type { PageData } from './$types';
+	import type { TeeBox } from '$lib/pocketbase';
 
 	export let data: PageData;
+	const teeBoxes = data.course.expand?.['teeBoxes_via_course'] ?? [];
+	const sortedTeeBoxes = teeBoxes.sort((a, b) => b.rating - a.rating);
 
 	let selectedTeeBoxId: number | null;
 
-	type TeeBox = (typeof data.course)['tee_boxes'][number];
-	const teeBoxesById = data.course['tee_boxes'].reduce<Record<number, TeeBox>>(
-		(acc, curr) => ({ ...acc, [curr.id]: curr }),
-		{}
-	);
+	const teeBoxesById =
+		teeBoxes.reduce<Record<number, TeeBox>>((acc, curr) => ({ ...acc, [curr.id]: curr }), {}) ?? {};
 
 	$: selectedTeeBox = selectedTeeBoxId ? teeBoxesById[selectedTeeBoxId] : null;
+	$: holes = selectedTeeBox?.expand?.holeInfo_via_teeBox;
 </script>
 
 <Breadcrumbs>
 	<BreadcrumbItem href="/courses" label="Courses" />
-	<BreadcrumbItem label={data.course.name} />
+	<BreadcrumbItem label={data.course?.name || ''} />
 </Breadcrumbs>
 
 <select class="tee-box-select" bind:value={selectedTeeBoxId}>
 	<option value={undefined}>Select a tee box</option>
-	{#each data.course['tee_boxes'] as teeBox}
+	{#each sortedTeeBoxes as teeBox}
 		<option value={teeBox.id}>{teeBox.name} ({teeBox.rating} / {teeBox.slope})</option>
 	{/each}
 </select>
@@ -38,19 +39,23 @@
 			<th>Handicap</th>
 		</thead>
 		<tbody>
-			{#each selectedTeeBox['hole_info'] as hole}
-				<tr>
-					<td><b>{hole['hole_number']}</b></td>
-					<td>{hole.par}</td>
-					<td>{hole.yardage}</td>
-					<td>{hole.handicap}</td>
-				</tr>
-			{/each}
+			{#if holes}
+				{#each holes as hole}
+					<tr>
+						<td><b>{hole.holeNumber}</b></td>
+						<td>{hole.par}</td>
+						<td>{hole.yardage}</td>
+						<td>{hole.handicap}</td>
+					</tr>
+				{/each}
+			{:else}
+				<tr><td colspan="4">missing hole information</td></tr>
+			{/if}
 		</tbody>
 	</table>
 {/if}
 
-<a class="add-tee-box-button" href={`/courses/${data.course.id}/createTeeBox`}>
+<a class="add-tee-box-button" href={`/courses/${data.course?.id}/createTeeBox`}>
 	<IconText name="plus" label="Add tee box" />
 </a>
 

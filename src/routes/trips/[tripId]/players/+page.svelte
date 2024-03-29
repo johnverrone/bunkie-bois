@@ -1,12 +1,19 @@
 <script lang="ts">
+	import {
+		addPlayerToTrip,
+		createPlayer,
+		deletePlayer,
+		playersSchemas,
+		updatePlayer
+	} from '$lib/api';
 	import { clickOutside } from '$lib/utils/click_outside';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Icon from '$lib/components/Icon.svelte';
-	import type { ActionData, PageData } from './$types';
+	import type { PageData } from './$types';
+	import { invalidate } from '$app/navigation';
 
 	export let data: PageData;
-	export let form: ActionData;
 
 	$: sortedPlayers = data.tripPlayers.sort((a, b) => (a.handicap ?? 0) - (b.handicap ?? 0));
 
@@ -15,32 +22,75 @@
 		[Key in keyof Player]: Exclude<Player[Key], null>;
 	};
 
-	let addPlayerMode = false;
+	let addPlayerMode: 'search' | 'new' | null = null;
+	let newPlayerId: string | undefined;
 	let newName: string | undefined;
 	let newHandicap: number | undefined;
 	let editingPlayer: HandicappedPlayer | null;
+	let errorMessage: string | undefined;
 
 	function focus(el: HTMLInputElement) {
 		el.focus();
+	}
+
+	async function handleAddPlayer() {
+		if (newPlayerId) {
+			await addPlayerToTrip(newPlayerId, data.trip.id);
+		} else {
+			const parseResult = playersSchemas.createPlayerSchema.safeParse({
+				name: newName,
+				handicap: newHandicap,
+				tripId: data.trip.id
+			});
+			if (!parseResult.success) {
+				console.error(parseResult.error);
+				return;
+			}
+
+			await createPlayer(parseResult.data);
+		}
+		invalidate(`trips:${data.trip.id}`);
+		addPlayerMode = null;
+		newName = '';
+		newHandicap = undefined;
+		newPlayerId = undefined;
+	}
+
+	async function handleEditPlayer() {
+		const parseResult = playersSchemas.updatePlayerSchema.safeParse({
+			id: editingPlayer?.id,
+			name: editingPlayer?.name,
+			handicap: editingPlayer?.handicap
+		});
+		if (!parseResult.success) {
+			console.error(parseResult.error);
+			return;
+		}
+
+		await updatePlayer(parseResult.data);
+		invalidate(`trips:${data.trip.id}`);
+		editingPlayer = null;
+	}
+
+	async function handleDeletePlayer(id: string) {
+		await deletePlayer(id);
+		invalidate(`trips:${data.trip.id}`);
 	}
 </script>
 
 <div>
 	<h5 class="header">Handicaps</h5>
-	{#if form?.message}<p class="error">{form.message}</p>{/if}
+	{#if errorMessage}<p class="error">{errorMessage}</p>{/if}
 	<ul>
 		{#each sortedPlayers as player}
 			<li>
 				{#if editingPlayer?.id === player.id}
 					<form
 						class="edit-player-form"
-						method="post"
-						action="?/updatePlayer"
 						use:clickOutside
 						on:outclick={() => (editingPlayer = null)}
+						on:submit|preventDefault={handleEditPlayer}
 					>
-						<input type="hidden" name="tripId" value={data.trip.id} />
-						<input type="hidden" name="playerId" value={player.id} />
 						<div class="name">
 							<Input name="name" bind:value={editingPlayer.name}>{player.name}</Input>
 						</div>
@@ -69,13 +119,9 @@
 						>
 							<Icon name="edit" />
 						</Button>
-						<form method="post" action="?/deletePlayer" style="display: inline-block">
-							<input type="hidden" name="tripId" value={data.trip.id} />
-							<input type="hidden" name="playerId" value={player.id} />
-							<Button type="submit" variant="secondary">
-								<Icon name="trash" />
-							</Button>
-						</form>
+						<Button on:click={() => handleDeletePlayer(player.id)} variant="secondary">
+							<Icon name="trash" />
+						</Button>
 					</div>
 				{/if}
 			</li>
@@ -83,15 +129,32 @@
 	</ul>
 </div>
 
-{#if addPlayerMode}
+{#if addPlayerMode === 'search'}
 	<form
 		class="new-player-form"
-		method="post"
-		action="?/addPlayer"
 		use:clickOutside
-		on:outclick={() => (addPlayerMode = false)}
+		on:outclick={() => (addPlayerMode = null)}
+		on:submit|preventDefault={handleAddPlayer}
 	>
-		<input type="hidden" name="tripId" value={data.trip.id} />
+		<select
+			class="player-select"
+			bind:value={newPlayerId}
+			on:change={() => (newPlayerId === '__createNew' ? (addPlayerMode = 'new') : null)}
+		>
+			{#each data.allPlayers as player}
+				<option value={player.id}>{player.name}</option>
+			{/each}
+			<option value="__createNew">Create New</option>
+		</select>
+		<Button type="submit">Add</Button>
+	</form>
+{:else if addPlayerMode === 'new'}
+	<form
+		class="new-player-form"
+		use:clickOutside
+		on:outclick={() => (addPlayerMode = null)}
+		on:submit|preventDefault={handleAddPlayer}
+	>
 		<div class="name">
 			<Input type="text" placeholder="Joe Shmoe" name="name" bind:value={newName} {focus} />
 		</div>
@@ -108,7 +171,7 @@
 		<Button type="submit">Add</Button>
 	</form>
 {:else}
-	<Button on:click={() => (addPlayerMode = true)}>
+	<Button on:click={() => (addPlayerMode = 'search')}>
 		<div class="button-contents">
 			<Icon name="plus" />
 			Add player
@@ -173,5 +236,17 @@
 
 	.error {
 		color: red;
+	}
+
+	.player-select {
+		height: 36px;
+		background-color: var(--dp-12);
+		color: #fefefe;
+		border: none;
+		border-radius: 4px;
+		padding: 2px 4px;
+		outline-color: var(--primary);
+		outline-style: solid;
+		outline-width: 1px;
 	}
 </style>

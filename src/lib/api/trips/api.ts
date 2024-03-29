@@ -1,71 +1,56 @@
-import { Result } from '$lib/api/types';
-import type { TypedSupabaseClient } from '@supabase/auth-helpers-sveltekit';
-import { error } from '@sveltejs/kit';
-import type { CreateTripRequest, DeleteTripRequest, UpdateTripRequest } from './schema';
+import type { CreateTripRequest, UpdateTripRequest } from './schema';
+import { pb } from '$lib/pocketbase';
+import type { SendOptions } from 'pocketbase';
 
-export function tripsAPI(supabaseClient: TypedSupabaseClient) {
-	return {
-		/**
-		 * Get all trips
-		 */
-		getTrips: async function () {
-			const { data, error: dbError } = await supabaseClient.from('trips').select();
+/**
+ * Get all trips
+ */
+export function getTrips(opts?: SendOptions) {
+	return pb.collection('trips').getFullList({
+		sort: '-created',
+		...opts
+	});
+}
 
-			if (dbError) throw error(500, { message: 'There was an error fetching trips.' });
-
-			return data;
-		},
-
-		/**
-		 * Get a single trip by ID
-		 */
-		getTripById: async function (tripId: string) {
-			const { data, error: dbError } = await supabaseClient
-				.from('trips')
-				.select()
-				.eq('id', tripId)
-				.limit(1)
-				.single();
-
-			if (dbError) throw error(500, { message: 'There was an error fetching trip information.' });
-
-			return data;
-		},
-
-		/**
-		 * Create a trip
-		 */
-		createTrip: async function ({ name, startDate, endDate }: CreateTripRequest) {
-			const { data, error: dbError } = await supabaseClient
-				.from('trips')
-				.insert({ name, start_date: startDate.toISOString(), end_date: endDate.toISOString() })
-				.select('id')
-				.single();
-
-			if (dbError) return Result.error(dbError.message);
-			return Result.ok(data);
-		},
-
-		/**
-		 * Update a trip's name, startDate, or endDate
-		 */
-		updateTrip: async function ({ id, name, startDate, endDate }: UpdateTripRequest) {
-			const { error: dbError } = await supabaseClient
-				.from('trips')
-				.update({ name, start_date: startDate?.toISOString(), end_date: endDate?.toISOString() })
-				.eq('id', id);
-
-			if (dbError) return Result.error(dbError.message);
-			return Result.ok(true);
-		},
-
-		/**
-		 * Delete a trip by ID
-		 */
-		deleteTrip: async function ({ tripId }: DeleteTripRequest) {
-			const { error: dbError } = await supabaseClient.from('trips').delete().eq('id', tripId);
-			if (dbError) Result.error(dbError.message);
-			return Result.ok(true);
-		}
+/**
+ * Create a trip
+ */
+export function createTrip({ name, startDate, endDate }: CreateTripRequest, opts?: SendOptions) {
+	const data = {
+		name,
+		startDate: startDate.toISOString().split('T').at(0),
+		endDate: endDate.toISOString().split('T').at(0)
 	};
+
+	return pb.collection('trips').create(data, opts);
+}
+
+/**
+ * Delete a trip
+ */
+export function deleteTrip(id: string, opts?: SendOptions) {
+	return pb.collection('trips').delete(id, opts);
+}
+
+/**
+ * Get a trip by ID
+ */
+export function getTripById(tripId: string, opts?: SendOptions) {
+	return pb.collection('trips').getOne(tripId, opts);
+}
+
+/**
+ * Update a trip
+ */
+export function updateTrip(
+	{ id, name, startDate, endDate }: UpdateTripRequest,
+	opts?: SendOptions
+) {
+	const data = {
+		name,
+		startDate,
+		endDate
+	};
+
+	return pb.collection('trips').update(id, data, opts);
 }

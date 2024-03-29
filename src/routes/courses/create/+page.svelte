@@ -4,11 +4,21 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import { randomGolfCourse } from '$lib/utils/golf';
-	import type { ActionData } from './$types';
-
-	export let form: ActionData;
+	import { createCourse } from '$lib/api';
+	import { goto } from '$app/navigation';
 
 	let courseName: string | undefined;
+	let errorMessage: string | undefined;
+
+	async function handleSubmit() {
+		if (!courseName) return;
+		try {
+			await createCourse(courseName);
+			goto('/courses');
+		} catch (e) {
+			errorMessage = 'There was an error creating the course.';
+		}
+	}
 </script>
 
 <Breadcrumbs>
@@ -17,16 +27,17 @@
 	<BreadcrumbItem label="Create" />
 </Breadcrumbs>
 
-<form class="course-form" method="post" action="?/createCourse">
+<form class="course-form" on:submit|preventDefault={handleSubmit}>
 	<Input
 		label="Course Name"
 		type="text"
 		placeholder={randomGolfCourse()}
 		name="name"
 		bind:value={courseName}
+		required
 	/>
 
-	{#if form?.message}<p class="error">{form.message}</p>{/if}
+	{#if errorMessage}<p class="error">{errorMessage}</p>{/if}
 
 	<div class="button-row">
 		<a href={`/courses`} class="cancel">Cancel</a>

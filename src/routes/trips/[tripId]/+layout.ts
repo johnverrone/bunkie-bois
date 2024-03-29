@@ -1,42 +1,26 @@
-import { error } from '@sveltejs/kit';
-import { makeSupabaseAPI } from '$lib/api';
+import { getCourses, getPlayers, getRounds, getTripById } from '$lib/api';
 import type { LayoutLoad } from './$types';
 
-export const load = (async (event) => {
-	const { getTripById, getPlayers, getRounds, getCourses } = await makeSupabaseAPI(event);
+export const load = (async ({ depends, params, fetch }) => {
+	const { tripId } = params;
+	depends(`trips:${tripId}`);
 
-	const {
-		params: { tripId }
-	} = event;
+	const trip = await getTripById(tripId, { fetch });
+	const tripPlayers = await getPlayers(tripId, { fetch });
+	const allPlayers = await getPlayers(undefined, { fetch });
+	const rounds = await getRounds(tripId, { fetch });
+	const courses = await getCourses({ fetch });
 
-	const trip = await getTripById(tripId);
-	const tripPlayers = await getPlayers(tripId);
-	const rounds = await getRounds(tripId);
-	const courses = await getCourses();
-
-	type Course = (typeof courses)[number];
-	const coursesById = courses.reduce<Record<string, Course>>(
-		(acc, curr) => ({ ...acc, [curr.id]: curr }),
-		{}
+	const sortedRounds = rounds.sort((a, b) =>
+		a.date && b.date ? new Date(b.date).getTime() - new Date(a.date).getTime() : 0
 	);
-
-	const roundsWithCourseName = rounds.map(({ course_id, ...round }) => {
-		const course = coursesById[course_id];
-		if (!course) {
-			throw error(500, { message: `error finding course ${course_id}` });
-		}
-
-		return {
-			...round,
-			course
-		};
-	});
 
 	return {
 		title: trip.name,
 		trip,
 		tripPlayers,
-		rounds: roundsWithCourseName,
-		courses: courses
+		allPlayers,
+		rounds: sortedRounds,
+		courses
 	};
 }) satisfies LayoutLoad;

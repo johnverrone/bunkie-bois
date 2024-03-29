@@ -7,16 +7,32 @@
 	import NavBar from '$lib/components/NavBar.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
 	import { page } from '$app/stores';
-	import { enhance } from '$app/forms';
 	import type { PageData } from './$types';
 	import Loading from '$lib/components/Loading.svelte';
 	import { delayedNavigation } from '$lib/stores';
+	import { deleteTrip } from '$lib/api';
+	import { invalidate } from '$app/navigation';
 
 	export let data: PageData;
 
+	let deleteError: string | undefined;
+
 	$: sortedTrips = data.trips.sort((a, b) =>
-		a.end_date && b.end_date ? new Date(b.end_date).getTime() - new Date(a.end_date).getTime() : 0
+		a.endDate && b.endDate ? new Date(b.endDate).getTime() - new Date(a.endDate).getTime() : 0
 	);
+
+	async function handleDelete(id: string) {
+		try {
+			const success = await deleteTrip(id);
+			if (!success) throw new Error();
+			invalidate('trips');
+		} catch (e) {
+			deleteError = 'There was an error deleting the trip.';
+		}
+	}
+
+	$: emptyError = sortedTrips.length < 1 && 'No trips yet.';
+	$: errorMessage = deleteError || emptyError;
 </script>
 
 <PageTitle>Golf Trips</PageTitle>
@@ -41,59 +57,60 @@
 		<Loading />
 	{/if}
 	<div class="float-bottom">
-		{#if sortedTrips.length}
-			<List>
-				{#each sortedTrips as trip}
-					{#if data.role.isAdmin()}
-						<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
-							<span slot="actionMenu" class="action-menu">
-								<a href={`/trips/${trip.id}/edit`} class="edit">
-									<IconText name="edit" label="Edit" />
-								</a>
-								<form method="post" action="?/deleteTrip" use:enhance>
-									<input type="hidden" name="tripId" value={trip.id} />
-									<Button variant="destructive" type="submit" fullWidth>
+		<div>
+			{#if sortedTrips.length}
+				<List>
+					{#each sortedTrips as trip}
+						{#if data.role.isAdmin}
+							<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
+								<span slot="actionMenu" class="action-menu">
+									<a href={`/trips/${trip.id}/edit`} class="edit">
+										<IconText name="edit" label="Edit" />
+									</a>
+									<Button
+										variant="destructive"
+										type="submit"
+										fullWidth
+										on:click={() => handleDelete(trip.id)}
+									>
 										<IconText name="trash" label="Delete" />
 									</Button>
-								</form>
-							</span>
-							{#if trip.start_date && trip.end_date}
-								<h6>
-									{new Date(`${trip.start_date}T00:00:00`).toLocaleDateString(undefined, {
-										dateStyle: 'medium'
-									})} -
-									{new Date(`${trip.end_date}T00:00:00`).toLocaleDateString(undefined, {
-										dateStyle: 'medium'
-									})}
-								</h6>
-							{/if}
-						</ListItem>
-					{:else}
-						<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
-							{#if trip.start_date && trip.end_date}
-								<h6>
-									{new Date(`${trip.start_date}T00:00:00`).toLocaleDateString(undefined, {
-										dateStyle: 'medium'
-									})} -
-									{new Date(`${trip.end_date}T00:00:00`).toLocaleDateString(undefined, {
-										dateStyle: 'medium'
-									})}
-								</h6>
-							{/if}
-						</ListItem>
-					{/if}
-				{/each}
-			</List>
-		{:else}
-			<p>
-				no trips yet.
-				{#if !data.role.isAdmin()}
-					only an admin can create trips.
-				{/if}
-			</p>
-		{/if}
+								</span>
+								{#if trip.startDate && trip.endDate}
+									<h6>
+										{new Date(`${trip.startDate}T00:00:00`).toLocaleDateString(undefined, {
+											dateStyle: 'medium'
+										})} -
+										{new Date(`${trip.endDate}T00:00:00`).toLocaleDateString(undefined, {
+											dateStyle: 'medium'
+										})}
+									</h6>
+								{/if}
+							</ListItem>
+						{:else}
+							<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
+								{#if trip.startDate && trip.endDate}
+									<h6>
+										{new Date(`${trip.startDate}T00:00:00`).toLocaleDateString(undefined, {
+											dateStyle: 'medium'
+										})} -
+										{new Date(`${trip.endDate}T00:00:00`).toLocaleDateString(undefined, {
+											dateStyle: 'medium'
+										})}
+									</h6>
+								{/if}
+							</ListItem>
+						{/if}
+					{/each}
+				</List>
+			{/if}
 
-		{#if data.role.isAdmin()}
+			{#if errorMessage}
+				<p>{errorMessage}</p>
+			{/if}
+		</div>
+
+		{#if data.role.isAdmin}
 			<a href={`/trips/create`}>
 				<IconText name="plus" label="Add trip" />
 			</a>
@@ -114,10 +131,6 @@
 		align-items: flex-start;
 		gap: 16px;
 		min-width: 100px;
-
-		form {
-			width: 100%;
-		}
 	}
 
 	.edit {

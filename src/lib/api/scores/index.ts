@@ -1,2 +1,2 @@
-export { scoresAPI } from './api';
+export * from './api';
 export * as scoresSchemas from './schema';
