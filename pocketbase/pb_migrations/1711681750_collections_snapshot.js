@@ -4,7 +4,7 @@ migrate((db) => {
     {
       "id": "_pb_users_auth_",
       "created": "2024-03-19 04:18:26.360Z",
-      "updated": "2024-03-22 19:38:23.855Z",
+      "updated": "2024-03-27 22:13:02.854Z",
       "name": "users",
       "type": "auth",
       "system": false,
@@ -83,7 +83,7 @@ migrate((db) => {
     {
       "id": "t2axrfmcwthb802",
       "created": "2024-03-21 00:02:16.313Z",
-      "updated": "2024-03-22 23:42:14.239Z",
+      "updated": "2024-03-29 03:04:32.098Z",
       "name": "trips",
       "type": "base",
       "system": false,
@@ -135,14 +135,14 @@ migrate((db) => {
       "listRule": "@request.auth.id != \"\"",
       "viewRule": "@request.auth.id != \"\"",
       "createRule": "@request.auth.id != \"\"",
-      "updateRule": "@request.auth.role = 'admin'",
+      "updateRule": "@request.auth.id != \"\"",
       "deleteRule": "@request.auth.role = 'admin'",
       "options": {}
     },
     {
       "id": "5lbvej7sjeja9i3",
       "created": "2024-03-22 19:43:23.255Z",
-      "updated": "2024-03-22 19:43:23.255Z",
+      "updated": "2024-03-29 03:08:02.609Z",
       "name": "courses",
       "type": "base",
       "system": false,
@@ -163,17 +163,17 @@ migrate((db) => {
         }
       ],
       "indexes": [],
-      "listRule": "",
-      "viewRule": "",
-      "createRule": "",
-      "updateRule": "",
-      "deleteRule": null,
+      "listRule": "@request.auth.id != \"\"",
+      "viewRule": "@request.auth.id != \"\"",
+      "createRule": "@request.auth.id != \"\"",
+      "updateRule": "@request.auth.id != \"\"",
+      "deleteRule": "@request.auth.id != \"\"",
       "options": {}
     },
     {
       "id": "wk0de5qc1hytuou",
       "created": "2024-03-22 20:27:54.384Z",
-      "updated": "2024-03-22 20:28:34.565Z",
+      "updated": "2024-03-29 03:05:24.971Z",
       "name": "teeBoxes",
       "type": "base",
       "system": false,
@@ -238,17 +238,17 @@ migrate((db) => {
         }
       ],
       "indexes": [],
-      "listRule": "",
-      "viewRule": "",
-      "createRule": "",
-      "updateRule": null,
-      "deleteRule": null,
+      "listRule": "@request.auth.id != \"\"",
+      "viewRule": "@request.auth.id != \"\"",
+      "createRule": "@request.auth.id != \"\"",
+      "updateRule": "@request.auth.id != \"\"",
+      "deleteRule": "@request.auth.id != \"\"",
       "options": {}
     },
     {
       "id": "n1vyk3ru1k89qt5",
       "created": "2024-03-23 00:09:20.966Z",
-      "updated": "2024-03-23 00:09:20.966Z",
+      "updated": "2024-03-29 03:07:49.493Z",
       "name": "holeInfo",
       "type": "base",
       "system": false,
@@ -329,17 +329,17 @@ migrate((db) => {
       "indexes": [
         "CREATE UNIQUE INDEX `idx_GrpNKKV` ON `holeInfo` (\n  `teeBox`,\n  `holeNumber`\n)"
       ],
-      "listRule": "",
-      "viewRule": "",
-      "createRule": "",
-      "updateRule": null,
-      "deleteRule": null,
+      "listRule": "@request.auth.id != \"\"",
+      "viewRule": "@request.auth.id != \"\"",
+      "createRule": "@request.auth.id != \"\"",
+      "updateRule": "@request.auth.id != \"\"",
+      "deleteRule": "@request.auth.id != \"\"",
       "options": {}
     },
     {
       "id": "n76trctxqi74i5q",
       "created": "2024-03-23 00:50:40.038Z",
-      "updated": "2024-03-23 00:55:25.583Z",
+      "updated": "2024-03-29 03:07:04.887Z",
       "name": "players",
       "type": "base",
       "system": false,
@@ -390,17 +390,17 @@ migrate((db) => {
         }
       ],
       "indexes": [],
-      "listRule": "",
-      "viewRule": "",
-      "createRule": "",
-      "updateRule": "",
-      "deleteRule": "",
+      "listRule": "@request.auth.id != \"\"",
+      "viewRule": "@request.auth.id != \"\"",
+      "createRule": "@request.auth.id != \"\"",
+      "updateRule": "@request.auth.id != \"\"",
+      "deleteRule": "@request.auth.id != \"\"",
       "options": {}
     },
     {
       "id": "8knju9dd0uz9tx7",
       "created": "2024-03-23 01:41:39.800Z",
-      "updated": "2024-03-23 01:41:39.800Z",
+      "updated": "2024-03-29 03:06:51.121Z",
       "name": "rounds",
       "type": "base",
       "system": false,
@@ -467,17 +467,17 @@ migrate((db) => {
         }
       ],
       "indexes": [],
-      "listRule": "",
-      "viewRule": "",
-      "createRule": "",
-      "updateRule": "",
-      "deleteRule": "",
+      "listRule": "@request.auth.id != \"\"",
+      "viewRule": "@request.auth.id != \"\"",
+      "createRule": "@request.auth.id != \"\"",
+      "updateRule": "@request.auth.id != \"\"",
+      "deleteRule": "@request.auth.id != \"\"",
       "options": {}
     },
     {
       "id": "iotd0y0motx4m96",
       "created": "2024-03-23 02:42:20.060Z",
-      "updated": "2024-03-23 03:47:08.646Z",
+      "updated": "2024-03-29 03:06:28.743Z",
       "name": "scorecards",
       "type": "base",
       "system": false,
@@ -548,17 +548,17 @@ migrate((db) => {
       "indexes": [
         "CREATE INDEX `idx_bvTUNQ9` ON `scorecards` (\n  `player`,\n  `round`\n)"
       ],
-      "listRule": "",
-      "viewRule": "",
-      "createRule": "",
-      "updateRule": "",
-      "deleteRule": "",
+      "listRule": "@request.auth.id != \"\"",
+      "viewRule": "@request.auth.id != \"\"",
+      "createRule": "@request.auth.id != \"\"",
+      "updateRule": "@request.auth.id != \"\"",
+      "deleteRule": "@request.auth.id != \"\"",
       "options": {}
     },
     {
       "id": "hnh6zsmtg1u5stl",
       "created": "2024-03-23 03:10:37.269Z",
-      "updated": "2024-03-23 04:20:49.741Z",
+      "updated": "2024-03-29 03:07:26.547Z",
       "name": "holeScores",
       "type": "base",
       "system": false,
@@ -611,11 +611,11 @@ migrate((db) => {
       "indexes": [
         "CREATE UNIQUE INDEX `idx_Oi62FcA` ON `holeScores` (\n  `scorecard`,\n  `holeNumber`\n)"
       ],
-      "listRule": "",
-      "viewRule": "",
-      "createRule": "",
-      "updateRule": "",
-      "deleteRule": "",
+      "listRule": "@request.auth.id != \"\"",
+      "viewRule": "@request.auth.id != \"\"",
+      "createRule": "@request.auth.id != \"\"",
+      "updateRule": "@request.auth.id != \"\"",
+      "deleteRule": "@request.auth.id != \"\"",
       "options": {}
     }
   ];
