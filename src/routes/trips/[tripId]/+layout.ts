@@ -7,6 +7,7 @@ export const load = (async ({ depends, params, fetch }) => {
 
 	const trip = await getTripById(tripId, { fetch });
 	const tripPlayers = await getPlayers(tripId, { fetch });
+	const allPlayers = await getPlayers(undefined, { fetch });
 	const rounds = await getRounds(tripId, { fetch });
 	const courses = await getCourses({ fetch });
 
@@ -18,6 +19,7 @@ export const load = (async ({ depends, params, fetch }) => {
 		title: trip.name,
 		trip,
 		tripPlayers,
+		allPlayers,
 		rounds: sortedRounds,
 		courses
 	};
