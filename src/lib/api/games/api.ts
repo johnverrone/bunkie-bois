@@ -6,32 +6,19 @@ import type { SendOptions } from 'pocketbase';
 /**
  * Gets the total score for trip. Optionally filter by rounds.
  */
-export async function getTotalScoreForTrip(
-	playerId: string,
-	tripId: string,
-	roundIds?: string[],
-	opts?: SendOptions
-) {
-	let gross = 0;
-	let handicap = 0;
-
-	const scorecards = await pb.collection('scorecards').getFullList({
-		expand: 'player,round,holeScores_via_scorecard',
-		filter: `player='${playerId}'&&round.trip='${tripId}'&&'${roundIds}'?~round.id`,
-		requestKey: `getScorecards-${playerId}-${tripId}-${roundIds?.join(',')}`,
-		...opts
-	});
-
-	for (const card of scorecards) {
-		for (const hole of card.expand?.holeScores_via_scorecard ?? []) {
-			gross += hole.score;
-			if (hole.holeNumber === 1) {
-				// new scorecard, add course handicap
-				handicap += card.playerHandicap;
-			}
-		}
-	}
-	return { gross, handicap };
+export async function getTripLeaderboard(tripId: string, roundIds?: string[], opts?: SendOptions) {
+	// use custom endpoint to bulk fetch
+	const f = opts?.fetch ?? fetch;
+	const resp = await f(
+		`${pb.baseUrl}/api/bb/getTripLeaderboard?` +
+			new URLSearchParams({
+				tripId,
+				rounds: roundIds?.join(',') ?? ''
+			})
+	);
+	const result = await resp.json();
+	// TODO cleanup types
+	return result.leaderboard as { player: string; score: { gross: number; handicap: number } }[];
 }
 
 /**
@@ -106,8 +93,8 @@ export async function getSkinsForRound(roundId: string, opts?: SendOptions) {
 			const holeHandicap = holeInfoMap[hole.holeNumber]?.handicap;
 			if (!holeHandicap) {
 				error(500, {
-                					message: 'There was an error fetching hole handicaps when calculating skins.'
-                				});
+					message: 'There was an error fetching hole handicaps when calculating skins.'
+				});
 			}
 
 			const full18Pops = Math.floor(playerHandicap / 18);
