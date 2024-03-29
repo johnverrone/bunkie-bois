@@ -21,5 +21,5 @@ jobs:
 
     - name: 📂 Sync files
       run: |
-        lftp -e "mirror -R pocketbase/pb_migrations bunkie-bois/pb_migrations" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
-        lftp -e "mirror -R pocketbase/pb_hooks bunkie-bois/pb_hooks" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
+        lftp -e "mirror -e -R pocketbase/pb_migrations bunkie-bois/pb_migrations" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
+        lftp -e "mirror -e -R pocketbase/pb_hooks bunkie-bois/pb_hooks" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
