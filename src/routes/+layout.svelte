@@ -9,9 +9,18 @@
 	let errorMessage: string | undefined;
 
 	async function signInWithGoogle() {
+		// Safari bug where iOS won't open new windows in async functions
+		let w = window.open();
+
 		try {
 			await pb.collection('users').authWithOAuth2({
-				provider: 'google'
+				provider: 'google',
+				urlCallback: (url) => {
+					if (w) {
+						w.location.href = url;
+					}
+					return;
+				}
 			});
 			invalidateAll();
 		} catch (e) {
