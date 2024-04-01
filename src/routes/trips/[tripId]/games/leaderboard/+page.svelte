@@ -3,6 +3,7 @@
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import type { PageData } from './$types';
+	import Leaderboard from '$lib/components/Leaderboard.svelte';
 
 	export let data: PageData;
 
@@ -51,19 +52,13 @@
 			</div>
 		{/each}
 	</fieldset>
-	<ol>
-		{#each sortedLeaderboard as { player, score }}
-			<li>
-				<span class="player-data">
-					<b>{player}</b>
-					<!-- <div class="holes">({holes.join(', ')})</div> -->
-				</span>
-				<span class="player-score">
-					{netScoreToggled ? score.gross - score.handicap : score.gross}
-				</span>
-			</li>
-		{/each}
-	</ol>
+	<Leaderboard
+		leaderboard={sortedLeaderboard.map((l) => ({
+			id: l.player,
+			name: l.player,
+			score: netScoreToggled ? l.score.gross - l.score.handicap : l.score.gross
+		}))}
+	/>
 </div>
 
 <style lang="scss">
@@ -72,46 +67,6 @@
 		justify-content: space-between;
 		align-items: baseline;
 		margin-bottom: 8px;
-	}
-
-	ol {
-		padding-left: 0;
-		list-style: none;
-
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	li {
-		color: unset;
-		background-color: var(--dp-02);
-		border-radius: 8px;
-
-		padding-left: 16px;
-
-		display: flex;
-		justify-content: space-between;
-		align-items: stretch;
-
-		.player-data {
-			padding-block: 8px;
-		}
-
-		.player-score {
-			background-color: hsl(120, 80%, 50%);
-			color: #121212;
-			border-radius: inherit;
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-			border: none;
-
-			min-width: 5ch;
-
-			display: grid;
-			place-items: center;
-			font-weight: bold;
-		}
 	}
 
 	.round-select-container {

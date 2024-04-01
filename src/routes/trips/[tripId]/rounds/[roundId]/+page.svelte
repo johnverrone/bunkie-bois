@@ -2,12 +2,10 @@
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Icon from '$lib/components/Icon.svelte';
-	import { scaleLinear } from 'd3-scale';
-	import { interpolateHsl } from 'd3-interpolate';
-	import { flip } from 'svelte/animate';
 	import type { PageData } from './$types';
 	import { slide } from 'svelte/transition';
 	import { getScore } from '$lib/utils/scores';
+	import Leaderboard from '$lib/components/Leaderboard.svelte';
 
 	export let data: PageData;
 
@@ -36,10 +34,6 @@
 		(player) =>
 			data.leaderboard.find((scorecard) => scorecard.expand?.player?.id === player.id) === undefined
 	);
-
-	const scoreScale = scaleLinear().domain([70, 150]);
-	const scoreColor = (t: number) =>
-		interpolateHsl('hsl(120, 80%, 50%)', 'hsl(0, 80%, 50%)')(scoreScale(t));
 </script>
 
 <div>
@@ -69,30 +63,18 @@
 				Net Scores
 			</label>
 		</div>
-		<ol class="leaderboard-list">
-			{#each sortedLeaderboard as scorecard (scorecard.id)}
-				<li class="leaderboard-list-item" animate:flip={{ duration: 200 }}>
-					<a
-						href={`/trips/${data.trip.id}/rounds/${data.round.id}/players/${scorecard.expand?.player?.id}/scorecard`}
-					>
-						<span class="player-name">
-							{scorecard.expand?.player?.name}
-							<span class="tee-box-badge">{scorecard.expand?.teeBox?.name}</span>
-						</span>
-						<span
-							class="player-score"
-							style={`--score-color: ${scoreColor(
-								getScore(scorecard.expand?.holeScores_via_scorecard)
-							)}`}
-						>
-							{netScoreToggled
-								? getScore(scorecard.expand?.holeScores_via_scorecard) - scorecard.playerHandicap
-								: getScore(scorecard.expand?.holeScores_via_scorecard)}
-						</span>
-					</a>
-				</li>
-			{/each}
-		</ol>
+		<Leaderboard
+			leaderboard={sortedLeaderboard.map((l) => ({
+				name: l.expand?.player?.name ?? 'unknown',
+				teeBox: l.expand?.teeBox?.name,
+				score: netScoreToggled
+					? getScore(l.expand?.holeScores_via_scorecard) - l.playerHandicap
+					: getScore(l.expand?.holeScores_via_scorecard),
+				...l
+			}))}
+			href={(l) =>
+				`/trips/${data.trip.id}/rounds/${data.round.id}/players/${l.expand?.player?.id}/scorecard`}
+		/>
 	</div>
 </div>
 
@@ -145,63 +127,6 @@
 		justify-content: space-between;
 		align-items: baseline;
 		margin-bottom: 8px;
-	}
-
-	.leaderboard-list {
-		padding-left: 0;
-		list-style: none;
-
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-	}
-
-	.leaderboard-list-item {
-		a {
-			color: unset;
-			background-color: var(--dp-02);
-			border-radius: 8px;
-
-			padding-left: 16px;
-
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-
-			&:hover {
-				text-decoration: none;
-				background-color: var(--dp-01);
-			}
-		}
-	}
-
-	.player-name {
-		font-size: 1rem;
-		flex: 1;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding-right: 16px;
-	}
-
-	.tee-box-badge {
-		font-size: 0.75rem;
-		font-style: italic;
-	}
-
-	.player-score {
-		background-color: var(--score-color);
-		color: #121212;
-		border-radius: inherit;
-		border-top-left-radius: 0;
-		border-bottom-left-radius: 0;
-		border: none;
-
-		min-width: 5ch;
-		padding: 8px 0;
-
-		text-align: center;
-		font-weight: bold;
 	}
 
 	.log-score-form {
