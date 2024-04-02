@@ -4,6 +4,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import type { PageData } from './$types';
 	import { invalidateAll } from '$app/navigation';
+	import NavBar from '$lib/components/NavBar.svelte';
 
 	export let data: PageData;
 	let errorMessage: string | undefined;
@@ -35,6 +36,25 @@
 </svelte:head>
 
 {#if data.isAuthed}
+	<NavBar
+		items={[
+			{
+				href: `/trips`,
+				label: 'Trips',
+				active: $page.route.id?.startsWith('/trips') ?? false
+			},
+			{
+				href: `/courses`,
+				label: 'Courses',
+				active: $page.route.id?.startsWith('/courses') ?? false
+			},
+			{
+				href: `/settings`,
+				label: 'Settings',
+				active: $page.route.id?.startsWith('/settings') ?? false
+			}
+		]}
+	/>
 	<slot />
 {:else}
 	<div class="auth-button login">
