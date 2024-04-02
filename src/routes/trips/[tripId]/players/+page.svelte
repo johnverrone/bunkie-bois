@@ -16,6 +16,9 @@
 	export let data: PageData;
 
 	$: sortedPlayers = data.tripPlayers.sort((a, b) => (a.handicap ?? 0) - (b.handicap ?? 0));
+	$: newPlayers = data.allPlayers.filter(
+		(p) => data.tripPlayers.find((tp) => tp.id === p.id) === undefined
+	);
 
 	type Player = (typeof data.tripPlayers)[number];
 	type HandicappedPlayer = {
@@ -141,7 +144,7 @@
 			bind:value={newPlayerId}
 			on:change={() => (newPlayerId === '__createNew' ? (addPlayerMode = 'new') : null)}
 		>
-			{#each data.allPlayers as player}
+			{#each newPlayers as player}
 				<option value={player.id}>{player.name}</option>
 			{/each}
 			<option value="__createNew">Create New</option>
