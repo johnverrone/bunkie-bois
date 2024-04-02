@@ -4,9 +4,7 @@
 	import List from '$lib/components/List.svelte';
 	import ListItem from '$lib/components/ListItem.svelte';
 	import Main from '$lib/components/Main.svelte';
-	import NavBar from '$lib/components/NavBar.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
-	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 	import Loading from '$lib/components/Loading.svelte';
 	import { delayedNavigation } from '$lib/stores';
@@ -36,21 +34,6 @@
 </script>
 
 <PageTitle>Golf Trips</PageTitle>
-
-<NavBar
-	items={[
-		{
-			href: `/trips`,
-			label: 'Trips',
-			active: $page.route.id?.startsWith('/trips') ?? false
-		},
-		{
-			href: `/courses`,
-			label: 'Courses',
-			active: $page.route.id?.startsWith('/courses') ?? false
-		}
-	]}
-/>
 
 <Main>
 	{#if $delayedNavigation}
