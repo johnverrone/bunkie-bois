@@ -65,12 +65,12 @@
 		</div>
 		<Leaderboard
 			leaderboard={sortedLeaderboard.map((l) => ({
+				...l,
 				name: l.expand?.player?.name ?? 'unknown',
 				teeBox: l.expand?.teeBox?.name,
 				score: netScoreToggled
 					? getScore(l.expand?.holeScores_via_scorecard) - l.playerHandicap
-					: getScore(l.expand?.holeScores_via_scorecard),
-				...l
+					: getScore(l.expand?.holeScores_via_scorecard)
 			}))}
 			href={(l) =>
 				`/trips/${data.trip.id}/rounds/${data.round.id}/players/${l.expand?.player?.id}/scorecard`}
