@@ -44,6 +44,11 @@
 				active: $page.route.id?.startsWith('/trips') ?? false
 			},
 			{
+				href: '/leagues',
+				label: 'Leagues',
+				active: $page.route.id?.startsWith('/leagues') ?? false
+			},
+			{
 				href: `/courses`,
 				label: 'Courses',
 				active: $page.route.id?.startsWith('/courses') ?? false
