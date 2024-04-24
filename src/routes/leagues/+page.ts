@@ -1,16 +1,16 @@
-import { getTrips } from '$lib/api';
-import type { Trip } from '$lib/pocketbase';
+import { getLeagues } from '$lib/api';
+import type { League } from '$lib/pocketbase';
 import type { PageLoad } from './$types';
 
 export const load = (async ({ fetch }) => {
-	let trips: Trip[] = [];
+	let leagues: League[] = [];
 	try {
-		trips = await getTrips({ fetch });
+		leagues = await getLeagues({ fetch });
 	} catch (e) {
 		console.error(e);
 	}
 
 	return {
-		trips
+		leagues
 	};
 }) satisfies PageLoad;

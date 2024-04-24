@@ -8,6 +8,10 @@ export interface SystemProps {
 	updated: string;
 }
 
+export interface League extends SystemProps {
+	name: string;
+}
+
 export interface Trip extends SystemProps {
 	name: string;
 	startDate: string;
@@ -71,6 +75,7 @@ export interface Scorecard extends SystemProps {
 
 export interface TypedPocketBase extends PocketBase {
 	collection(idOrName: string): RecordService; // default fallback for any other collection
+	collection(idOrName: 'leagues'): RecordService<League>;
 	collection(idOrName: 'trips'): RecordService<Trip>;
 	collection(idOrName: 'courses'): RecordService<Course>;
 	collection(idOrName: 'teeBoxes'): RecordService<TeeBox>;

@@ -12,7 +12,6 @@
 </script>
 
 <List>
-	<ListItem href="/courses" title="Manage Courses" />
 	<ListItem href="/" title="Main Menu" />
 	<Button on:click={signout} variant="secondary">Logout</Button>
 </List>
