@@ -77,5 +77,9 @@
 		padding: 10px;
 
 		cursor: pointer;
+
+		&:hover {
+			background-color: var(--dp-01);
+		}
 	}
 </style>

@@ -4,7 +4,6 @@
 	import Button from '$lib/components/Button.svelte';
 	import List from '$lib/components/List.svelte';
 	import ListItem from '$lib/components/ListItem.svelte';
-	import PageTitle from '$lib/components/PageTitle.svelte';
 	import SelectMenu from '$lib/components/SelectMenu.svelte';
 	import { pb } from '$lib/pocketbase';
 
@@ -31,8 +30,6 @@
 		goto('/', { invalidateAll: true });
 	}
 </script>
-
-<PageTitle>Settings</PageTitle>
 
 <List>
 	{#if linkPlayerMode === 'default'}
