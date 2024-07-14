@@ -8,6 +8,15 @@ export interface SystemProps {
 	updated: string;
 }
 
+export interface User extends SystemProps {
+	username: string;
+	email: string;
+	name: string;
+	avatar: string;
+	role: string;
+	player: string | undefined;
+}
+
 export interface Trip extends SystemProps {
 	name: string;
 	startDate: string;
@@ -79,6 +88,7 @@ export interface TypedPocketBase extends PocketBase {
 	collection(idOrName: 'rounds'): RecordService<Round>;
 	collection(idOrName: 'scorecards'): RecordService<Scorecard>;
 	collection(idOrName: 'holeScore'): RecordService<HoleScore>;
+	collection(idOrName: 'users'): RecordService<User>;
 }
 
 export const pb = new PocketBase(POCKETBASE_URL) as TypedPocketBase;

@@ -5,7 +5,7 @@
 
 	interface ListItemProps {
 		title: string | null;
-		href: string | null;
+		href?: string | null;
 		actionMenu?: Snippet;
 		children?: Snippet;
 	}
