@@ -27,7 +27,13 @@
 	<a {href}>
 		<h5>{title}</h5>
 		{#if hasActionMenu}
-			<button class="action-menu-button" bind:this={actionMenuAnchor} onclick={onActionMenuClick}>
+			<button
+				class="action-menu-button"
+				bind:this={actionMenuAnchor}
+				onclick={onActionMenuClick}
+				aria-haspopup="menu"
+				aria-controls="actionMenu"
+			>
 				<Icon name="more-vertical" />
 			</button>
 		{/if}
