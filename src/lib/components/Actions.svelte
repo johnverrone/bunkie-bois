@@ -37,6 +37,7 @@
 
 <div
 	bind:this={el}
+	id="actionMenu"
 	class="action-menu"
 	onclick={stopPropagation}
 	onkeydown={stopPropagation}
