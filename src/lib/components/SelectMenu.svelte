@@ -4,15 +4,24 @@
 		label?: string;
 		value?: string | number;
 		options: { id: string | number; name: string }[];
+		placeholder?: string;
+		onChange: () => void;
 	}
 
-	let { name, label, value = $bindable(), options }: SelectMenuProps = $props();
+	let {
+		name,
+		label,
+		value = $bindable(),
+		options,
+		placeholder = 'Select item',
+		onChange = () => {}
+	}: SelectMenuProps = $props();
 </script>
 
 <label for={name}>
 	{#if label}{label}{/if}
-	<select {name} id={name} bind:value>
-		<option value={undefined}>Select a course</option>
+	<select {name} id={name} bind:value onchange={onChange}>
+		<option value={undefined}>{placeholder}</option>
 		{#each options as option}
 			<option value={option.id}>{option.name}</option>
 		{/each}
