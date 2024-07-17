@@ -5,7 +5,7 @@
 		value?: string | number;
 		options: { id: string | number; name: string }[];
 		placeholder?: string;
-		onChange: () => void;
+		onChange?: () => void;
 	}
 
 	let {
