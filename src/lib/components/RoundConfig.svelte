@@ -4,13 +4,17 @@
 	import { clickOutside } from '$lib/utils/click_outside';
 	import { randomGolfCourse } from '$lib/utils/golf';
 
-	export let onClose: () => void = () => {};
-	export let id: number;
+	interface RoundConfigProps {
+		onClose?: () => void;
+		id: number;
+	}
 
-	let newName: string | undefined;
+	let { onClose = () => {}, id }: RoundConfigProps = $props();
+
+	let newName = $state<string>();
 </script>
 
-<form class="round-form" method="post" action="?/addRound" use:clickOutside on:outclick={onClose}>
+<form class="round-form" method="post" action="?/addRound" use:clickOutside onoutclick={onClose}>
 	<input type="hidden" name="tripId" value={id} />
 	<div class="name">
 		<Input type="text" placeholder={randomGolfCourse()} name="name" bind:value={newName} {focus} />

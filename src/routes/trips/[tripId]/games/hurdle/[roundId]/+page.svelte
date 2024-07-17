@@ -1,12 +1,13 @@
 <script lang="ts">
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 
-	$: hurdlePlayers = [...(data.hurdle?.keys() ?? [])].sort(
-		(a, b) => (data.hurdle?.get(b)?.points ?? 0) - (data.hurdle?.get(a)?.points ?? 0)
+	let hurdlePlayers = $derived(
+		[...(data.hurdle?.keys() ?? [])].sort(
+			(a, b) => (data.hurdle?.get(b)?.points ?? 0) - (data.hurdle?.get(a)?.points ?? 0)
+		)
 	);
 </script>
 

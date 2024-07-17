@@ -5,41 +5,52 @@
 	import Scorecard from '$lib/components/Scorecard.svelte';
 	import type { TeeBox } from '$lib/pocketbase';
 	import { calculateCourseHandicap } from '$lib/utils/handicap';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 	let errorMessage: string | undefined;
 
-	$: teeBoxes = data.courseData.expand?.teeBoxes_via_course ?? [];
+	let teeBoxes = $derived(data.courseData.expand?.teeBoxes_via_course ?? []);
 
 	type TeeBoxesById = { [key: string]: TeeBox };
-	$: teeBoxesById = teeBoxes?.reduce<TeeBoxesById>(
-		(acc, curr) => ({ ...acc, [curr.id]: curr }),
-		{}
+	let teeBoxesById = $derived(
+		teeBoxes?.reduce<TeeBoxesById>((acc, curr) => ({ ...acc, [curr.id]: curr }), {})
 	);
 
-	let selectedTeeBoxId: number | null;
-	$: selectedTeeBox = selectedTeeBoxId ? teeBoxesById?.[selectedTeeBoxId] : null;
-	$: par = Object.values(selectedTeeBox?.expand?.holeInfo_via_teeBox ?? []).reduce(
-		(acc, curr) => (acc += curr.par),
-		0
+	let selectedTeeBoxId = $state<number>();
+	let selectedTeeBox = $derived(selectedTeeBoxId ? teeBoxesById?.[selectedTeeBoxId] : null);
+	let par = $derived(
+		Object.values(selectedTeeBox?.expand?.holeInfo_via_teeBox ?? []).reduce(
+			(acc, curr) => (acc += curr.par),
+			0
+		)
 	);
 
-	let front9 = selectedTeeBox?.expand?.holeInfo_via_teeBox
-		.filter((hole) => hole.holeNumber <= 9)
-		.reduce(
-			(acc, holeScore) => ({ ...acc, [holeScore.holeNumber]: null }),
-			{} as Record<number, number | null>
-		);
+	let front9 = $state({
+		1: null,
+		2: null,
+		3: null,
+		4: null,
+		5: null,
+		6: null,
+		7: null,
+		8: null,
+		9: null
+	});
 
-	let back9 = selectedTeeBox?.expand?.holeInfo_via_teeBox
-		.filter((hole) => hole.holeNumber > 9)
-		.reduce(
-			(acc, holeScore) => ({ ...acc, [holeScore.holeNumber]: null }),
-			{} as Record<number, number | null>
-		);
+	let back9 = $state({
+		10: null,
+		11: null,
+		12: null,
+		13: null,
+		14: null,
+		15: null,
+		16: null,
+		17: null,
+		18: null
+	});
 
-	async function handleSubmit() {
+	async function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
 		const parseResult = scoresSchemas.updateScorecardSchema.safeParse({
 			playerId: data.player.id,
 			roundId: data.round.id,
@@ -50,7 +61,7 @@
 						selectedTeeBox.slope,
 						selectedTeeBox.rating,
 						par
-				  )
+					)
 				: 0,
 			scores: { ...front9, ...back9 }
 		});
@@ -65,7 +76,7 @@
 	}
 </script>
 
-<form class="scorecard-container" on:submit|preventDefault={handleSubmit}>
+<form class="scorecard-container" onsubmit={handleSubmit}>
 	<p>{`${data.player.name}'s Scorecard`}</p>
 	<select class="tee-box-select" name="teeBoxId" bind:value={selectedTeeBoxId}>
 		<option>Select tee box</option>

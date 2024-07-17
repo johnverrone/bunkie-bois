@@ -10,14 +10,15 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import Icon from '$lib/components/Icon.svelte';
-	import type { PageData } from './$types';
 	import { invalidate } from '$app/navigation';
 
-	export let data: PageData;
+	let { data } = $props();
 
-	$: sortedPlayers = data.tripPlayers.sort((a, b) => (a.handicap ?? 0) - (b.handicap ?? 0));
-	$: newPlayers = data.allPlayers.filter(
-		(p) => data.tripPlayers.find((tp) => tp.id === p.id) === undefined
+	let sortedPlayers = $derived(
+		data.tripPlayers.sort((a, b) => (a.handicap ?? 0) - (b.handicap ?? 0))
+	);
+	let newPlayers = $derived(
+		data.allPlayers.filter((p) => data.tripPlayers.find((tp) => tp.id === p.id) === undefined)
 	);
 
 	type Player = (typeof data.tripPlayers)[number];
@@ -25,18 +26,19 @@
 		[Key in keyof Player]: Exclude<Player[Key], null>;
 	};
 
-	let addPlayerMode: 'search' | 'new' | null = null;
-	let newPlayerId: string | undefined;
-	let newName: string | undefined;
-	let newHandicap: number | undefined;
-	let editingPlayer: HandicappedPlayer | null;
-	let errorMessage: string | undefined;
+	let addPlayerMode = $state<'search' | 'new' | null>(null);
+	let newPlayerId = $state<string>();
+	let newName = $state<string>();
+	let newHandicap = $state<number>();
+	let editingPlayer = $state<HandicappedPlayer | null>(null);
+	let errorMessage = $state<string>();
 
 	function focus(el: HTMLInputElement) {
 		el.focus();
 	}
 
-	async function handleAddPlayer() {
+	async function handleAddPlayer(e: SubmitEvent) {
+		e.preventDefault();
 		if (newPlayerId) {
 			await addPlayerToTrip(newPlayerId, data.trip.id);
 		} else {
@@ -59,7 +61,8 @@
 		newPlayerId = undefined;
 	}
 
-	async function handleEditPlayer() {
+	async function handleEditPlayer(e: SubmitEvent) {
+		e.preventDefault();
 		const parseResult = playersSchemas.updatePlayerSchema.safeParse({
 			id: editingPlayer?.id,
 			name: editingPlayer?.name,
@@ -91,8 +94,8 @@
 					<form
 						class="edit-player-form"
 						use:clickOutside
-						on:outclick={() => (editingPlayer = null)}
-						on:submit|preventDefault={handleEditPlayer}
+						onoutclick={() => (editingPlayer = null)}
+						onsubmit={handleEditPlayer}
 					>
 						<div class="name">
 							<Input name="name" bind:value={editingPlayer.name}>{player.name}</Input>
@@ -104,9 +107,7 @@
 								step="0.1"
 								name="handicap"
 								bind:value={editingPlayer.handicap}
-							>
-								{player.handicap}
-							</Input>
+							/>
 						</div>
 						<Button type="submit">
 							<Icon name="check" />
@@ -117,12 +118,12 @@
 					<div class="edit-controls">
 						<span>{player.handicap}</span>
 						<Button
-							on:click={() => (editingPlayer = Object.assign({ handicap: 0 }, player))}
+							onclick={() => (editingPlayer = Object.assign({ handicap: 0 }, player))}
 							variant="secondary"
 						>
 							<Icon name="edit" />
 						</Button>
-						<Button on:click={() => handleDeletePlayer(player.id)} variant="secondary">
+						<Button onclick={() => handleDeletePlayer(player.id)} variant="secondary">
 							<Icon name="trash" />
 						</Button>
 					</div>
@@ -136,14 +137,15 @@
 	<form
 		class="new-player-form"
 		use:clickOutside
-		on:outclick={() => (addPlayerMode = null)}
-		on:submit|preventDefault={handleAddPlayer}
+		onoutclick={() => (addPlayerMode = null)}
+		onsubmit={handleAddPlayer}
 	>
 		<select
 			class="player-select"
 			bind:value={newPlayerId}
-			on:change={() => (newPlayerId === '__createNew' ? (addPlayerMode = 'new') : null)}
+			onchange={() => (newPlayerId === '__createNew' ? (addPlayerMode = 'new') : null)}
 		>
+			<option value={undefined}>Select a player</option>
 			{#each newPlayers as player}
 				<option value={player.id}>{player.name}</option>
 			{/each}
@@ -155,8 +157,8 @@
 	<form
 		class="new-player-form"
 		use:clickOutside
-		on:outclick={() => (addPlayerMode = null)}
-		on:submit|preventDefault={handleAddPlayer}
+		onoutclick={() => (addPlayerMode = null)}
+		onsubmit={handleAddPlayer}
 	>
 		<div class="name">
 			<Input type="text" placeholder="Joe Shmoe" name="name" bind:value={newName} {focus} />
@@ -174,7 +176,7 @@
 		<Button type="submit">Add</Button>
 	</form>
 {:else}
-	<Button on:click={() => (addPlayerMode = 'search')}>
+	<Button onclick={() => (addPlayerMode = 'search')}>
 		<div class="button-contents">
 			<Icon name="plus" />
 			Add player
@@ -203,12 +205,12 @@
 			.handicap {
 				flex: 1;
 			}
+		}
 
-			.edit-controls {
-				display: flex;
-				align-items: center;
-				gap: 1rem;
-			}
+		.edit-controls {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
 		}
 	}
 

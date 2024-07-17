@@ -5,9 +5,8 @@
 	import IconText from '$lib/components/IconText.svelte';
 	import List from '$lib/components/List.svelte';
 	import ListItem from '$lib/components/ListItem.svelte';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 
 	async function handleDelete(id: string) {
 		await deleteRound(id);
@@ -20,14 +19,16 @@
 		{#each data.rounds as round}
 			{#if data.role.isAdmin}
 				<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
-					<span slot="actionMenu" class="action-menu">
-						<a href={`/trips/${data.trip.id}/rounds/${round.id}/edit`} class="edit">
-							<IconText name="edit" label="Edit" />
-						</a>
-						<Button on:click={() => handleDelete(round.id)} variant="destructive" fullWidth>
-							<IconText name="trash" label="Delete" />
-						</Button>
-					</span>
+					{#snippet actionMenu()}
+						<span class="action-menu">
+							<a href={`/trips/${data.trip.id}/rounds/${round.id}/edit`} class="edit">
+								<IconText name="edit" label="Edit" />
+							</a>
+							<Button onclick={() => handleDelete(round.id)} variant="destructive" fullWidth>
+								<IconText name="trash" label="Delete" />
+							</Button>
+						</span>
+					{/snippet}
 					<h6>{round.expand?.course?.name}</h6>
 					{#if round.date}
 						<h6>

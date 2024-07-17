@@ -1,12 +1,29 @@
 <script lang="ts">
-	export let type: 'button' | 'submit' | 'reset' = 'button';
-	export let variant: 'primary' | 'secondary' | 'destructive' = 'primary';
-	export let fullWidth: boolean = false;
-	export let disabled: boolean = false;
+	import type { Snippet } from 'svelte';
+	import type { MouseEventHandler } from 'svelte/elements';
+
+	interface ButtonProps {
+		type?: 'button' | 'submit' | 'reset';
+		variant?: 'primary' | 'secondary' | 'destructive';
+		fullWidth?: boolean;
+		disabled?: boolean;
+		onclick?: MouseEventHandler<HTMLButtonElement>;
+		children: Snippet;
+	}
+
+	let {
+		type = 'button',
+		variant = 'primary',
+		fullWidth = false,
+		disabled = false,
+		onclick,
+		children,
+		...rest
+	}: ButtonProps = $props();
 </script>
 
 <button
-	on:click
+	{onclick}
 	{type}
 	{disabled}
 	class:primary={variant === 'primary'}
@@ -14,9 +31,9 @@
 	class:destructive={variant === 'destructive'}
 	class:fullWidth
 	class:disabled
-	{...$$restProps}
+	{...rest}
 >
-	<slot />
+	{@render children()}
 </button>
 
 <style lang="scss">

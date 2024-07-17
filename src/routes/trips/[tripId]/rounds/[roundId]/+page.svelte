@@ -2,38 +2,41 @@
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Icon from '$lib/components/Icon.svelte';
-	import type { PageData } from './$types';
 	import { slide } from 'svelte/transition';
 	import { getScore } from '$lib/utils/scores';
 	import Leaderboard from '$lib/components/Leaderboard.svelte';
 
-	export let data: PageData;
+	let { data } = $props();
 
-	let newPlayerId: number | undefined;
+	let newPlayerId = $state<number>();
+	let netScoreToggled = $state(false);
+	let showDetails = $state(false);
 
-	let showDetails = false;
+	let date = $derived(data.round.date ? new Date(`${data.round.date}T00:00:00`) : undefined);
+
+	let sortedLeaderboard = $derived(
+		data.leaderboard.sort((a, b) => {
+			const aScore = netScoreToggled
+				? getScore(a.expand?.holeScores_via_scorecard) - a.playerHandicap
+				: getScore(a.expand?.holeScores_via_scorecard);
+			const bScore = netScoreToggled
+				? getScore(b.expand?.holeScores_via_scorecard) - b.playerHandicap
+				: getScore(b.expand?.holeScores_via_scorecard);
+			return aScore - bScore;
+		})
+	);
+
+	let scorelessPlayers = $derived(
+		data.tripPlayers.filter(
+			(player) =>
+				data.leaderboard.find((scorecard) => scorecard.expand?.player?.id === player.id) ===
+				undefined
+		)
+	);
+
 	function toggleDetails() {
 		showDetails = !showDetails;
 	}
-
-	let netScoreToggled: boolean = false;
-
-	$: date = data.round.date ? new Date(`${data.round.date}T00:00:00`) : undefined;
-
-	$: sortedLeaderboard = data.leaderboard.sort((a, b) => {
-		const aScore = netScoreToggled
-			? getScore(a.expand?.holeScores_via_scorecard) - a.playerHandicap
-			: getScore(a.expand?.holeScores_via_scorecard);
-		const bScore = netScoreToggled
-			? getScore(b.expand?.holeScores_via_scorecard) - b.playerHandicap
-			: getScore(b.expand?.holeScores_via_scorecard);
-		return aScore - bScore;
-	});
-
-	$: scorelessPlayers = data.tripPlayers.filter(
-		(player) =>
-			data.leaderboard.find((scorecard) => scorecard.expand?.player?.id === player.id) === undefined
-	);
 </script>
 
 <div>
@@ -43,7 +46,7 @@
 	</Breadcrumbs>
 
 	<div class="round-details">
-		<button class="toggle" on:click={toggleDetails}>
+		<button class="toggle" onclick={toggleDetails}>
 			{#if showDetails}<Icon name="arrow-up" />{:else}<Icon name="arrow-down" />{/if}
 		</button>
 		<h5>Round Details</h5>
@@ -57,7 +60,7 @@
 
 	<div class="leaderboard">
 		<div class="leaderboard-heading">
-			<h2>Leaderboard</h2>
+			<h2>Round Leaderboard</h2>
 			<label>
 				<input type="checkbox" bind:checked={netScoreToggled} />
 				Net Scores

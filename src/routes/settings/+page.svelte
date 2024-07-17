@@ -12,4 +12,4 @@
 
 <PageTitle>Settings</PageTitle>
 
-<Button on:click={signout} variant="secondary">Logout</Button>
+<Button onclick={signout} variant="secondary">Logout</Button>

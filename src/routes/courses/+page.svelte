@@ -2,11 +2,10 @@
 	import IconText from '$lib/components/IconText.svelte';
 	import List from '$lib/components/List.svelte';
 	import ListItem from '$lib/components/ListItem.svelte';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 
-	$: sortedCourses = data.courses.sort();
+	let sortedCourses = $derived(data.courses.sort());
 </script>
 
 {#if sortedCourses.length}

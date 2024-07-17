@@ -1,8 +1,15 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
+	interface PageTitleProps {
+		children: Snippet;
+	}
+
+	let { children }: PageTitleProps = $props();
 </script>
 
 <header>
-	<h3><slot /></h3>
+	<h3>{@render children()}</h3>
 </header>
 
 <style lang="scss">

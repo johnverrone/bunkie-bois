@@ -3,16 +3,16 @@
 	import { updateTrip } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 	let errorMessage: string | undefined;
 
-	let name = data.trip.name ?? undefined;
-	let startDate = data.trip.startDate ?? undefined;
-	let endDate = data.trip.endDate ?? undefined;
+	let name = $state(data.trip.name);
+	let startDate = $state(data.trip.startDate);
+	let endDate = $state(data.trip.endDate);
 
-	async function handleSubmit() {
+	async function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
 		await updateTrip({
 			id: data.trip.id,
 			name,
@@ -23,7 +23,7 @@
 	}
 </script>
 
-<form class="edit-trip-form" on:submit|preventDefault={handleSubmit}>
+<form class="edit-trip-form" onsubmit={handleSubmit}>
 	<Input label="Trip Name" type="text" name="name" bind:value={name} />
 	<Input label="Start Date" type="date" name="startDate" bind:value={startDate} block />
 	<Input label="End Date" type="date" name="endDate" bind:value={endDate} block />

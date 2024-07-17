@@ -1,9 +1,8 @@
 <script lang="ts">
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 </script>
 
 <div>

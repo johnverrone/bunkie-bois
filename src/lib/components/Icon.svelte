@@ -1,9 +1,13 @@
 <script lang="ts">
 	import feather from 'feather-icons';
 
-	export let name: keyof typeof feather.icons;
+	interface IconProps {
+		name: keyof typeof feather.icons;
+	}
 
-	$: icon = feather.icons[name];
+	let { name }: IconProps = $props();
+
+	let icon = $derived(feather.icons[name]);
 </script>
 
 {#if icon}

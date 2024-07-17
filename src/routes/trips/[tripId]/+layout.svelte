@@ -2,12 +2,11 @@
 	import Main from '$lib/components/Main.svelte';
 	import NavBar from '$lib/components/NavBar.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
-	import type { LayoutData } from './$types';
 	import { page } from '$app/stores';
 	import Loading from '$lib/components/Loading.svelte';
 	import { delayedNavigation } from '$lib/stores';
 
-	export let data: LayoutData;
+	let { data, children } = $props();
 </script>
 
 <PageTitle>{data.trip.name}</PageTitle>
@@ -42,7 +41,7 @@
 		<Loading />
 	{/if}
 	<div class="float-bottom">
-		<slot />
+		{@render children()}
 	</div>
 </Main>
 

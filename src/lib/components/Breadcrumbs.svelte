@@ -1,5 +1,15 @@
+<script lang="ts">
+	import type { Snippet } from 'svelte';
+
+	interface BreadcrumbsProps {
+		children: Snippet;
+	}
+
+	let { children }: BreadcrumbsProps = $props();
+</script>
+
 <nav>
-	<slot />
+	{@render children()}
 </nav>
 
 <style lang="scss">

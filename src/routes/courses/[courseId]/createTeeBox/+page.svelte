@@ -4,15 +4,14 @@
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
-	import type { PageData } from './$types';
 	import { goto, invalidate } from '$app/navigation';
 
-	export let data: PageData;
-	let errorMessage: string | undefined;
+	let { data } = $props();
+	let errorMessage = $state<string>();
 
-	let teeBoxName: string | undefined;
-	let rating: number | undefined;
-	let slope: number | undefined;
+	let teeBoxName = $state<string>();
+	let rating = $state<number>();
+	let slope = $state<number>();
 	let holes: Record<
 		number,
 		{ par: number | undefined; yardage: number | undefined; handicap: number | undefined }
@@ -37,7 +36,8 @@
 		18: { par: undefined, yardage: undefined, handicap: undefined }
 	};
 
-	async function handleSubmit() {
+	async function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
 		const parseResult = coursesSchemas.createTeeBoxSchema.safeParse({
 			courseId: data.course.id,
 			name: teeBoxName,
@@ -69,7 +69,7 @@
 
 {#if errorMessage}<p class="error">{errorMessage}</p>{/if}
 
-<form class="tee-box-form" on:submit|preventDefault={handleSubmit}>
+<form class="tee-box-form" onsubmit={handleSubmit}>
 	<Input
 		label="Tee Box Name"
 		type="text"
@@ -104,10 +104,12 @@
 	/>
 	<table>
 		<thead>
-			<th>Hole</th>
-			<th>Par</th>
-			<th>Yardage</th>
-			<th>Handicap</th>
+			<tr>
+				<th>Hole</th>
+				<th>Par</th>
+				<th>Yardage</th>
+				<th>Handicap</th>
+			</tr>
 		</thead>
 		<tbody>
 			{#each Object.entries(holes) as [number, hole]}

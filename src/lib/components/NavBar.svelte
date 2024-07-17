@@ -5,7 +5,11 @@
 		active: boolean;
 	};
 
-	export let items: NavItem[];
+	interface NavBarProps {
+		items: NavItem[];
+	}
+
+	let { items }: NavBarProps = $props();
 </script>
 
 <nav>

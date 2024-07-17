@@ -7,10 +7,11 @@
 	import { createCourse } from '$lib/api';
 	import { goto } from '$app/navigation';
 
-	let courseName: string | undefined;
-	let errorMessage: string | undefined;
+	let courseName = $state<string>();
+	let errorMessage = $state<string>();
 
-	async function handleSubmit() {
+	async function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
 		if (!courseName) return;
 		try {
 			await createCourse(courseName);
@@ -27,7 +28,7 @@
 	<BreadcrumbItem label="Create" />
 </Breadcrumbs>
 
-<form class="course-form" on:submit|preventDefault={handleSubmit}>
+<form class="course-form" onsubmit={handleSubmit}>
 	<Input
 		label="Course Name"
 		type="text"

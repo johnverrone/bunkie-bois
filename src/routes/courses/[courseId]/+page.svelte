@@ -2,20 +2,19 @@
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import IconText from '$lib/components/IconText.svelte';
-	import type { PageData } from './$types';
 	import type { TeeBox } from '$lib/pocketbase';
 
-	export let data: PageData;
+	let { data } = $props();
 	const teeBoxes = data.course.expand?.['teeBoxes_via_course'] ?? [];
 	const sortedTeeBoxes = teeBoxes.sort((a, b) => b.rating - a.rating);
 
-	let selectedTeeBoxId: number | null;
+	let selectedTeeBoxId = $state<number>();
 
 	const teeBoxesById =
 		teeBoxes.reduce<Record<number, TeeBox>>((acc, curr) => ({ ...acc, [curr.id]: curr }), {}) ?? {};
 
-	$: selectedTeeBox = selectedTeeBoxId ? teeBoxesById[selectedTeeBoxId] : null;
-	$: holes = selectedTeeBox?.expand?.holeInfo_via_teeBox;
+	let selectedTeeBox = $derived(selectedTeeBoxId ? teeBoxesById[selectedTeeBoxId] : null);
+	let holes = $derived(selectedTeeBox?.expand?.holeInfo_via_teeBox);
 </script>
 
 <Breadcrumbs>
@@ -33,10 +32,12 @@
 {#if selectedTeeBox}
 	<table class="table">
 		<thead>
-			<th>Hole</th>
-			<th>Par</th>
-			<th>Yardage</th>
-			<th>Handicap</th>
+			<tr>
+				<th>Hole</th>
+				<th>Par</th>
+				<th>Yardage</th>
+				<th>Handicap</th>
+			</tr>
 		</thead>
 		<tbody>
 			{#if holes}
