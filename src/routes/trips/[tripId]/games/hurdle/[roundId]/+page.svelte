@@ -2,7 +2,7 @@
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 
-	let data = $props();
+	let { data } = $props();
 
 	let hurdlePlayers = $derived(
 		[...(data.hurdle?.keys() ?? [])].sort(
