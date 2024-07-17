@@ -1,36 +1,41 @@
 <script lang="ts">
 	import Icon from './Icon.svelte';
 	import Actions from './Actions.svelte';
+	import type { Snippet } from 'svelte';
 
-	// item props
-	export let title: string | null = null;
+	interface ListItemProps {
+		title: string | null;
+		href: string | null;
+		actionMenu?: Snippet;
+		children?: Snippet;
+	}
 
-	// link props
-	export let href: string | null = null;
+	let { title = null, href = null, actionMenu, children }: ListItemProps = $props();
 
 	// action menu
-	$: hasActionMenu = $$slots.actionMenu;
-	let actionMenuAnchor: HTMLElement;
-	let actionMenuOpened = false;
+	let hasActionMenu = $derived(!!actionMenu);
+	let actionMenuAnchor = $state<HTMLElement>();
+	let actionMenuOpened = $state(false);
+
+	function onActionMenuClick(e: MouseEvent) {
+		e.preventDefault();
+		actionMenuOpened = true;
+	}
 </script>
 
 <li>
 	<a {href}>
 		<h5>{title}</h5>
 		{#if hasActionMenu}
-			<button
-				class="action-menu-button"
-				bind:this={actionMenuAnchor}
-				on:click|preventDefault={() => (actionMenuOpened = true)}
-			>
+			<button class="action-menu-button" bind:this={actionMenuAnchor} onclick={onActionMenuClick}>
 				<Icon name="more-vertical" />
 			</button>
 		{/if}
-		<slot />
+		{@render children?.()}
 	</a>
-	{#if actionMenuOpened}
+	{#if actionMenuOpened && !!actionMenu}
 		<Actions bind:opened={actionMenuOpened} anchor={actionMenuAnchor}>
-			<slot name="actionMenu" />
+			{@render actionMenu()}
 		</Actions>
 	{/if}
 </li>

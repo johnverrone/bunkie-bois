@@ -1,5 +1,15 @@
+<script lang="ts">
+	import type { Snippet } from 'svelte';
+
+	interface ListProps {
+		children: Snippet;
+	}
+
+	let { children }: ListProps = $props();
+</script>
+
 <ul>
-	<slot />
+	{@render children()}
 </ul>
 
 <style lang="scss">

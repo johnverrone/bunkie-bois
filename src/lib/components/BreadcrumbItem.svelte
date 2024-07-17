@@ -1,6 +1,9 @@
 <script lang="ts">
-	export let label: string;
-	export let href: string | undefined = undefined;
+	interface BreadcrumbItemProps {
+		label: string;
+		href?: string;
+	}
+	let { label, href = undefined }: BreadcrumbItemProps = $props();
 </script>
 
 {#if href}

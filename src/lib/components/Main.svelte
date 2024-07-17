@@ -1,5 +1,15 @@
+<script lang="ts">
+	import type { Snippet } from 'svelte';
+
+	interface MainProps {
+		children: Snippet;
+	}
+
+	let { children }: MainProps = $props();
+</script>
+
 <main>
-	<slot />
+	{@render children()}
 </main>
 
 <style lang="scss">

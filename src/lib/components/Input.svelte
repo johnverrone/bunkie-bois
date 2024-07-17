@@ -1,13 +1,25 @@
 <script lang="ts">
-	export let label: string | undefined = undefined;
-	export let value: string | number | undefined = undefined;
-	export let block: boolean = false;
-	export let focus: (el: HTMLInputElement) => void = () => {};
+	import type { HTMLInputAttributes } from 'svelte/elements';
+
+	interface InputProps extends HTMLInputAttributes {
+		label?: string;
+		value?: string | number;
+		block?: boolean;
+		focus?: (el: HTMLInputElement) => void;
+	}
+
+	let {
+		label,
+		value = $bindable(),
+		block = false,
+		focus = () => {},
+		...rest
+	}: InputProps = $props();
 </script>
 
 <label>
 	{#if label}{label}{/if}
-	<input {...$$restProps} id={label} class:block bind:value use:focus />
+	<input {...rest} id={label} class:block bind:value use:focus />
 </label>
 
 <style lang="scss">

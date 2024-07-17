@@ -3,14 +3,21 @@
 	import { scaleLinear } from 'd3-scale';
 	import { interpolateHsl } from 'd3-interpolate';
 
-	export let leaderboard: T[];
-	export let href: ((entry: T) => string) | null = null;
+	interface LeaderboardProps<T> {
+		leaderboard: T[];
+		href?: ((entry: T) => string) | null;
+	}
 
-	$: scores = leaderboard.map((l) => l.score);
+	let { leaderboard, href = null }: LeaderboardProps<T> = $props();
 
-	$: scoreScale = scaleLinear().domain([Math.min(...scores) - 20, Math.max(...scores) + 30]);
-	$: scoreColor = (t: number) =>
-		interpolateHsl('hsl(120, 80%, 50%)', 'hsl(0, 80%, 50%)')(scoreScale(t));
+	let scores = $derived(leaderboard.map((l) => l.score));
+
+	let scoreScale = $derived(
+		scaleLinear().domain([Math.min(...scores) - 20, Math.max(...scores) + 30])
+	);
+	let scoreColor = $derived((t: number) =>
+		interpolateHsl('hsl(120, 80%, 50%)', 'hsl(0, 80%, 50%)')(scoreScale(t))
+	);
 </script>
 
 <ol class="leaderboard-list">

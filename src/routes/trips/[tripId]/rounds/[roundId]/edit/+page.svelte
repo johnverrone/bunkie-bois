@@ -1,5 +1,3 @@
-<svelte:options runes={true} />
-
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
 	import { roundsSchemas, updateRound } from '$lib/api';

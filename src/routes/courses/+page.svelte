@@ -1,5 +1,3 @@
-<svelte:options runes={true} />
-
 <script lang="ts">
 	import IconText from '$lib/components/IconText.svelte';
 	import List from '$lib/components/List.svelte';

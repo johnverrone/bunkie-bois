@@ -4,16 +4,16 @@
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import SelectMenu from '$lib/components/SelectMenu.svelte';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 
-	let roundName: string | undefined;
-	let courseId: string | undefined;
-	let date: string | undefined;
-	let errorMessage: string | undefined;
+	let roundName = $state<string>();
+	let courseId = $state<string>();
+	let date = $state<string>();
+	let errorMessage = $state<string>();
 
-	async function handleSubmit() {
+	async function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
 		const parseResult = roundsSchemas.createRoundSchema.safeParse({
 			tripId: data.trip.id,
 			courseId,
@@ -31,7 +31,7 @@
 	}
 </script>
 
-<form class="round-form" on:submit|preventDefault={handleSubmit}>
+<form class="round-form" onsubmit={handleSubmit}>
 	<Input label="Round Name" type="text" placeholder="Round 1" name="name" bind:value={roundName} />
 	<SelectMenu label="Course" name="courseId" bind:value={courseId} options={data.courses} />
 	<Input label="Date" type="date" name="date" bind:value={date} block />

@@ -1,5 +1,3 @@
-<svelte:options runes={true} />
-
 <script lang="ts">
 	import Main from '$lib/components/Main.svelte';
 	import NavBar from '$lib/components/NavBar.svelte';

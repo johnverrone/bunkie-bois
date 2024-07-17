@@ -1,5 +1,3 @@
-<svelte:options runes={true} />
-
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import IconText from '$lib/components/IconText.svelte';
@@ -49,19 +47,21 @@
 					{#each sortedTrips as trip}
 						{#if data.role.isAdmin}
 							<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
-								<span slot="actionMenu" class="action-menu">
-									<a href={`/trips/${trip.id}/edit`} class="edit">
-										<IconText name="edit" label="Edit" />
-									</a>
-									<Button
-										variant="destructive"
-										type="submit"
-										fullWidth
-										onclick={() => handleDelete(trip.id)}
-									>
-										<IconText name="trash" label="Delete" />
-									</Button>
-								</span>
+								{#snippet actionMenu()}
+									<span class="action-menu">
+										<a href={`/trips/${trip.id}/edit`} class="edit">
+											<IconText name="edit" label="Edit" />
+										</a>
+										<Button
+											variant="destructive"
+											type="submit"
+											fullWidth
+											onclick={() => handleDelete(trip.id)}
+										>
+											<IconText name="trash" label="Delete" />
+										</Button>
+									</span>
+								{/snippet}
 								{@render date(trip)}
 							</ListItem>
 						{:else}

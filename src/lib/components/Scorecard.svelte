@@ -1,14 +1,23 @@
 <script lang="ts">
 	import type { TeeBox } from '$lib/pocketbase';
 
-	export let courseTeeBox: TeeBox;
-	export let front9: Record<number, number | null> = {};
-	export let back9: Record<number, number | null> = {};
-	export let readonly = false;
+	interface ScorecardProps {
+		courseTeeBox: TeeBox;
+		front9: Record<number, number | null>;
+		back9: Record<number, number | null>;
+		readonly?: boolean;
+	}
 
-	$: holes = courseTeeBox.expand?.holeInfo_via_teeBox ?? [];
-	$: front9Holes = holes.filter((hole) => hole.holeNumber <= 9);
-	$: back9Holes = holes.filter((hole) => hole.holeNumber > 9);
+	let {
+		courseTeeBox,
+		front9 = $bindable({}),
+		back9 = $bindable({}),
+		readonly = false
+	}: ScorecardProps = $props();
+
+	let holes = $derived(courseTeeBox.expand?.holeInfo_via_teeBox ?? []);
+	let front9Holes = $derived(holes.filter((hole) => hole.holeNumber <= 9));
+	let back9Holes = $derived(holes.filter((hole) => hole.holeNumber > 9));
 
 	let front9Inputs: Record<number, HTMLInputElement> = {};
 	let back9Inputs: Record<number, HTMLInputElement> = {};
@@ -25,15 +34,23 @@
 		}
 	}
 
-	$: front9Total = Object.values(front9).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
-	$: back9Total = Object.values(back9).reduce<number>((acc, curr) => (acc += curr ?? 0), 0);
+	let front9Total = $derived(
+		Object.values(front9).reduce<number>((acc, curr) => (acc += curr ?? 0), 0)
+	);
+	let back9Total = $derived(
+		Object.values(back9).reduce<number>((acc, curr) => (acc += curr ?? 0), 0)
+	);
 
-	$: score = front9Total + back9Total;
+	let score = $derived(front9Total + back9Total);
 
-	$: front9Yards = front9Holes.reduce<number>((acc, curr) => (acc += curr.yardage ?? 0), 0);
-	$: back9Yards = back9Holes.reduce<number>((acc, curr) => (acc += curr.yardage ?? 0), 0);
-	$: front9Par = front9Holes.reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0);
-	$: back9Par = back9Holes.reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0);
+	let front9Yards = $derived(
+		front9Holes.reduce<number>((acc, curr) => (acc += curr.yardage ?? 0), 0)
+	);
+	let back9Yards = $derived(
+		back9Holes.reduce<number>((acc, curr) => (acc += curr.yardage ?? 0), 0)
+	);
+	let front9Par = $derived(front9Holes.reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0));
+	let back9Par = $derived(back9Holes.reduce<number>((acc, curr) => (acc += curr.par ?? 0), 0));
 </script>
 
 <div class="scorecard">
@@ -85,7 +102,7 @@
 								name={`hole-${hole.holeNumber}-score`}
 								bind:value={front9[hole.holeNumber]}
 								bind:this={front9Inputs[hole.holeNumber]}
-								on:keyup={(e) => maybeMoveNext(e, hole.holeNumber + 1)}
+								onkeyup={(e) => maybeMoveNext(e, hole.holeNumber + 1)}
 							/>
 						{/if}
 					</td>
@@ -146,7 +163,7 @@
 								name={`hole-${hole.holeNumber}-score`}
 								bind:value={back9[hole.holeNumber]}
 								bind:this={back9Inputs[hole.holeNumber]}
-								on:keyup={(e) => maybeMoveNext(e, hole.holeNumber + 1)}
+								onkeyup={(e) => maybeMoveNext(e, hole.holeNumber + 1)}
 							/>
 						{/if}
 					</td>

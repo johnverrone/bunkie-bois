@@ -1,5 +1,3 @@
-<svelte:options runes={true} />
-
 <script lang="ts">
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
@@ -7,7 +5,7 @@
 	let { data } = $props();
 
 	let sortedSkins = $derived(
-		[...data.skins].sort(([, aHoles], [, bHoles]) => bHoles.length - aHoles.length)
+		[...(data.skins ?? [])].sort(([, aHoles], [, bHoles]) => bHoles.length - aHoles.length)
 	);
 </script>
 

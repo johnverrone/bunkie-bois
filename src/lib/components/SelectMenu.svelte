@@ -1,8 +1,12 @@
 <script lang="ts">
-	export let name: string;
-	export let label: string | undefined = undefined;
-	export let value: string | number | undefined;
-	export let options: { id: string | number; name: string }[];
+	interface SelectMenuProps {
+		name: string;
+		label?: string;
+		value?: string | number;
+		options: { id: string | number; name: string }[];
+	}
+
+	let { name, label, value = $bindable(), options }: SelectMenuProps = $props();
 </script>
 
 <label for={name}>

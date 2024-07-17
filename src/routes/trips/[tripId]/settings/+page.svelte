@@ -14,5 +14,5 @@
 <List>
 	<ListItem href="/courses" title="Manage Courses" />
 	<ListItem href="/trips" title="Change Trip" />
-	<Button on:click={signout} variant="secondary">Logout</Button>
+	<Button onclick={signout} variant="secondary">Logout</Button>
 </List>

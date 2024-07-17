@@ -1,5 +1,3 @@
-<svelte:options runes={true} />
-
 <script lang="ts">
 	import { coursesSchemas, createTeeBox } from '$lib/api';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';

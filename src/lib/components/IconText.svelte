@@ -2,8 +2,12 @@
 	import type { ComponentProps } from 'svelte';
 	import Icon from './Icon.svelte';
 
-	export let name: ComponentProps<Icon>['name'];
-	export let label: string;
+	interface IconTextProps {
+		name: ComponentProps<Icon>['name'];
+		label: string;
+	}
+
+	let { name, label }: IconTextProps = $props();
 </script>
 
 <span class="row">

@@ -1,5 +1,3 @@
-<svelte:options runes={true} />
-
 <script lang="ts">
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
@@ -27,7 +25,7 @@
 			.reduce(
 				(acc, holeScore) => ({ ...acc, [holeScore.holeNumber]: holeScore.score }),
 				{} as Record<number, number | null>
-			)
+			) ?? {}
 	);
 
 	let back9 = $derived(
@@ -36,7 +34,7 @@
 			.reduce(
 				(acc, holeScore) => ({ ...acc, [holeScore.holeNumber]: holeScore.score }),
 				{} as Record<number, number | null>
-			)
+			) ?? {}
 	);
 
 	async function handleDelete() {

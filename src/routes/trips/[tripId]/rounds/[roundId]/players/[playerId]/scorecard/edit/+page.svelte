@@ -1,5 +1,3 @@
-<svelte:options runes={true} />
-
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
 	import { logScore, scoresSchemas } from '$lib/api';
@@ -27,19 +25,29 @@
 		)
 	);
 
-	let front9 = selectedTeeBox?.expand?.holeInfo_via_teeBox
-		.filter((hole) => hole.holeNumber <= 9)
-		.reduce(
-			(acc, holeScore) => ({ ...acc, [holeScore.holeNumber]: null }),
-			{} as Record<number, number | null>
-		);
+	let front9 = $state({
+		1: null,
+		2: null,
+		3: null,
+		4: null,
+		5: null,
+		6: null,
+		7: null,
+		8: null,
+		9: null
+	});
 
-	let back9 = selectedTeeBox?.expand?.holeInfo_via_teeBox
-		.filter((hole) => hole.holeNumber > 9)
-		.reduce(
-			(acc, holeScore) => ({ ...acc, [holeScore.holeNumber]: null }),
-			{} as Record<number, number | null>
-		);
+	let back9 = $state({
+		10: null,
+		11: null,
+		12: null,
+		13: null,
+		14: null,
+		15: null,
+		16: null,
+		17: null,
+		18: null
+	});
 
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();

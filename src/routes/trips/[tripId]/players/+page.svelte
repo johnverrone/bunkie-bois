@@ -1,5 +1,3 @@
-<svelte:options runes={true} />
-
 <script lang="ts">
 	import {
 		addPlayerToTrip,
@@ -109,9 +107,7 @@
 								step="0.1"
 								name="handicap"
 								bind:value={editingPlayer.handicap}
-							>
-								{player.handicap}
-							</Input>
+							/>
 						</div>
 						<Button type="submit">
 							<Icon name="check" />
@@ -122,12 +118,12 @@
 					<div class="edit-controls">
 						<span>{player.handicap}</span>
 						<Button
-							on:click={() => (editingPlayer = Object.assign({ handicap: 0 }, player))}
+							onclick={() => (editingPlayer = Object.assign({ handicap: 0 }, player))}
 							variant="secondary"
 						>
 							<Icon name="edit" />
 						</Button>
-						<Button on:click={() => handleDeletePlayer(player.id)} variant="secondary">
+						<Button onclick={() => handleDeletePlayer(player.id)} variant="secondary">
 							<Icon name="trash" />
 						</Button>
 					</div>
@@ -208,6 +204,12 @@
 			.handicap {
 				flex: 1;
 			}
+		}
+
+		.edit-controls {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
 		}
 	}
 

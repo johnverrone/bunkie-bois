@@ -1,8 +1,8 @@
 <div class="spinner">
-	<div />
-	<div />
-	<div />
-	<div />
+	<div></div>
+	<div></div>
+	<div></div>
+	<div></div>
 </div>
 
 <style lang="scss">
