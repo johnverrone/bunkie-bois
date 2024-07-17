@@ -145,6 +145,7 @@
 			bind:value={newPlayerId}
 			onchange={() => (newPlayerId === '__createNew' ? (addPlayerMode = 'new') : null)}
 		>
+			<option value={undefined}>Select a player</option>
 			{#each newPlayers as player}
 				<option value={player.id}>{player.name}</option>
 			{/each}
@@ -175,7 +176,7 @@
 		<Button type="submit">Add</Button>
 	</form>
 {:else}
-	<Button on:click={() => (addPlayerMode = 'search')}>
+	<Button onclick={() => (addPlayerMode = 'search')}>
 		<div class="button-contents">
 			<Icon name="plus" />
 			Add player
