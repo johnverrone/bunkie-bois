@@ -33,7 +33,7 @@
 	</Breadcrumbs>
 
 	<div class="leaderboard-heading">
-		<h2>Leaderboard</h2>
+		<h2>Trip Leaderboard</h2>
 		<label>
 			<input type="checkbox" bind:checked={netScoreToggled} />
 			Net Scores
