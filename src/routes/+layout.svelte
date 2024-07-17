@@ -1,13 +1,14 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { pb } from '$lib/pocketbase';
 	import Button from '$lib/components/Button.svelte';
-	import type { PageData } from './$types';
 	import { invalidateAll } from '$app/navigation';
 	import NavBar from '$lib/components/NavBar.svelte';
 
-	export let data: PageData;
-	let errorMessage: string | undefined;
+	let { data, children } = $props();
+	let errorMessage = $state<string>();
 
 	async function signInWithGoogle() {
 		// Safari bug where iOS won't open new windows in async functions
@@ -55,10 +56,10 @@
 			}
 		]}
 	/>
-	<slot />
+	{@render children()}
 {:else}
 	<div class="auth-button login">
-		<Button on:click={signInWithGoogle}>Login with Google</Button>
+		<Button onclick={signInWithGoogle}>Login with Google</Button>
 	</div>
 	{#if errorMessage}
 		<span>{errorMessage}</span>
@@ -71,8 +72,18 @@
 	:root {
 		// fonts
 		--font-family: 'Nunito';
-		font-family: var(--font-family), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-			Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+		font-family:
+			var(--font-family),
+			-apple-system,
+			BlinkMacSystemFont,
+			'Segoe UI',
+			Roboto,
+			Helvetica,
+			Arial,
+			sans-serif,
+			'Apple Color Emoji',
+			'Segoe UI Emoji',
+			'Segoe UI Symbol';
 
 		// colors
 		--green: hsl(106deg 19% 55%);

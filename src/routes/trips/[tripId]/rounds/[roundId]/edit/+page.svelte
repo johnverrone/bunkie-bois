@@ -1,19 +1,21 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
 	import { roundsSchemas, updateRound } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
 	import SelectMenu from '$lib/components/SelectMenu.svelte';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 
-	let roundName = data.round.name ?? undefined;
-	let courseId = data.round.expand?.course?.id ?? undefined;
-	let date = data.round.date ?? undefined;
-	let errorMessage: string | undefined;
+	let roundName = $state(data.round.name);
+	let courseId = $state(data.round.expand?.course?.id);
+	let date = $state(data.round.date);
+	let errorMessage = $state<string>();
 
-	async function handleSubmit() {
+	async function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
 		const parseResult = roundsSchemas.updateRoundSchema.safeParse({
 			id: data.round.id,
 			courseId,
@@ -31,7 +33,7 @@
 	}
 </script>
 
-<form class="edit-round-form" on:submit|preventDefault={handleSubmit}>
+<form class="edit-round-form" onsubmit={handleSubmit}>
 	<input type="hidden" name="id" value={data.round.id} />
 	<Input label="Round Name" type="text" name="name" bind:value={roundName} />
 	<SelectMenu label="Course" name="courseId" bind:value={courseId} options={data.courses} />

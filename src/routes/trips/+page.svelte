@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import IconText from '$lib/components/IconText.svelte';
@@ -5,18 +7,19 @@
 	import ListItem from '$lib/components/ListItem.svelte';
 	import Main from '$lib/components/Main.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
-	import type { PageData } from './$types';
 	import Loading from '$lib/components/Loading.svelte';
 	import { delayedNavigation } from '$lib/stores';
 	import { deleteTrip } from '$lib/api';
 	import { invalidate } from '$app/navigation';
 
-	export let data: PageData;
+	let { data } = $props();
 
-	let deleteError: string | undefined;
+	let deleteError = $state<string>();
 
-	$: sortedTrips = data.trips.sort((a, b) =>
-		a.endDate && b.endDate ? new Date(b.endDate).getTime() - new Date(a.endDate).getTime() : 0
+	let sortedTrips = $derived(
+		data.trips.sort((a, b) =>
+			a.endDate && b.endDate ? new Date(b.endDate).getTime() - new Date(a.endDate).getTime() : 0
+		)
 	);
 
 	async function handleDelete(id: string) {
@@ -29,8 +32,8 @@
 		}
 	}
 
-	$: emptyError = sortedTrips.length < 1 && 'No trips yet.';
-	$: errorMessage = deleteError || emptyError;
+	let emptyError = $derived(sortedTrips.length < 1 && 'No trips yet.');
+	let errorMessage = $derived(deleteError || emptyError);
 </script>
 
 <PageTitle>Golf Trips</PageTitle>
@@ -54,34 +57,16 @@
 										variant="destructive"
 										type="submit"
 										fullWidth
-										on:click={() => handleDelete(trip.id)}
+										onclick={() => handleDelete(trip.id)}
 									>
 										<IconText name="trash" label="Delete" />
 									</Button>
 								</span>
-								{#if trip.startDate && trip.endDate}
-									<h6>
-										{new Date(`${trip.startDate}T00:00:00`).toLocaleDateString(undefined, {
-											dateStyle: 'medium'
-										})} -
-										{new Date(`${trip.endDate}T00:00:00`).toLocaleDateString(undefined, {
-											dateStyle: 'medium'
-										})}
-									</h6>
-								{/if}
+								{@render date(trip)}
 							</ListItem>
 						{:else}
 							<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
-								{#if trip.startDate && trip.endDate}
-									<h6>
-										{new Date(`${trip.startDate}T00:00:00`).toLocaleDateString(undefined, {
-											dateStyle: 'medium'
-										})} -
-										{new Date(`${trip.endDate}T00:00:00`).toLocaleDateString(undefined, {
-											dateStyle: 'medium'
-										})}
-									</h6>
-								{/if}
+								{@render date(trip)}
 							</ListItem>
 						{/if}
 					{/each}
@@ -100,6 +85,19 @@
 		{/if}
 	</div>
 </Main>
+
+{#snippet date({ startDate, endDate })}
+	{#if startDate && endDate}
+		<h6>
+			{new Date(`${startDate}T00:00:00`).toLocaleDateString(undefined, {
+				dateStyle: 'medium'
+			})} -
+			{new Date(`${endDate}T00:00:00`).toLocaleDateString(undefined, {
+				dateStyle: 'medium'
+			})}
+		</h6>
+	{/if}
+{/snippet}
 
 <style lang="scss">
 	.float-bottom {

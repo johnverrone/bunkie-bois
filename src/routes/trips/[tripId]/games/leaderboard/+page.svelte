@@ -1,19 +1,22 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import BreadcrumbItem from '$lib/components/BreadcrumbItem.svelte';
 	import Breadcrumbs from '$lib/components/Breadcrumbs.svelte';
-	import type { PageData } from './$types';
 	import Leaderboard from '$lib/components/Leaderboard.svelte';
 
-	export let data: PageData;
+	let { data } = $props();
 
-	let netScoreToggled: boolean = false;
+	let netScoreToggled = $state(false);
 
-	$: sortedLeaderboard = data.leaderboard.sort((a, b) => {
-		const aScore = netScoreToggled ? a.score.gross - a.score.handicap : a.score.gross;
-		const bScore = netScoreToggled ? b.score.gross - b.score.handicap : b.score.gross;
-		return aScore - bScore;
-	});
+	let sortedLeaderboard = $derived(
+		data.leaderboard.sort((a, b) => {
+			const aScore = netScoreToggled ? a.score.gross - a.score.handicap : a.score.gross;
+			const bScore = netScoreToggled ? b.score.gross - b.score.handicap : b.score.gross;
+			return aScore - bScore;
+		})
+	);
 
 	function onToggleParams(id: string) {
 		const existingRounds = data.leaderboardRounds ?? [];
@@ -46,7 +49,7 @@
 					type="checkbox"
 					id={`${round.id}`}
 					checked={data.leaderboardRounds?.includes(round.id)}
-					on:change={() => onToggleParams(round.id)}
+					onchange={() => onToggleParams(round.id)}
 				/>
 				<label for={`${round.id}`}>{round.name}</label>
 			</div>

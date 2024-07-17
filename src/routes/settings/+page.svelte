@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
@@ -12,4 +14,4 @@
 
 <PageTitle>Settings</PageTitle>
 
-<Button on:click={signout} variant="secondary">Logout</Button>
+<Button onclick={signout} variant="secondary">Logout</Button>

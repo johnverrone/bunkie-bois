@@ -2,9 +2,7 @@ import { getTrips } from '$lib/api';
 import type { Trip } from '$lib/pocketbase';
 import type { PageLoad } from './$types';
 
-export const load = (async ({ depends, fetch }) => {
-	depends('trips');
-
+export const load = (async ({ fetch }) => {
 	let trips: Trip[] = [];
 	try {
 		trips = await getTrips({ fetch });

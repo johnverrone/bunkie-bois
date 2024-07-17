@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { createTrip, tripsSchemas } from '$lib/api';
@@ -6,12 +8,13 @@
 	import Main from '$lib/components/Main.svelte';
 	import PageTitle from '$lib/components/PageTitle.svelte';
 
-	let name: string | undefined;
-	let startDate: string | undefined;
-	let endDate: string | undefined;
-	let errorMessage: string | undefined;
+	let name = $state<string>();
+	let startDate = $state<string>();
+	let endDate = $state<string>();
+	let errorMessage = $state<string>();
 
-	async function handleSubmit() {
+	async function handleSubmit(e: SubmitEvent) {
+		e.preventDefault();
 		const parseResult = tripsSchemas.createTripSchema.safeParse({ name, startDate, endDate });
 		if (!parseResult.success) {
 			errorMessage = 'Invalid trip information.';
@@ -26,7 +29,7 @@
 <PageTitle>Create Trip</PageTitle>
 
 <Main>
-	<form class="round-form" on:submit|preventDefault={handleSubmit}>
+	<form class="round-form" onsubmit={handleSubmit}>
 		<Input
 			label="Trip Name"
 			type="text"

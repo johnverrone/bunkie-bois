@@ -1,3 +1,5 @@
+<svelte:options runes={true} />
+
 <script lang="ts">
 	import { invalidate } from '$app/navigation';
 	import { deleteRound } from '$lib/api';
@@ -5,9 +7,8 @@
 	import IconText from '$lib/components/IconText.svelte';
 	import List from '$lib/components/List.svelte';
 	import ListItem from '$lib/components/ListItem.svelte';
-	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data } = $props();
 
 	async function handleDelete(id: string) {
 		await deleteRound(id);
@@ -24,7 +25,7 @@
 						<a href={`/trips/${data.trip.id}/rounds/${round.id}/edit`} class="edit">
 							<IconText name="edit" label="Edit" />
 						</a>
-						<Button on:click={() => handleDelete(round.id)} variant="destructive" fullWidth>
+						<Button onclick={() => handleDelete(round.id)} variant="destructive" fullWidth>
 							<IconText name="trash" label="Delete" />
 						</Button>
 					</span>
