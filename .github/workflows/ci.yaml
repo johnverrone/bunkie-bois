@@ -1,8 +1,8 @@
-name: Svelte Check
+name: CI
 on: [push]
 jobs:
   run_svelte_check:
-    name: Run svelte-check
+    name: svelte-check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
