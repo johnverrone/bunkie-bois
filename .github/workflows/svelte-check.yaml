@@ -5,14 +5,11 @@ jobs:
     name: Run svelte-check
     runs-on: ubuntu-latest
     steps:
-      - name: 🚚 Get latest code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: 'npm'
           cache-dependency-path: package-lock.json
       - run: npm ci
-      - name: 👮 Run svelte-check
-        run: npm run check
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: npm run check -- --fail-on-warnings
