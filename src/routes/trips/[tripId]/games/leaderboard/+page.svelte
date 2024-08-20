@@ -41,7 +41,7 @@
 	</div>
 	<fieldset class="round-select-container">
 		<legend>Rounds to include:</legend>
-		{#each data.rounds as round}
+		{#each data.rounds.reverse() as round}
 			<div>
 				<input
 					type="checkbox"
