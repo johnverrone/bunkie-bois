@@ -127,22 +127,22 @@
 	}
 
 	h1 {
-		font-size: 2.5rem;
+		font-size: 2rem;
 		font-weight: 800;
 	}
 
 	h2 {
-		font-size: 2rem;
-		font-weight: 700;
-	}
-
-	h3 {
 		font-size: 1.5rem;
 		font-weight: 700;
 	}
 
-	h4 {
+	h3 {
 		font-size: 1.25rem;
+		font-weight: 700;
+	}
+
+	h4 {
+		font-size: 1rem;
 		font-weight: 500;
 	}
 
