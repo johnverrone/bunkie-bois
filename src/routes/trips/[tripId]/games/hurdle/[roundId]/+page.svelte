@@ -23,7 +23,7 @@
 			<li>
 				<span>{player}</span>
 				<span>
-					<span><b>Quota:</b> {data.hurdle?.get(player)?.quota ?? 'TBD'}</span>
+					<span><b>Quota:</b> {data.hurdle?.get(player)?.quota ?? '--'}</span>
 					<span><b>Score:</b> {data.hurdle?.get(player)?.points}</span>
 				</span>
 			</li>

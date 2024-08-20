@@ -16,6 +16,8 @@
 		})
 	);
 
+	let sortedRounds = $derived(data.rounds.slice().reverse());
+
 	function onToggleParams(id: string) {
 		const existingRounds = data.leaderboardRounds ?? [];
 		const newRounds = existingRounds.includes(id)
@@ -41,7 +43,7 @@
 	</div>
 	<fieldset class="round-select-container">
 		<legend>Rounds to include:</legend>
-		{#each data.rounds as round}
+		{#each sortedRounds as round}
 			<div>
 				<input
 					type="checkbox"
