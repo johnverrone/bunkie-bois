@@ -39,7 +39,7 @@
 
 	async function handleAddPlayer(e: SubmitEvent) {
 		e.preventDefault();
-		if (newPlayerId) {
+		if (newPlayerId && newPlayerId !== '__createNew') {
 			await addPlayerToTrip(newPlayerId, data.trip.id);
 		} else {
 			const parseResult = playersSchemas.createPlayerSchema.safeParse({
