@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { linkPlayer, unlinkPlayer } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import List from '$lib/components/List.svelte';
@@ -22,12 +22,15 @@
 		if (linkedPlayerId) {
 			linkPlayer(linkedPlayerId);
 			linkPlayerMode = 'linked';
+			invalidateAll();
 		}
 	}
 
 	function onUnlinkPlayer() {
 		unlinkPlayer();
+		linkedPlayerId = undefined;
 		linkPlayerMode = 'default';
+		invalidateAll();
 	}
 
 	function signout() {
