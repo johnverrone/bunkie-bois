@@ -5,6 +5,9 @@
 	import { slide } from 'svelte/transition';
 	import { getScore } from '$lib/utils/scores';
 	import Leaderboard from '$lib/components/Leaderboard.svelte';
+	import Button from '$lib/components/Button.svelte';
+	import { scoresToCsv } from '$lib/utils/scores';
+	import { downloadBlob } from '$lib/utils/csv';
 
 	let { data } = $props();
 
@@ -37,6 +40,11 @@
 	function toggleDetails() {
 		showDetails = !showDetails;
 	}
+
+	function exportScores() {
+		const csv = scoresToCsv(data.leaderboard);
+		downloadBlob(csv, `${data.round.name}-scores.csv`, 'text/csv;charset=utf-8;');
+	}
 </script>
 
 <div>
@@ -54,6 +62,7 @@
 			<div transition:slide|global={{ duration: 300 }}>
 				<p>Date: {date?.toLocaleDateString(undefined, { dateStyle: 'medium' })}</p>
 				<p>Course: {data.round.expand?.course?.name}</p>
+				<Button onclick={exportScores} variant="secondary">Export Scores</Button>
 			</div>
 		{/if}
 	</div>
