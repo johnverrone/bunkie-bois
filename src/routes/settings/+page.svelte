@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { linkPlayer, unlinkPlayer } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import List from '$lib/components/List.svelte';
@@ -9,7 +9,7 @@
 	let { data } = $props();
 
 	let linkPlayerMode = $state<'default' | 'linking' | 'linked'>(
-		data.user.player ? 'linked' : 'default'
+		data.user?.player ? 'linked' : 'default'
 	);
 	let linkedPlayerId = $state<string>();
 
@@ -21,14 +21,12 @@
 		if (linkedPlayerId) {
 			linkPlayer(linkedPlayerId);
 			linkPlayerMode = 'linked';
-			invalidateAll();
 		}
 	}
 
 	function onUnlinkPlayer() {
 		unlinkPlayer();
 		linkPlayerMode = 'default';
-		invalidateAll();
 	}
 
 	function signout() {
@@ -51,7 +49,7 @@
 	{:else if linkPlayerMode === 'linked'}
 		<div class="linked-player">
 			<span>Player:</span>
-			{data.allPlayers.find((p) => p.id === data.user.player)?.name}
+			{data.allPlayers.find((p) => p.id === data.user?.player)?.name}
 			<Button onclick={onUnlinkPlayer} variant="destructive-secondary">Unlink</Button>
 		</div>
 	{/if}
