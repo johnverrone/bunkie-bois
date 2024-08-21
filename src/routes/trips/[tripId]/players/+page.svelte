@@ -117,15 +117,19 @@
 					<span>{player.name}</span>
 					<div class="edit-controls">
 						<span>{player.handicap}</span>
-						<Button
-							onclick={() => (editingPlayer = Object.assign({ handicap: 0 }, player))}
-							variant="secondary"
-						>
-							<Icon name="edit" />
-						</Button>
-						<Button onclick={() => handleDeletePlayer(player.id)} variant="secondary">
-							<Icon name="trash" />
-						</Button>
+						{#if data.role.isAdmin || data.loggedInPlayer === player.id}
+							<Button
+								onclick={() => (editingPlayer = Object.assign({ handicap: 0 }, player))}
+								variant="secondary"
+							>
+								<Icon name="edit" />
+							</Button>
+						{/if}
+						{#if data.role.isAdmin}
+							<Button onclick={() => handleDeletePlayer(player.id)} variant="secondary">
+								<Icon name="trash" />
+							</Button>
+						{/if}
 					</div>
 				{/if}
 			</li>
