@@ -4,7 +4,7 @@
 
 	interface ButtonProps {
 		type?: 'button' | 'submit' | 'reset';
-		variant?: 'primary' | 'secondary' | 'destructive';
+		variant?: 'primary' | 'secondary' | 'destructive' | 'destructive-secondary';
 		fullWidth?: boolean;
 		disabled?: boolean;
 		onclick?: MouseEventHandler<HTMLButtonElement>;
@@ -29,6 +29,7 @@
 	class:primary={variant === 'primary'}
 	class:secondary={variant === 'secondary'}
 	class:destructive={variant === 'destructive'}
+	class:destructive-secondary={variant === 'destructive-secondary'}
 	class:fullWidth
 	class:disabled
 	{...rest}
@@ -84,6 +85,20 @@
 		$bg-color: hsl(18, 61%, 49%);
 		background-color: $bg-color;
 		color: var(--foreground);
+
+		&:hover {
+			background-color: scale-color($bg-color, $lightness: -20%);
+		}
+
+		&:active {
+			background-color: scale-color($bg-color, $lightness: -40%);
+		}
+	}
+
+	.destructive-secondary {
+		$bg-color: hsl(185deg 33% 16%);
+		background-color: inherit;
+		color: hsl(18, 61%, 50%);
 
 		&:hover {
 			background-color: scale-color($bg-color, $lightness: -20%);
