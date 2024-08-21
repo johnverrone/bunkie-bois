@@ -117,7 +117,7 @@
 					<span>{player.name}</span>
 					<div class="edit-controls">
 						<span>{player.handicap}</span>
-						{#if data.role.isAdmin || data.loggedInPlayer === player.id}
+						{#if data.role.isAdmin || data.user?.player === player.id}
 							<Button
 								onclick={() => (editingPlayer = Object.assign({ handicap: 0 }, player))}
 								variant="secondary"

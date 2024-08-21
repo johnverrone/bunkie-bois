@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { linkPlayer } from '$lib/api';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { linkPlayer, unlinkPlayer } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import List from '$lib/components/List.svelte';
-	import ListItem from '$lib/components/ListItem.svelte';
 	import SelectMenu from '$lib/components/SelectMenu.svelte';
 	import { pb } from '$lib/pocketbase';
 
@@ -22,7 +21,14 @@
 		if (linkedPlayerId) {
 			linkPlayer(linkedPlayerId);
 			linkPlayerMode = 'linked';
+			invalidateAll();
 		}
+	}
+
+	function onUnlinkPlayer() {
+		unlinkPlayer();
+		linkPlayerMode = 'default';
+		invalidateAll();
 	}
 
 	function signout() {
@@ -33,7 +39,7 @@
 
 <List>
 	{#if linkPlayerMode === 'default'}
-		<Button on:click={startLinkingPlayer} variant="primary">Link Player</Button>
+		<Button onclick={startLinkingPlayer} variant="primary">Link Player</Button>
 	{:else if linkPlayerMode === 'linking'}
 		<SelectMenu
 			name="linkedPlayer"
@@ -43,9 +49,21 @@
 			onChange={onLinkPlayer}
 		/>
 	{:else if linkPlayerMode === 'linked'}
-		<ListItem title="Linked Player">
+		<div class="linked-player">
+			<span>Player:</span>
 			{data.allPlayers.find((p) => p.id === data.user.player)?.name}
-		</ListItem>
+			<Button onclick={onUnlinkPlayer} variant="destructive-secondary">Unlink</Button>
+		</div>
 	{/if}
 	<Button onclick={signout} variant="secondary">Logout</Button>
 </List>
+
+<style lang="scss">
+	.linked-player {
+		text-align: center;
+
+		span {
+			font-weight: bold;
+		}
+	}
+</style>

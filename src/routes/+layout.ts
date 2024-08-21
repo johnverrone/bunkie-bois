@@ -11,11 +11,10 @@ export const load = (async ({ fetch }) => {
 	return {
 		isAuthed: pb.authStore.isValid,
 		allPlayers,
-		user: pb.authStore.model as User,
+		user: pb.authStore.model as User | undefined,
 		role: {
 			isAdmin: pb.authStore.model?.role === 'admin'
-		},
-		loggedInPlayer: pb.authStore.model?.player
+		}
 	};
 }) satisfies LayoutLoad;
 
