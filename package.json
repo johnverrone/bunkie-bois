@@ -2,7 +2,7 @@
 	"name": "bunkie-bois",
 	"version": "0.0.1",
 	"devDependencies": {
-		"@popperjs/core": "^2.11.8",
+		"@floating-ui/dom": "^1.6.10",
 		"@sveltejs/adapter-vercel": "^5.4.1",
 		"@sveltejs/kit": "^2.5.18",
 		"@sveltejs/vite-plugin-svelte": "^3.1.1",
