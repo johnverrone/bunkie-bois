@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createPopper, type Instance } from '@popperjs/core';
-	import { onMount, type Snippet } from 'svelte';
+	import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { clickOutside } from '$lib/utils/click_outside';
 
 	interface ActionsProps {
@@ -12,14 +12,11 @@
 	let { anchor, opened = $bindable(false), children }: ActionsProps = $props();
 
 	let el: HTMLElement;
-	let popperInstance: Instance | null;
+	let cleanup: () => void;
 
 	function close() {
 		opened = false;
-		if (popperInstance) {
-			popperInstance.destroy();
-			popperInstance = null;
-		}
+		cleanup();
 	}
 
 	function stopPropagation(e: Event) {
@@ -28,11 +25,20 @@
 
 	onMount(() => {
 		if (anchor) {
-			popperInstance = createPopper(anchor, el, {
-				placement: 'bottom-end'
+			cleanup = autoUpdate(anchor, el, async () => {
+				const pos = await computePosition(anchor, el, {
+					placement: 'bottom',
+					middleware: [offset(4), flip(), shift({ padding: 12 })]
+				});
+				Object.assign(el.style, {
+					left: `${pos.x}px`,
+					top: `${pos.y}px`
+				});
 			});
 		}
 	});
+
+	onDestroy(() => cleanup());
 </script>
 
 <div
@@ -50,6 +56,10 @@
 
 <style lang="scss">
 	.action-menu {
+		width: max-content;
+		position: absolute;
+		top: 0;
+		left: 0;
 		background: var(--secondary-background);
 		padding: 16px 8px;
 		border-radius: 4px;
