@@ -9,6 +9,7 @@
 	import { delayedNavigation } from '$lib/stores';
 	import { deleteTrip } from '$lib/api';
 	import { invalidate } from '$app/navigation';
+	import type { TimeRange } from '$lib/types';
 
 	let { data } = $props();
 
@@ -86,7 +87,7 @@
 	</div>
 </Main>
 
-{#snippet date({ startDate, endDate })}
+{#snippet date({ startDate, endDate }: TimeRange)}
 	{#if startDate && endDate}
 		<h6>
 			{new Date(`${startDate}T00:00:00`).toLocaleDateString(undefined, {
