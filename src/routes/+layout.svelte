@@ -114,6 +114,7 @@
 
 		background-color: var(--background);
 		color: var(--foreground);
+		color-scheme: dark;
 	}
 
 	body {
