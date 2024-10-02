@@ -21,8 +21,7 @@ jobs:
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
-
       - name: 📂 Sync files
         run: |
-          lftp -e "mirror -e -R pocketbase/pb_migrations bunkie-bois/pb_migrations" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
-          lftp -e "mirror -e -R pocketbase/pb_hooks bunkie-bois/pb_hooks" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
+          lftp -e "set ssl:verify-certificate false; mirror -e -R pocketbase/pb_migrations bunkie-bois/pb_migrations" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
+          lftp -e "set ssl:verify-certificate false; mirror -e -R pocketbase/pb_hooks bunkie-bois/pb_hooks" -u $POCKETHOST_USERNAME,$POCKETHOST_PASSWORD $POCKETHOST_SERVER
