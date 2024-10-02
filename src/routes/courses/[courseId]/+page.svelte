@@ -49,6 +49,12 @@
 						<td>{hole.handicap}</td>
 					</tr>
 				{/each}
+				<tr>
+					<td></td>
+					<td><b>{holes.reduce((a, c) => (a += c.par), 0)}</b></td>
+					<td><b>{holes.reduce((a, c) => (a += c.yardage), 0)}</b></td>
+					<td></td>
+				</tr>
 			{:else}
 				<tr><td colspan="4">missing hole information</td></tr>
 			{/if}
