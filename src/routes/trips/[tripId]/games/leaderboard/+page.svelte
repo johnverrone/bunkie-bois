@@ -17,6 +17,7 @@
 	);
 
 	let sortedRounds = $derived(data.rounds.slice().reverse());
+	let numSelectedRounds = $derived(data.leaderboardRounds?.length ?? data.rounds.length);
 
 	function onToggleParams(id: string) {
 		const existingRounds = data.leaderboardRounds ?? [];
@@ -59,7 +60,8 @@
 		leaderboard={sortedLeaderboard.map((l) => ({
 			id: l.player,
 			name: l.player,
-			score: netScoreToggled ? l.score.gross - l.score.handicap : l.score.gross
+			score: netScoreToggled ? l.score.gross - l.score.handicap : l.score.gross,
+			disabled: l.rounds < numSelectedRounds
 		}))}
 	/>
 </div>

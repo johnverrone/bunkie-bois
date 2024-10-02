@@ -1,4 +1,7 @@
-<script lang="ts" generics="T extends { id: string, name: string, teeBox?: string, score: number }">
+<script
+	lang="ts"
+	generics="T extends { id: string, name: string, teeBox?: string, score: number, disabled?: boolean }"
+>
 	import { flip } from 'svelte/animate';
 	import { scaleLinear } from 'd3-scale';
 	import { interpolateHsl } from 'd3-interpolate';
@@ -34,7 +37,7 @@
 					</span>
 				</a>
 			{:else}
-				<div class="item">
+				<div class="item" class:disabled={l.disabled}>
 					<span class="player-name">
 						{l.name}
 						{#if !!l.teeBox}<span class="tee-box-badge">{l.teeBox}</span>{/if}
@@ -69,9 +72,13 @@
 		justify-content: space-between;
 		align-items: center;
 
-		&:hover {
+		&:hover:not(.disabled) {
 			text-decoration: none;
 			background-color: var(--dp-01);
+		}
+
+		&.disabled {
+			opacity: 0.2;
 		}
 	}
 
