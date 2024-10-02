@@ -47,17 +47,20 @@ routerAdd('GET', '/api/bb/getTripLeaderboard', (c) => {
 
     let gross = 0;
     let handicap = 0;
+    let rounds = 0;
     for (const card of records) {
       for (const hole of card?.expandedAll('holeScores_via_scorecard') ?? []) {
         gross += hole.getInt('score');
         if (hole.getInt('holeNumber') === 1) {
           //new scorecard, add course handicap
           handicap += card.getInt('playerHandicap');
+          //new scorecard, keep count of how many rounds are counted
+          rounds++;
         }
       }
     }
 
-    leaderboard.push({ player: p.getString('name'), score: { gross, handicap }});
+    leaderboard.push({ player: p.getString('name'), score: { gross, handicap }, rounds});
   });
 
   return c.json(200, { leaderboard });

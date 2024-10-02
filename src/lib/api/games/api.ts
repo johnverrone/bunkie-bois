@@ -18,7 +18,11 @@ export async function getTripLeaderboard(tripId: string, roundIds?: string[], op
 	);
 	const result = await resp.json();
 	// TODO cleanup types
-	return result.leaderboard as { player: string; score: { gross: number; handicap: number } }[];
+	return result.leaderboard as {
+		player: string;
+		score: { gross: number; handicap: number };
+		rounds: number;
+	}[];
 }
 
 /**
