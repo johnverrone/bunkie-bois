@@ -10,10 +10,12 @@
 		"sourceMap": true,
 		"strict": true,
 		"noUncheckedIndexedAccess": true,
-    "plugins": [{
-      "name": "typescript-svelte-plugin",
-      "assumeIsSvelteProject": true,
-    }]
+		"plugins": [
+			{
+				"name": "typescript-svelte-plugin",
+				"assumeIsSvelteProject": true
+			}
+		]
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
 	//
