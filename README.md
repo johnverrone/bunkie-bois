@@ -17,6 +17,7 @@ Then in one terminal run:
 ```bash
 ./pocketbase/pocketbase serve
 ```
+
 to spin up the local database and admin UI.
 
 and in another run:
@@ -24,6 +25,7 @@ and in another run:
 ```bash
 npm run dev
 ```
+
 to start the app dev server.
 
 In a `.env.local` file, you can (optionally) add the following:
