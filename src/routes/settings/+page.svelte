@@ -1,8 +1,36 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { linkPlayer, unlinkPlayer } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
-	import PageTitle from '$lib/components/PageTitle.svelte';
+	import List from '$lib/components/List.svelte';
+	import SelectMenu from '$lib/components/SelectMenu.svelte';
 	import { pb } from '$lib/pocketbase';
+
+	let { data } = $props();
+
+	let linkPlayerMode = $state<'default' | 'linking' | 'linked'>(
+		data.user?.player ? 'linked' : 'default'
+	);
+	let linkedPlayerId = $state<string>();
+
+	function startLinkingPlayer() {
+		linkPlayerMode = 'linking';
+	}
+
+	function onLinkPlayer() {
+		if (linkedPlayerId) {
+			linkPlayer(linkedPlayerId);
+			linkPlayerMode = 'linked';
+			invalidateAll();
+		}
+	}
+
+	function onUnlinkPlayer() {
+		unlinkPlayer();
+		linkedPlayerId = undefined;
+		linkPlayerMode = 'default';
+		invalidateAll();
+	}
 
 	function signout() {
 		pb.authStore.clear();
@@ -10,6 +38,33 @@
 	}
 </script>
 
-<PageTitle>Settings</PageTitle>
+<List>
+	{#if linkPlayerMode === 'default'}
+		<Button onclick={startLinkingPlayer} variant="primary">Link Player</Button>
+	{:else if linkPlayerMode === 'linking'}
+		<SelectMenu
+			name="linkedPlayer"
+			options={data.allPlayers}
+			bind:value={linkedPlayerId}
+			placeholder="Select a player"
+			onChange={onLinkPlayer}
+		/>
+	{:else if linkPlayerMode === 'linked'}
+		<div class="linked-player">
+			<span>Player:</span>
+			{data.allPlayers.find((p) => p.id === data.user?.player)?.name}
+			<Button onclick={onUnlinkPlayer} variant="destructive-secondary">Unlink</Button>
+		</div>
+	{/if}
+	<Button onclick={signout} variant="secondary">Logout</Button>
+</List>
 
-<Button onclick={signout} variant="secondary">Logout</Button>
+<style lang="scss">
+	.linked-player {
+		text-align: center;
+
+		span {
+			font-weight: bold;
+		}
+	}
+</style>

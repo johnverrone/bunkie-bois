@@ -5,7 +5,7 @@
 
 	interface ListItemProps {
 		title: string | null;
-		href: string | null;
+		href?: string | null;
 		actionMenu?: Snippet;
 		children?: Snippet;
 	}
@@ -27,7 +27,13 @@
 	<a {href}>
 		<h5>{title}</h5>
 		{#if hasActionMenu}
-			<button class="action-menu-button" bind:this={actionMenuAnchor} onclick={onActionMenuClick}>
+			<button
+				class="action-menu-button"
+				bind:this={actionMenuAnchor}
+				onclick={onActionMenuClick}
+				aria-haspopup="menu"
+				aria-controls="actionMenu"
+			>
 				<Icon name="more-vertical" />
 			</button>
 		{/if}
@@ -71,5 +77,9 @@
 		padding: 10px;
 
 		cursor: pointer;
+
+		&:hover {
+			background-color: var(--dp-01);
+		}
 	}
 </style>
