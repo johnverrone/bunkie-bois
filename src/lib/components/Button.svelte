@@ -37,6 +37,8 @@
 </button>
 
 <style lang="scss">
+	@use 'sass:color';
+
 	button {
 		height: 36px;
 		padding: 0 6px;
@@ -58,11 +60,11 @@
 		color: #fefefe;
 
 		&:hover {
-			background-color: scale-color($bg-color, $lightness: -10%);
+			background-color: color.scale($bg-color, $lightness: -10%);
 		}
 
 		&:active {
-			background-color: scale-color($bg-color, $lightness: -20%);
+			background-color: color.scale($bg-color, $lightness: -20%);
 		}
 	}
 
@@ -72,11 +74,11 @@
 		color: var(--secondary);
 
 		&:hover {
-			background-color: scale-color($bg-color, $lightness: -20%);
+			background-color: color.scale($bg-color, $lightness: -20%);
 		}
 
 		&:active {
-			background-color: scale-color($bg-color, $lightness: -40%);
+			background-color: color.scale($bg-color, $lightness: -40%);
 		}
 	}
 
@@ -86,11 +88,11 @@
 		color: var(--foreground);
 
 		&:hover {
-			background-color: scale-color($bg-color, $lightness: -20%);
+			background-color: color.scale($bg-color, $lightness: -20%);
 		}
 
 		&:active {
-			background-color: scale-color($bg-color, $lightness: -40%);
+			background-color: color.scale($bg-color, $lightness: -40%);
 		}
 	}
 </style>
