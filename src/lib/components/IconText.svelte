@@ -3,7 +3,7 @@
 	import Icon from './Icon.svelte';
 
 	interface IconTextProps {
-		name: ComponentProps<Icon>['name'];
+		name: ComponentProps<typeof Icon>['name'];
 		label: string;
 	}
 
