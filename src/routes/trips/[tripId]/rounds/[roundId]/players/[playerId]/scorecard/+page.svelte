@@ -63,7 +63,7 @@
 	<div class="spacer"></div>
 
 	<div class="button-container">
-		<Button on:click={handleDelete} variant="destructive">Delete Score</Button>
+		<Button onclick={handleDelete} variant="destructive">Delete Score</Button>
 	</div>
 </div>
 
