@@ -16,7 +16,7 @@
 
 {#if data.rounds.length}
 	<List>
-		{#each data.rounds as round}
+		{#each data.rounds as round (round.id)}
 			{#if data.role.isAdmin}
 				<ListItem href={`/trips/${data.trip.id}/rounds/${round.id}`} title={round.name}>
 					{#snippet actionMenu()}
