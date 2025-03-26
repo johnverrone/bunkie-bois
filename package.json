@@ -39,8 +39,7 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --check . && eslint .",
-    "format": "prettier --write .",
-    "gen-types": "bunx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/lib/supabaseTypes.ts"
+    "format": "prettier --write ."
   },
   "type": "module"
 }
