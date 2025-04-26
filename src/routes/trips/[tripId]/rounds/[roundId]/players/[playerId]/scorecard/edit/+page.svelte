@@ -49,30 +49,40 @@
 		18: null
 	});
 
+	let isSubmitting = $state(false);
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
-		const parseResult = scoresSchemas.updateScorecardSchema.safeParse({
-			playerId: data.player.id,
-			roundId: data.round.id,
-			teeBoxId: selectedTeeBoxId,
-			courseHandicap: !!selectedTeeBox
-				? calculateCourseHandicap(
-						data.player.handicap,
-						selectedTeeBox.slope,
-						selectedTeeBox.rating,
-						par
-					)
-				: 0,
-			scores: { ...front9, ...back9 }
-		});
-		if (!parseResult.success) {
-			console.error(parseResult.error);
-			return;
-		}
+		if (isSubmitting) return;
 
-		await logScore(parseResult.data);
-		await invalidate(`trips:${data.trip.id}`);
-		goto(`/trips/${data.trip.id}/rounds/${data.round.id}`);
+		try {
+			isSubmitting = true;
+			const parseResult = scoresSchemas.updateScorecardSchema.safeParse({
+				playerId: data.player.id,
+				roundId: data.round.id,
+				teeBoxId: selectedTeeBoxId,
+				courseHandicap: selectedTeeBox
+					? calculateCourseHandicap(
+							data.player.handicap,
+							selectedTeeBox.slope,
+							selectedTeeBox.rating,
+							par
+						)
+					: 0,
+				scores: { ...front9, ...back9 }
+			});
+			if (!parseResult.success) {
+				console.error(parseResult.error);
+				return;
+			}
+
+			await logScore(parseResult.data);
+			await invalidate(`trips:${data.trip.id}`);
+			goto(`/trips/${data.trip.id}/rounds/${data.round.id}`);
+		} catch (e) {
+			console.error('Error logging score:', e);
+		} finally {
+			isSubmitting = false;
+		}
 	}
 </script>
 
@@ -80,7 +90,7 @@
 	<p>{`${data.player.name}'s Scorecard`}</p>
 	<select class="tee-box-select" name="teeBoxId" bind:value={selectedTeeBoxId}>
 		<option>Select tee box</option>
-		{#each teeBoxes as teeBox}
+		{#each teeBoxes as teeBox (teeBox.id)}
 			<option value={teeBox.id}>{teeBox.name}</option>
 		{/each}
 	</select>
@@ -91,7 +101,7 @@
 
 	{#if errorMessage}<p class="error">{errorMessage}</p>{/if}
 
-	<Button type="submit" disabled={!selectedTeeBox} fullWidth>Submit</Button>
+	<Button type="submit" disabled={!selectedTeeBox || isSubmitting} fullWidth>Submit</Button>
 </form>
 
 <style lang="scss">

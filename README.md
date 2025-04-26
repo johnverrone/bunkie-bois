@@ -15,7 +15,7 @@ First install dependencies with `npm install`.
 Then in one terminal run:
 
 ```bash
-./pocketbase/pocketbase serve
+npm run db # alias for ./pocketbase/pocketbase serve
 ```
 
 to spin up the local database and admin UI.

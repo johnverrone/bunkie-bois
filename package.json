@@ -33,6 +33,7 @@
   },
   "private": true,
   "scripts": {
+    "db": "./pocketbase/pocketbase serve",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",

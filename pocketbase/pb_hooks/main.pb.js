@@ -1,21 +1,40 @@
 /* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference path="../pb_data/types.d.ts" />
 
-routerAdd('POST', '/api/bb/createHoleScores', (c) => {
-	const data = $apis.requestInfo(c).data;
-	const { scores } = data;
-
-	const holeScoresCollection = $app.dao().findCollectionByNameOrId('holeScores');
-
+routerAdd('POST', '/api/bb/createScorecard', (c) => {
 	// TODO: better req validation
-	scores.forEach((s) => {
-		const record = new Record(holeScoresCollection);
-		const form = new RecordUpsertForm($app, record);
-		form.loadData(s);
-		form.submit();
+	const data = c.requestInfo().body;
+	let rsp = {
+		scorecardId: ''
+	};
+
+	$app.runInTransaction((txApp) => {
+		// create scorecard
+		const scorecardCollection = $app.findCollectionByNameOrId('scorecards');
+		let scorecard = new Record(scorecardCollection);
+		scorecard.set('round', data.roundId);
+		scorecard.set('player', data.playerId);
+		scorecard.set('teeBox', data.teeBoxId);
+		scorecard.set('playerHandicap', data.playerHandicap);
+
+		txApp.save(scorecard);
+		rsp.scorecardId = scorecard.id;
+
+		const holeScoresCollection = $app.findCollectionByNameOrId('holeScores');
+		// add scores to hole_scores
+		const scoresToInsert = Object.entries(data.scores).map(([holeNumber, score]) => ({
+			scorecard: scorecard.id,
+			holeNumber,
+			score
+		}));
+		scoresToInsert.forEach((s) => {
+			const record = new Record(holeScoresCollection);
+			record.load(s);
+			txApp.save(record);
+		});
 	});
 
-	return c.json(200, { scores });
+	return c.json(200, rsp);
 });
 
 routerAdd('GET', '/api/bb/getTripLeaderboard', (c) => {
