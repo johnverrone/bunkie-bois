@@ -38,30 +38,28 @@ routerAdd('POST', '/api/bb/createScorecard', (c) => {
 });
 
 routerAdd('GET', '/api/bb/getTripLeaderboard', (c) => {
-	const tripId = c.queryParam('tripId');
-	const roundIds = c.queryParam('rounds').split(',');
+	const tripId = c.request.url.query().get('tripId');
+	const roundIds = c.request.url.query().get('rounds').split(',');
 
 	// get trip players
-	const players = $app
-		.dao()
-		.findRecordsByFilter('players', 'trips?~{:tripId}', '-name', 0, 0, { tripId });
+	const players = $app.findRecordsByFilter('players', 'trips?~{:tripId}', '-name', 0, 0, {
+		tripId
+	});
 
 	// for each player fetch scorecards
 	const leaderboard = [];
 	players.forEach((p) => {
 		if (!p) return;
-		const records = $app
-			.dao()
-			.findRecordsByFilter(
-				'scorecards',
-				'player={:playerId} && round.trip={:tripId} && {:roundIds}?~round.id',
-				'',
-				0,
-				0,
-				{ playerId: p.id, tripId, roundIds }
-			);
+		const records = $app.findRecordsByFilter(
+			'scorecards',
+			'player={:playerId} && round.trip={:tripId} && {:roundIds}?~round.id',
+			'',
+			0,
+			0,
+			{ playerId: p.id, tripId, roundIds }
+		);
 
-		$app.dao().expandRecords(records, ['holeScores_via_scorecard']);
+		$app.expandRecords(records, ['holeScores_via_scorecard']);
 
 		let gross = 0;
 		let handicap = 0;

@@ -44,7 +44,7 @@
 	</div>
 	<fieldset class="round-select-container">
 		<legend>Rounds to include:</legend>
-		{#each sortedRounds as round}
+		{#each sortedRounds as round (round.id)}
 			<div>
 				<input
 					type="checkbox"

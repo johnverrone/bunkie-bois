@@ -2,16 +2,16 @@ import type { LayoutLoad } from './$types';
 import { pb } from '$lib/pocketbase';
 
 export const load = (async ({ fetch }) => {
-	if (pb.authStore.isAuthRecord && pb.authStore.isValid) {
+	if (!pb.authStore.isSuperuser && pb.authStore.isValid) {
 		await pb.collection('users').authRefresh({ fetch });
 	}
 
 	return {
 		isAuthed: pb.authStore.isValid,
 		role: {
-			isAdmin: pb.authStore.model?.role === 'admin'
+			isAdmin: pb.authStore.record?.role === 'admin'
 		},
-		loggedInPlayer: pb.authStore.model?.player
+		loggedInPlayer: pb.authStore.record?.player
 	};
 }) satisfies LayoutLoad;
 
