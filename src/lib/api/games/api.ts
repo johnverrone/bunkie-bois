@@ -10,12 +10,16 @@ export async function getTripLeaderboard(tripId: string, roundIds?: string[], op
 	// use custom endpoint to bulk fetch
 	const f = opts?.fetch ?? fetch;
 	const resp = await f(
-		`${pb.baseUrl}/api/bb/getTripLeaderboard?` +
+		`${pb.buildURL('/api/bb/getTripLeaderboard?')}` +
 			new URLSearchParams({
 				tripId,
 				rounds: roundIds?.join(',') ?? ''
 			})
 	);
+	if (!resp.ok) {
+		const err = await resp.json();
+		throw new Error(err.message);
+	}
 	const result = await resp.json();
 	// TODO cleanup types
 	return result.leaderboard as {

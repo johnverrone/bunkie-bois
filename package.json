@@ -18,7 +18,7 @@
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-svelte": "^3.3.3",
     "feather-icons": "^4.29.2",
-    "pocketbase": "^0.21.3",
+    "pocketbase": "^0.26.0",
     "prettier": "^3.4.2",
     "prettier-plugin-svelte": "^3.3.3",
     "sass": "^1.77.8",
@@ -33,6 +33,7 @@
   },
   "private": true,
   "scripts": {
+    "db": "./pocketbase/pocketbase serve",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",

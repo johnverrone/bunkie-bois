@@ -32,30 +32,14 @@ export function getLeaderboard(id: string, opts?: SendOptions) {
  * Log score for a player
  */
 export async function logScore(req: UpdateScorecardRequest, opts?: SendOptions) {
-	// create scorecard entry
-	const data = {
-		player: req.playerId,
-		round: req.roundId,
-		teeBox: req.teeBoxId,
-		playerHandicap: req.courseHandicap
-	};
-	const scorecard = await pb.collection('scorecards').create(data, opts);
-
-	// add scores to hole_scores
-	const scoresToInsert = Object.entries(req.scores).map(([holeNumber, score]) => ({
-		scorecard: scorecard.id,
-		holeNumber,
-		score
-	}));
-
-	// use custom endpoint to bulk insert
+	// use custom endpoint for transaction
 	const f = opts?.fetch ?? fetch;
-	const resp = await f(`${pb.baseUrl}/api/bb/createHoleScores`, {
+	const resp = await f(`${pb.baseUrl}/api/bb/createScorecard`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ scores: scoresToInsert })
+		body: JSON.stringify(req)
 	});
 	return await resp.json();
 }

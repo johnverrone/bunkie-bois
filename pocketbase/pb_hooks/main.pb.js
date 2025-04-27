@@ -1,48 +1,65 @@
 /* eslint-disable @typescript-eslint/triple-slash-reference */
 /// <reference path="../pb_data/types.d.ts" />
 
-routerAdd('POST', '/api/bb/createHoleScores', (c) => {
-	const data = $apis.requestInfo(c).data;
-	const { scores } = data;
-
-	const holeScoresCollection = $app.dao().findCollectionByNameOrId('holeScores');
-
+routerAdd('POST', '/api/bb/createScorecard', (c) => {
 	// TODO: better req validation
-	scores.forEach((s) => {
-		const record = new Record(holeScoresCollection);
-		const form = new RecordUpsertForm($app, record);
-		form.loadData(s);
-		form.submit();
+	const data = c.requestInfo().body;
+	let rsp = {
+		scorecardId: ''
+	};
+
+	$app.runInTransaction((txApp) => {
+		// create scorecard
+		const scorecardCollection = $app.findCollectionByNameOrId('scorecards');
+		let scorecard = new Record(scorecardCollection);
+		scorecard.set('round', data.roundId);
+		scorecard.set('player', data.playerId);
+		scorecard.set('teeBox', data.teeBoxId);
+		scorecard.set('playerHandicap', data.playerHandicap);
+
+		txApp.save(scorecard);
+		rsp.scorecardId = scorecard.id;
+
+		const holeScoresCollection = $app.findCollectionByNameOrId('holeScores');
+		// add scores to hole_scores
+		const scoresToInsert = Object.entries(data.scores).map(([holeNumber, score]) => ({
+			scorecard: scorecard.id,
+			holeNumber,
+			score
+		}));
+		scoresToInsert.forEach((s) => {
+			const record = new Record(holeScoresCollection);
+			record.load(s);
+			txApp.save(record);
+		});
 	});
 
-	return c.json(200, { scores });
+	return c.json(200, rsp);
 });
 
 routerAdd('GET', '/api/bb/getTripLeaderboard', (c) => {
-	const tripId = c.queryParam('tripId');
-	const roundIds = c.queryParam('rounds').split(',');
+	const tripId = c.request.url.query().get('tripId');
+	const roundIds = c.request.url.query().get('rounds').split(',');
 
 	// get trip players
-	const players = $app
-		.dao()
-		.findRecordsByFilter('players', 'trips?~{:tripId}', '-name', 0, 0, { tripId });
+	const players = $app.findRecordsByFilter('players', 'trips?~{:tripId}', '-name', 0, 0, {
+		tripId
+	});
 
 	// for each player fetch scorecards
 	const leaderboard = [];
 	players.forEach((p) => {
 		if (!p) return;
-		const records = $app
-			.dao()
-			.findRecordsByFilter(
-				'scorecards',
-				'player={:playerId} && round.trip={:tripId} && {:roundIds}?~round.id',
-				'',
-				0,
-				0,
-				{ playerId: p.id, tripId, roundIds }
-			);
+		const records = $app.findRecordsByFilter(
+			'scorecards',
+			'player={:playerId} && round.trip={:tripId} && {:roundIds}?~round.id',
+			'',
+			0,
+			0,
+			{ playerId: p.id, tripId, roundIds }
+		);
 
-		$app.dao().expandRecords(records, ['holeScores_via_scorecard']);
+		$app.expandRecords(records, ['holeScores_via_scorecard']);
 
 		let gross = 0;
 		let handicap = 0;
