@@ -27,6 +27,7 @@
 			if (!success) throw new Error();
 			invalidate('trips');
 		} catch (e) {
+			console.error(e);
 			deleteError = 'There was an error deleting the trip.';
 		}
 	}
@@ -45,7 +46,7 @@
 		<div>
 			{#if sortedTrips.length}
 				<List>
-					{#each sortedTrips as trip}
+					{#each sortedTrips as trip (trip.id)}
 						{#if data.role.isAdmin}
 							<ListItem href={`/trips/${trip.id}/rounds`} title={trip.name}>
 								{#snippet actionMenu()}
@@ -80,7 +81,7 @@
 		</div>
 
 		{#if data.role.isAdmin}
-			<a href={`/trips/create`}>
+			<a class="add-new" href="/trips/create">
 				<IconText name="plus" label="Add trip" />
 			</a>
 		{/if}
@@ -118,5 +119,9 @@
 	.edit {
 		width: 100%;
 		padding: 0 6px;
+	}
+
+	.add-new {
+		margin-top: 2rem;
 	}
 </style>

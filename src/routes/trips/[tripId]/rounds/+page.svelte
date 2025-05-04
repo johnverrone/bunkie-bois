@@ -57,7 +57,7 @@
 {/if}
 
 {#if data.role.isAdmin}
-	<a href={`/trips/${data.trip.id}/rounds/create`}>
+	<a class="add-new" href={`/trips/${data.trip.id}/rounds/create`}>
 		<IconText name="plus" label="Add round" />
 	</a>
 {/if}
@@ -74,5 +74,9 @@
 	.edit {
 		width: 100%;
 		padding: 0 6px;
+	}
+
+	.add-new {
+		margin-top: 2rem;
 	}
 </style>
