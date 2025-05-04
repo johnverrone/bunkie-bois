@@ -3,6 +3,7 @@
 	import { createRound, roundsSchemas } from '$lib/api';
 	import Button from '$lib/components/Button.svelte';
 	import Input from '$lib/components/Input.svelte';
+	import Loading from '$lib/components/Loading.svelte';
 	import SelectMenu from '$lib/components/SelectMenu.svelte';
 
 	let { data } = $props();
@@ -11,9 +12,14 @@
 	let courseId = $state<string>();
 	let date = $state<string>();
 	let errorMessage = $state<string>();
+	let loading = $state<boolean>(false);
+	let loadingTimeout = $state<number>();
 
 	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
+		loadingTimeout = setTimeout(() => {
+			loading = true;
+		}, 200);
 		const parseResult = roundsSchemas.createRoundSchema.safeParse({
 			tripId: data.trip.id,
 			courseId,
@@ -28,6 +34,8 @@
 		await createRound(parseResult.data);
 		await invalidate(`trips:${data.trip.id}`);
 		goto(`/trips/${data.trip.id}/rounds`);
+		clearTimeout(loadingTimeout);
+		loading = false;
 	}
 </script>
 
@@ -45,6 +53,10 @@
 		</div>
 	</div>
 </form>
+
+{#if loading}
+	<Loading />
+{/if}
 
 <style lang="scss">
 	.round-form {
